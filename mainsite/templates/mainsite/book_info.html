@@ -9,11 +9,13 @@
     <script src=https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css></script>
     <script>
         function push_volume(button,force) {
+            button.disabled =true;
             volume_id = button.getAttribute('volumeid');
             console.log("push volume id："+volume_id);
             xmlhttp = new XMLHttpRequest();
             csrf = document.querySelector("input[name='csrfmiddlewaretoken']").value;
             xmlhttp.onload = function () {
+                button.disabled =false;
                 if (xmlhttp.status == 200){
                     if (xmlhttp.responseText.includes('Already in queue')) {
                         alert("此卷正在你的待推送队列中！请勿重复提交推送！")

@@ -45,7 +45,7 @@ def put_task_to_push_queue(user, volume, force=False):
     :param volume:
     :return:
     """
-    if not '@kindle.' in user.kindle_email:
+    if user.kindle_email is not None and ('@kindle.' not in user.kindle_email):
         return 'no kindle email'
     volume_push_size = int(volume.mobi_push_file.size / 1024.0 / 1024.0)
     if (user.bandwidth_total - user.bandwidth_used) < volume_push_size:

@@ -306,6 +306,11 @@ class MonitorThread(threading.Thread):
         quanty = 50
         half = 25
         for i in range(1, 6):
+            path_body, file_ext = os.path.splitext(image_path)
+            if file_ext.lower() != '.jpg':
+                os.remove(image_path)
+                image_path = path_body + '.jpg'
+
             print("质量:%d" % quanty, end="")
             if i == 5:
                 cv2.imwrite(image_path, image, [int(cv2.IMWRITE_JPEG_QUALITY), quanty])

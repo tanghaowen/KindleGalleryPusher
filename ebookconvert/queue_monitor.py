@@ -305,9 +305,9 @@ class MonitorThread(threading.Thread):
         image = cv2.imread(image_path)
         quanty = 50
         half = 25
-        for i in range(1, 5):
+        for i in range(1, 6):
             print("质量:%d" % quanty, end="")
-            if i == 4:
+            if i == 5:
                 cv2.imwrite(image_path, image, [int(cv2.IMWRITE_JPEG_QUALITY), quanty])
                 print("")
             else:

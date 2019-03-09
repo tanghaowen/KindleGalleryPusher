@@ -1,0 +1,8 @@
+awesome-slugify
+beautifulsoup4
+Django
+lxml
+mysqlclient
+Pillow
+psutil
+requests

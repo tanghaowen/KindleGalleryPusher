@@ -33,12 +33,16 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'mainsite.apps.MainsiteConfig',
     'ebookconvert.apps.EbookconvertConfig',
+    'mainsite.apps.SuitConfig',
+    'account.apps.AccountConfig',
+    'pushmonitor.apps.PushmonitorConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
 
 MIDDLEWARE = [
@@ -78,8 +82,11 @@ WSGI_APPLICATION = 'KindleComicPusher.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'kindlecomicsite',
+        'USER': 'root',
+        'PASSWORD': 'shinonomehana',
+        'HOST': 'localhost',
     }
 }
 
@@ -122,4 +129,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_ROOT = 'media'
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
+LOGIN_URL = '/accounts/login/'
+
+AUTH_USER_MODEL = 'account.User'

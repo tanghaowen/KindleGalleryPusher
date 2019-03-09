@@ -13,7 +13,8 @@ function setButton(){
         xmlhttp.onload = onhttpload;
         xmlhttp.open('post','/book/'+book_id+'/getinfofrom/',true);
         xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-        var data = "site=bangumi&book_id="+bangumi_id;
+        csrf = document.querySelector("input[name='csrfmiddlewaretoken']").value
+        var data = "site=bangumi&book_id="+bangumi_id+"&csrfmiddlewaretoken="+csrf;
         xmlhttp.send(data);
 
     }

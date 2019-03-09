@@ -53,8 +53,14 @@ from . import metadata
 from . import kindle
 from . import __version__
 
+author_string_from_django = ''
+book_title_from_django = ''
 
-def main(argv=None):
+def main(author,book_title, argv=None):
+    global author_string_from_django
+    global book_title_from_django
+    author_string_from_django = author
+    book_title_from_django = book_title
     print(argv)
     global options
     parser = makeParser()
@@ -658,7 +664,7 @@ def getOutputFilename(srcpath, wantedname, ext, tomenumber):
 def getComicInfo(path, originalpath):
     xmlPath = os.path.join(path, 'ComicInfo.xml')
     # 默认作者名
-    options.authors = ['MoeMangaKindle']
+    options.authors = []
     options.remoteCovers = {}
     options.chapters = []
     options.summary = ''
@@ -668,16 +674,20 @@ def getComicInfo(path, originalpath):
         if os.path.isdir(originalpath):
             options.title = os.path.basename(originalpath)
         else:
-            file_basename = os.path.splitext(os.path.basename(originalpath))[0]
-            info = getBookInfoFromFileName(file_basename)
-            if info is not False:
-                author, title = info
-                print("从文件名获得的书籍信息：作者: %s 书名：%s " % (author,title))
-                options.authors = []
-                options.title = title
-                options.authors.append(author)
-            else:
-                options.title = file_basename
+            # file_basename = os.path.splitext(os.path.basename(originalpath))[0]
+            # info = getBookInfoFromFileName(file_basename)
+            # if info is not False:
+            #     author, title = info
+            #     print("从文件名获得的书籍信息：作者: %s 书名：%s " % (author,title))
+            #     options.authors = []
+            #     options.title = title
+            #     options.authors.append(author)
+            # else:
+            #     options.title = file_basename
+            global book_title_from_django
+            global author_string_from_django
+            options.title = book_title_from_django
+            options.authors.append(author_string_from_django)
     else:
         defaultTitle = False
     if os.path.exists(xmlPath):

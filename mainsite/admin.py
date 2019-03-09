@@ -3,7 +3,7 @@ from .models import *
 from django.core.files import File
 from django.forms import TextInput, Textarea
 # Register your models here.
-
+from django.contrib.auth.models import Permission
 
 class BookAuthorBridgeAdmin(admin.TabularInline):
     model = Book.author.through
@@ -22,13 +22,14 @@ class AuthorAdmin(admin.ModelAdmin):
 
 class VolumeInline(admin.StackedInline):
     model = Volume
-    fiel = ['name',]
+    #fiel = ['name',]
     fieldsets = [
-        [None,{"fields":['index',('name','show','need_convert'),'type',]}],
+        [None,{"fields":['index',('volume_number','name','show','need_convert'),'type',]}],
         [None,{"fields":[ 'zip_file', 'epub_file', 'mobi_file', 'mobi_push_file']}],
     ]
-    extra = 1
-    readonly_fields = ['need_convert']
+    extra = 0
+    readonly_fields = ['need_convert','name']
+    ordering = ['index']
 
 
 
@@ -56,7 +57,7 @@ class BookAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if obj.id is None: obj.save()
         if 'uploaded_image' in request.FILES:
-            new_image_model = ImageWithThumb(image=request.FILES['uploaded_image'],thumb_image=File(None,None))
+            new_image_model = ImageWithThumb(image=request.FILES['uploaded_image'],thumb_image=File(None,None),normal_image=File(None,None))
             new_image_model.save()
             obj.covers.add(new_image_model)
             obj.setCover(new_image_model.id)
@@ -98,6 +99,11 @@ class EbookConvertQueueAdmin(admin.ModelAdmin):
 
     readonly_fields = ['epub_ok', 'mobi_ok', "mobi_push_ok"]
 
+
+
+class HomePageGroupAdmin(admin.ModelAdmin):
+    filter_vertical = ['books']
+
 admin.site.register(Book, BookAdmin)
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(ImageWithThumb, ImageAdmin)
@@ -105,3 +111,5 @@ admin.site.register(Tag, TagAdmin)
 admin.site.register(VolumeType)
 admin.site.register(EbookConvertQueue,EbookConvertQueueAdmin)
 admin.site.register(Volume)
+admin.site.register(Permission)
+admin.site.register(HomePageGroup,HomePageGroupAdmin)

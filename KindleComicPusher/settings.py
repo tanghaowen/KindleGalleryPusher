@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'kindlecomicsite',
         'USER': 'root',
         'PASSWORD': 'shinonomehana',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
     }
 }
 

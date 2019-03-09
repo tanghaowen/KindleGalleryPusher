@@ -142,7 +142,10 @@ class MonitorThread(threading.Thread):
             if tmp_epub_path :
                 print("从临时epub转为mobi")
                 print(tmp_epub_path)
-                cmd = ['./kindlegen.exe', '-c2', '-dont_append_source']
+                if 'win32' in sys.platform:
+                    cmd = ['./kindlegen.exe', '-c2', '-verbose', '-dont_append_source']
+                elif 'linux' in sys.platform:
+                    cmd = ['./kindlegen', '-c2', '-verbose', '-dont_append_source']
                 start_time = time.time()
                 p = subprocess.Popen(cmd + [tmp_epub_path])
                 p.wait()

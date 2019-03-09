@@ -1,3 +1,4 @@
+import sys
 import threading,time,os
 from django.conf import settings
 import logging
@@ -196,7 +197,10 @@ class MonitorThread(threading.Thread):
                         print("**************图片瘦身耗时%.2f秒(%.2f分)"
                               % (spent_time, spent_time / 60.0))
                         print("转换此epub为推送用mobi")
-                        cmd = ['./kindlegen.exe', '-c2', '-verbose', '-dont_append_source']
+                        if 'win32' in sys.platform:
+                            cmd = ['./kindlegen.exe', '-c2', '-verbose', '-dont_append_source']
+                        elif 'linux' in sys.platform:
+                            cmd = ['./kindlegen', '-c2', '-verbose', '-dont_append_source']
                         start_time = time.time()
                         p = subprocess.Popen(cmd + [slimmed_epub_path])
                         p.wait()

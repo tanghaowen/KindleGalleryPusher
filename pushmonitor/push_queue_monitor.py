@@ -63,7 +63,7 @@ class PushMonitorThread(threading.Thread):
             print("上次有意外终止的待推送，数量为%d 重启任务" % len(self.error_terminated_tasks))
 
     def run(self):
-        time.time(10)
+        time.sleep(10)
         self.init()
         while True:
             tasks = self.pop_push_task()

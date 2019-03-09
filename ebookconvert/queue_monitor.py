@@ -8,9 +8,10 @@ import tempfile, subprocess, zipfile
 from PIL import Image
 from io import BytesIO
 import shutil
+import cv2
 
 # 推送mobi的最大体积（单位MB）
-MAX_PUSH_MOBI_SIZE = 49
+MAX_PUSH_MOBI_SIZE = 46
 
 
 def start_monitor_thread():
@@ -301,19 +302,25 @@ class MonitorThread(threading.Thread):
                 self.save_image_to_speciftc_jpeg_size(full_path,new_average_size_per_heavy_image)
 
     def save_image_to_speciftc_jpeg_size(self,image_path, jpeg_size_limit):
-        image = Image.open(image_path)  # type:Image.Image
-
-        for quality in range(80, 9, -5):
-            # print("Try quality %d ..." %quality)
-            tmp_memo_area = BytesIO()
-            image.save(tmp_memo_area, "jpeg", quality=quality, optimize=True, progressive=True)
-            jpeg_size = tmp_memo_area.__sizeof__()
-            # print("jpeg size is %.1fKB/.2f%KB" % (jpeg_size,jpeg_size_limit))
-            if jpeg_size < jpeg_size_limit:
-                print("OK! save jpeg with quality %d %.2f/%.2f" % (quality, jpeg_size/1024.0/1024.0, jpeg_size_limit/1024.0/1024.0))
-                image.save(image_path, quality=quality, optimize=True, progressive=True)
-                break
-        image.close()
+        image = cv2.imread(image_path)
+        quanty = 50
+        half = 25
+        for i in range(1, 5):
+            print("质量:%d" % quanty, end="")
+            if i == 4:
+                cv2.imwrite(image_path, image, [int(cv2.IMWRITE_JPEG_QUALITY), quanty])
+                print("")
+            else:
+                encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quanty]
+                result, encimg = cv2.imencode('.jpg', image, encode_param)
+                size = encimg.size
+                print(" size %.2f" % (size))
+                if size <= jpeg_size_limit:
+                    quanty += half
+                else:
+                    quanty -= half
+                half = int(half / 2)
+        del image
 
     def pack_to_epub(self,temp_dir_path,ori_epub_file_path):
         print("开始重新打包为zip...")

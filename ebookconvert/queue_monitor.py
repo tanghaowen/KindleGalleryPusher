@@ -11,7 +11,7 @@ import shutil
 import cv2
 
 # 推送mobi的最大体积（单位MB）
-MAX_PUSH_MOBI_SIZE = 46
+MAX_PUSH_MOBI_SIZE = 45
 
 
 def start_monitor_thread():

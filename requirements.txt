@@ -1,4 +1,3 @@
-awesome-slugify
 beautifulsoup4
 Django
 lxml

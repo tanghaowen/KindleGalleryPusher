@@ -24,6 +24,8 @@ class MonitorThread(threading.Thread):
 
     def __init__(self):
         super().__init__()
+
+    def init(self):
         self.mainsite_models = __import__('mainsite.models',globals(), locals(),['EbookConvertQueue'])
         # 启动线程时检查下当前是否存在状态为doing的任
         # 有的话意味着这是上次意外退出只进行了一半的任务
@@ -51,6 +53,8 @@ class MonitorThread(threading.Thread):
         self.logger.addHandler(self.console)
 
     def run(self):
+        time.sleep(10)
+        self.init()
         while True:
             print("monitering")
             task = self.pop_task_from_model()

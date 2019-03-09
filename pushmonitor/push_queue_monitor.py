@@ -52,6 +52,8 @@ def start_monitor_thread():
 class PushMonitorThread(threading.Thread):
     def __init__(self):
         super().__init__()
+
+    def init(self):
         from pushmonitor.models import PushQueue
         # 启动线程时检查下当前是否存在状态为doing的任
         # 有的话意味着这是上次意外退出只进行了一半的任务
@@ -61,6 +63,8 @@ class PushMonitorThread(threading.Thread):
             print("上次有意外终止的待推送，数量为%d 重启任务" % len(self.error_terminated_tasks))
 
     def run(self):
+        time.time(10)
+        self.init()
         while True:
             tasks = self.pop_push_task()
             if tasks is None:

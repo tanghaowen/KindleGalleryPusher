@@ -25,7 +25,7 @@ SECRET_KEY = 'dm3t$e$&h5&+bty6j=q-y#u(5*zr&q-qjs27wt0y)-ji2qt&i!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['server.asairo.net' ]
 
 
 # Application definition

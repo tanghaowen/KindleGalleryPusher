@@ -25,6 +25,8 @@
                         }
                     }else if (xmlhttp.responseText == "ok") {
                         alert("加入推送队列成功！ 具体推送进度请参照个人的推送队列页面！")
+                    }else if (xmlhttp.responseText.includes('Now in pushing')) {
+                        alert("当前正在推送这本书！")
                     }else if (xmlhttp.responseText.includes('bandwidth less')) {
                         alert("推送流量已不够，是否考虑捐助网站获得更多流量？")
                     }else if (xmlhttp.responseText.includes('No kindle email')){
@@ -151,7 +153,33 @@
             bt_collec.style.display = 'inline';
         }
     </script>
+    <script>
+        function download_volume(a,type) {
+            volume_id = a.getAttribute("vid");
+            xmlhttp = new XMLHttpRequest();
+            csrf = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+            xmlhttp.onload = function () {
 
+                if (xmlhttp.status == 200){
+                    if (xmlhttp.responseText.includes('ok')) {
+                        console.log("生成下载连接成功！");
+                        download_url = `{% url 'volume_download' %}?volume_id=${volume_id}&type=${type}`;
+                        console.log(download_url);
+                        location.href=download_url;
+                    }
+                }
+
+            };
+
+
+            data = `volume_id=${volume_id}&type=${type}&csrfmiddlewaretoken=${csrf}`;
+            xmlhttp.open('post','{% url 'volume_download' %}');
+            xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+            xmlhttp.send(data);
+
+        }
+        
+    </script>
 </head>
 <body>
 <div class="container">
@@ -243,8 +271,8 @@
                             {% for volume in volumes %}
                                 <tr>
                                     <td>{{ volume.name }}</td>
-                                    <td><a href="{{ volume.mobi_file.url }}">{{ volume.get_mobi_file_size_MB }} MB</a></td>
-                                    <td><a href="{{ volume.mobi_push_file.url }}">{{ volume.get_mobi_push_file_size_MB }}MB</a></td>
+                                    <td><a href='javascript:void(0);' vid="{{ volume.id }}" onclick="download_volume(this,'mobi')">{{ volume.get_mobi_file_size_MB }} MB</a></td>
+                                    <td><a href="javascript:void(0) " vid="{{ volume.id }}" onclick="download_volume(this,'mobi_push')">{{ volume.get_mobi_push_file_size_MB }}MB</a></td>
                                     {% if user.id %}
                                     <td><button volumeid = {{ volume.id }} type="button" class="btn btn-outline-primary  btn-sm" onclick="push_volume(this,false)";>推送</button></td>
                                     {% else %}
@@ -270,7 +298,7 @@
                             <tbody>
                             {% for volume in volumes %}
                                 <tr><td>{{ volume.name }}</td>
-                                    <td><a href="{{ volume.epub_file.url }}">{{ volume.get_epub_file_size_MB }} MB</a></td>
+                                    <td><a href='javascript:void(0);' vid="{{ volume.id }}" onclick="download_volume(this,'epub')">{{ volume.get_epub_file_size_MB }} MB</a></td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -292,7 +320,7 @@
                         <tbody>
                             {% for volume in volumes %}
                                 <tr><td>{{ volume.name }}</td>
-                                    <td><a href="{{ volume.zip_file.url }}">{{ volume.get_zip_file_size_MB }} MB</a></td>
+                                    <td><a  href='javascript:void(0);' vid="{{ volume.id }}" onclick="download_volume(this,'zip')">{{ volume.get_zip_file_size_MB }} MB</a></td>
                                 </tr>
                             {% endfor %}
                         </tbody>

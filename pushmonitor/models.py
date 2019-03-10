@@ -6,6 +6,7 @@ class PushQueue(models.Model):
     volume = models.ForeignKey(Volume, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     status = models.CharField(max_length=50)
+    added_date = models.DateTimeField(default=now)
 
 
 def get_user_push_task_from_queue(user):
@@ -45,7 +46,7 @@ def put_task_to_push_queue(user, volume, force=False):
     :param volume:
     :return:
     """
-    if user.kindle_email is not None and ('@kindle.' not in user.kindle_email):
+    if user.kindle_email is None or ('@kindle.' not in user.kindle_email):
         return 'no kindle email'
     volume_push_size = int(volume.mobi_push_file.size / 1024.0 / 1024.0)
     if (user.bandwidth_total - user.bandwidth_used) < volume_push_size:
@@ -62,10 +63,16 @@ def put_task_to_push_queue(user, volume, force=False):
             print("用户: %d %s %s 之前已经推送过" % (user.id, volume.book.title, volume.name))
             return 'done'
         else:
-            queue = PushQueue(user=user, volume=volume, status='pending')
-            queue.save()
+            user_bandwidth_before = user.bandwidth_remain
             user.bandwidth_used += volume_push_size
             user.save()
+            record = BandwidthCostRecord(user=user,volume=volume,bandwidth_cost=volume_push_size,
+                                user_bandwidth_before=user_bandwidth_before,
+                                user_bandwidth_after = user.bandwidth_remain,
+                                action='push')
+            record.save()
+            queue = PushQueue(user=user, volume=volume, status='pending')
+            queue.save()
             print("用户: %d %s %s 之前已经推送过" % (user.id, volume.book.title, volume.name))
             print("但因为force=True强制再次入队")
             return 'ok'

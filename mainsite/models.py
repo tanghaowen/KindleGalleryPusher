@@ -16,6 +16,7 @@ import PIL.Image
 import PIL.ImageOps
 import os
 from django.core.exceptions import ObjectDoesNotExist
+
 # Create your models here.
 
 new_volume_showed_signal = Signal(providing_args=['volume'])
@@ -246,6 +247,13 @@ class Volume(models.Model):
     need_convert = models.BooleanField(default=True,verbose_name='是否需要转换')
     uploaded_data = models.DateTimeField(default=now,blank=True,verbose_name='此卷的zip上传时间')
     edited_data = models.DateTimeField(default=now,blank=True,verbose_name='此卷被编辑过的时间（格式转换后也算编辑）')
+    bandwidth_cost = models.IntegerField(null=True,blank=True)
+
+    def get_volume_bandwidth_cost(self):
+        sizes = [self.zip_file.size, self.epub_file.size, self.mobi_file.size, self.mobi_push_file.size]
+        size_min = min(sizes)
+        return size_min/1024.0/1024.0
+
     def get_mobi_file_size_MB(self):
         return "%.2f" % (self.mobi_file.size/1024.0/1024.0)
 
@@ -333,6 +341,8 @@ def volume_after_save(sender:Volume,instance:Volume,**kwargs):
             e_queue.delete()
         except EbookConvertQueue.DoesNotExist:
             pass
+        # 如果不需要转换意味着全都转换完成了，在这里设置volume下载需要耗费的流量
+
 
 
 class EbookConvertQueue(models.Model):
@@ -341,7 +351,7 @@ class EbookConvertQueue(models.Model):
     mobi_ok = models.BooleanField(default=False,verbose_name="mobi转换完成")
     mobi_push_ok = models.BooleanField(default=False,verbose_name="mobi推送版转换完成")
     status = models.CharField(default="pending",verbose_name="状态",max_length=100)
-
+    added_date = models.DateTimeField(default=now)
     def update_convert_status(self):
         print("EbookConvertQueue: 更新格式转换队列中的卷信息...")
         try:
@@ -366,6 +376,7 @@ class EbookConvertQueue(models.Model):
             print("所有格式都转换完成")
             self.volume.show = True
             self.volume.book.update_time = now()
+            self.volume.bandwidth_cost = self.volume.get_volume_bandwidth_cost()
             self.volume.save()
             # volume被设置为可见，发送信号，将这卷和订阅的用户送入待推送队列
             new_volume_showed_signal.send(EbookConvertQueue, volume=self.volume)
@@ -384,12 +395,14 @@ class EbookConvertQueue(models.Model):
         verbose_name = "格式待转换队列"
         verbose_name_plural = "格式待转换队列"
 
+
 class EbookConvertOver(models.Model):
     volume = models.ForeignKey(Volume,on_delete=models.CASCADE,verbose_name="待转换书籍")
     epub_ok = models.BooleanField(default=False,verbose_name="epub转换完成")
     mobi_ok = models.BooleanField(default=False,verbose_name="mobi转换完成")
     mobi_push_ok = models.BooleanField(default=False,verbose_name="mobi推送版转换完成")
     status = models.CharField(default="pending",verbose_name="状态",max_length=100)
+    over_date = models.DateTimeField(default=now)
 
 
 class HomePageGroup(models.Model):
@@ -402,3 +415,4 @@ class HomePageGroup(models.Model):
 
     def __str__(self):
         return self.name
+

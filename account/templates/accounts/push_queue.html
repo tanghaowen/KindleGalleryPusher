@@ -21,18 +21,22 @@
 <table class="table table-hover table-sm">
   <thead>
     <tr>
-      <th scope="col">书名</th>
-      <th scope="col">卷名</th>
-      <th scope="col">状态</th>
+      <th scope="col">编号</th>
+      <th>书名</th>
+      <th>卷名</th>
+      <th>状态</th>
+      <th>入队时间</th>
     </tr>
   </thead>
 
   <tbody>
     {% for task in page %}
     <tr {% if task.status == 'done' %}class="table-success"{% endif %}>
+    <td>{{ forloop.counter }} </td>
     <td>{{ task.volume.book.title }}</td>
     <td>{{ task.volume.name }}</td>
-    <td>{{ task.status }}</td>
+    <td>{% if task.status == 'pending'%}排队等待推送 {% elif task.status == 'doing' %}正在推送{% elif task.status == 'done' %}推送成功{% elif task.status == 'error' %}推送出错{% endif %}</td>
+    <td>{{ task.added_date | date:'n月d日 Y年 G:i' }}</td>
     </tr>
     {% endfor %}
   </tbody>

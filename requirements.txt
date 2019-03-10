@@ -5,3 +5,4 @@ mysqlclient
 Pillow
 psutil
 requests
+awesome-slugify

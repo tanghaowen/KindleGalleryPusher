@@ -1,5 +1,10 @@
+import time
+from urllib.parse import quote, urlencode
+
+from django.utils.timezone import now, timedelta
+
 from django.shortcuts import render
-from django.http import HttpResponse, Http404, JsonResponse
+from django.http import HttpResponse, Http404, JsonResponse, StreamingHttpResponse, FileResponse
 # Create your views here.
 from . import tools
 from django.views.decorators.csrf import csrf_exempt
@@ -12,6 +17,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from account.models import *
 from pushmonitor.models import put_task_to_push_queue
+
+DOWNLOAD_LINK_AVAILABLE_HOURS = 2
 
 def home_page(request):
     homepage_book_groups = HomePageGroup.objects.all()
@@ -231,3 +238,63 @@ def book_push(request, book_id):
             return HttpResponse("ok")
     raise Http404
 
+
+@login_required()
+def volume_download(request):
+    if request.method == 'GET':
+        user = request.user
+        volume_id = int(request.GET.get('volume_id',''))
+        type = request.GET.get('type','')
+        volume = get_object_or_404(Volume,id=volume_id)
+        # 虽然名叫add，但实际上如果指定时间之内已经下载过的话的，并不会消费流量，True为可以提供下载
+        # False为不能下载，得POST后再下
+        res = user.have_cost_bandwidth_recently(volume)
+        if res:
+            file = None
+            if type == 'zip':
+                file = volume.zip_file
+            elif type == 'mobi':
+                file = volume.mobi_file
+            elif type == 'mobi_push':
+                file = volume.mobi_push_file
+            elif type == 'epub':
+                file = volume.epub_file
+            else:
+                raise Http404
+            file_body, file_ext = os.path.splitext(file.name)
+            attachment_filename = "[%s] %s %s%s" % (volume.book.get_authors_string(),
+                                                    volume.book.title,
+                                                    volume.name,
+                                                    file_ext)
+            print("附件名称:",attachment_filename)
+
+            response = HttpResponse()
+            try:
+                attachment_filename.encode('ascii')
+                file_expr = 'filename="{}"'.format(attachment_filename)
+            except UnicodeEncodeError:
+                file_expr = "filename*=utf-8''{}".format(quote(attachment_filename))
+            response['Content-Disposition'] = 'attachment; {}'.format(file_expr)
+            #response['Content-Type'] = 'application/octet-stream'
+            #response['Content-Length'] = file.size
+            file_path_url = quote(file.name)
+            print(file_path_url)
+            response['X-Accel-Redirect'] = '/donwloadbook/%s' % file_path_url
+            print("X-ACCEL:",response['X-Accel-Redirect'])
+            #response['Content-Type'] = 'application/octet-stream'
+            #response['Content-Disposition'] = 'attachment;filename="%s"' %  attachment_filename
+
+            return response
+        else:
+            raise Http404
+    if request.method == 'POST':
+        user = request.user
+        volume_id = int(request.POST.get('volume_id',''))
+        volume = get_object_or_404(Volume,id=volume_id)
+
+        res = user.add_bandwidth_cost(volume)
+        if res :
+            return HttpResponse("ok")
+        else:
+            return HttpResponse("bandwidth not enough")
+    raise Http404

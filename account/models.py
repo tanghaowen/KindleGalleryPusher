@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
-from mainsite.models import  *
-from django.utils.timezone import now
+from mainsite.models import *
+from django.utils.timezone import now, timedelta
 from django.core.validators import validate_email
+
+
+DOWNLOAD_LINK_AVAILABLE_HOURS = 1
 
 
 class User(AbstractUser):
@@ -20,6 +23,45 @@ class User(AbstractUser):
     bandwidth_remain =models.IntegerField(default=0)
     bandwidth_percent = models.PositiveIntegerField(default=100)
     kindle_email = models.EmailField(null=True,blank=True, unique=True, validators=[validate_email,])
+
+    def add_bandwidth_cost(self,volume):
+        """
+        每当消费流量时，最好都用这个函数设置消费了的流量
+        因为每次都会检测下剩余流量，以及最近有没有使用过流量，有的话就不消耗流量
+        :return: False为流量不足，True为可以提供下载
+        """
+        time_threshold = now() - timedelta(hours=DOWNLOAD_LINK_AVAILABLE_HOURS)
+        records = BandwidthCostRecord.objects.filter(user=self, volume=volume, cost_date__gt=time_threshold,action='download')
+        if len(records)==0:
+            volume_bandwidth = volume.get_volume_bandwidth_cost()
+            if self.bandwidth_remain >= volume_bandwidth:
+                user_bandwidth_before = self.bandwidth_remain
+                self.bandwidth_used += volume_bandwidth
+                self.save()
+                file_download_record = BandwidthCostRecord(user=self, volume=volume, bandwidth_cost=volume_bandwidth,
+                                                           user_bandwidth_before=user_bandwidth_before,
+                                                           user_bandwidth_after=self.bandwidth_remain,
+                                                           action='download')
+                file_download_record.save()
+                return True
+            else:
+                # 剩余流量不足，返回False
+                return False
+        else:
+            return True
+
+    def have_cost_bandwidth_recently(self,volume):
+        """
+        检测最近几小时内是否有消耗过流量，消耗过了的话就返回True,否则False
+        :return: False为流量不足，True为可以提供下载
+        """
+        time_threshold = now() - timedelta(hours=DOWNLOAD_LINK_AVAILABLE_HOURS)
+        records = BandwidthCostRecord.objects.filter(user=self, volume=volume,
+                                                     cost_date__gt=time_threshold, action='download')
+        if len(records) == 0:
+            return False
+        else:
+            return True
 
     def save(self, *args, **kwargs):
         if self.bandwidth_total == 0:
@@ -66,3 +108,22 @@ class Score(models.Model):
     class Meta:
         verbose_name_plural = '评分'
         verbose_name = '评分'
+
+
+# 原本这个类是放在mainsite app下的，但是放在mainsite下后因为引入了User，Account app也引入了Book
+# 导致了循环import，出错，艹
+class BandwidthCostRecord(models.Model):
+    user = models.ForeignKey(User,on_delete=models.DO_NOTHING,verbose_name='用户')
+    volume = models.ForeignKey(Volume,on_delete=models.DO_NOTHING,verbose_name='卷')
+    cost_date = models.DateTimeField(default=now,verbose_name='消费日')
+    # 下载消耗的流量，单位MB
+    bandwidth_cost = models.IntegerField(null=False, blank=False,verbose_name='消费流量')
+    user_bandwidth_before = models.IntegerField(null=False,blank=False,verbose_name='消费前剩余流量')
+    user_bandwidth_after = models.IntegerField(null=False,blank=False,verbose_name='消费后剩余流量')
+    # 是什么类型消费了流量，分为download和push
+    action = models.CharField(max_length=20,null=False,blank=False,verbose_name='消耗类型')
+    class Meta:
+        verbose_name = '用户流量消费记录'
+        verbose_name_plural = '用户流量消费记录'
+
+

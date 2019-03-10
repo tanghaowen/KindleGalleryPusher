@@ -1,5 +1,19 @@
+import logging
 import threading,time,os
 from .mailsender import send_mail_use_smtp
+
+# Error log
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+logger.setLevel(level=logging.INFO)
+handler = logging.FileHandler("push_error_log.txt")
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+logger.addHandler(handler)
+logger.addHandler(console)
 
 
 def chunks(l, n):
@@ -10,6 +24,7 @@ def chunks(l, n):
 
 # 这里写具体的push逻辑之类的
 def push_function(tasks):
+    global logger
     recivers = []
     file_path = tasks[0].volume.mobi_push_file.path
     author_string = tasks[0].volume.book.get_authors_string()
@@ -17,27 +32,40 @@ def push_function(tasks):
     volume_name = tasks[0].volume.name
     file_name = "[%s] %s %s.mobi" % (author_string, book_title, volume_name)
 
-    for task in tasks:
-        recivers.append(task.user.kindle_email)
+    print("开始推送，tasks长度:%d" % len(tasks))
+    for task_chunk in chunks(tasks,15):
+        recivers = [task.user.kindle_email for task in task_chunk]
+        print("开始分每15为一个chunk发送tasks...")
+        print("开始推送 task_ids: ")
+        print([task.id for task in task_chunk])
+        print("%s %s" % (task_chunk[0].volume.book.title,task_chunk[0].volume.name))
+        print("文件路径:%s" % file_path)
+        print("附件名:%s"%file_name)
+        print("此批次总共推送给%d人" % len(task_chunk))
+        print(recivers)
+        try:
+            res = send_mail_use_smtp(recivers,file_path,file_name)
+            if res:
+                print("推送成功")
+                for task in task_chunk:
+                    task.status = "done"
+                    task.save()
+            else:
+                print("推送失败")
+                for task in task_chunk:
+                    task.status = "done"
+                    task.save()
+        except Exception as e:
+            logger.error('*************************************************************')
+            logger.error(e, exc_info=True)
+            logger.error('推送失败')
+            logger.error('%d %s -  %s' % (tasks[0].id,tasks[0].volume.book.title, tasks[0].volume.name))
+            logger.error("接收邮箱:")
+            logger.error(recivers)
+            for task in task_chunk:
+                task.status = "done"
+                task.save()
 
-
-    print("开始推送 task_id: %d" % task.id)
-    print("%s %s" % (task.volume.book.title,task.volume.name))
-    print("文件路径:%s" % file_path)
-    print("附件名:%s"%file_name)
-    print("总共推送给%d人" % len(recivers))
-    print(recivers)
-    res = send_mail_use_smtp(recivers,file_path,file_name)
-    if res:
-        print("推送成功")
-        task.status = "done"
-        task.save()
-        return True
-    else:
-        print("推送失败")
-        task.status = 'error'
-        task.save()
-        return False
 
 
 def start_monitor_thread():
@@ -52,6 +80,7 @@ def start_monitor_thread():
 class PushMonitorThread(threading.Thread):
     def __init__(self):
         super().__init__()
+
 
     def init(self):
         from pushmonitor.models import PushQueue

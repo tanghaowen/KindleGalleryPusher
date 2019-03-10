@@ -25,7 +25,7 @@ SECRET_KEY = 'dm3t$e$&h5&+bty6j=q-y#u(5*zr&q-qjs27wt0y)-ji2qt&i!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['server.asairo.net','127.0.0.1' ]
+ALLOWED_HOSTS = ['server.asairo.net','127.0.0.1','localhost' ]
 
 
 # Application definition
@@ -109,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -126,7 +125,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
+STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
 MEDIA_ROOT = 'media'
 MEDIA_URL = '/media/'

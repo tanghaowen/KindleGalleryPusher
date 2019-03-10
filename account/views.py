@@ -110,12 +110,14 @@ def set_profile(request):
             user.avatar = avatatr_image
 
         if kindle_email is not None:
-            try:
-                validate_email(kindle_email)
-                if '@kindle.' in kindle_email:
-                    user.kindle_email = kindle_email
-            except ValidationError:
-                print("用户输入的邮箱地址不合规范")
+            if kindle_email == '': user.kindle_email = None
+            else:
+                try:
+                    validate_email(kindle_email)
+                    if '@kindle.' in kindle_email:
+                        user.kindle_email = kindle_email
+                except ValidationError:
+                    print("用户输入的邮箱地址不合规范")
         user.save()
         return HttpResponseRedirect(reverse('account:self_profile'))
     else:

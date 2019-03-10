@@ -22,7 +22,7 @@ class AuthorAdmin(admin.ModelAdmin):
 
 class VolumeInline(admin.StackedInline):
     model = Volume
-    #fiel = ['name',]
+    fiel = ['name',]
     fieldsets = [
         [None,{"fields":['index',('volume_number','name','show','need_convert'),'type',]}],
         [None,{"fields":[ 'zip_file', 'epub_file', 'mobi_file', 'mobi_push_file']}],

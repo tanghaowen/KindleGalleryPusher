@@ -79,6 +79,7 @@ class MonitorThread(threading.Thread):
                         task.save()
                         continue
                 except Exception as e:
+                    self.logger.error("*********************************************************")
                     self.logger.error('volume转换失败')
                     self.logger.error('%d %s -  %s' % (task.id,task.volume.book.title,task.volume.name))
                     self.logger.error(e,exc_info = True)

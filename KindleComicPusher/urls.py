@@ -17,13 +17,21 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from mainsite.views import home_page
+from mainsite.views import home_page, volume_download
+from ebookconvert.views import convert_queue
+from django.conf import settings
+from django.conf.urls import include, url  # For django versions before 2.0
+from django.urls import include, path  # For django versions from 2.0 and up
+
+
 urlpatterns = [
     path("",home_page,name='home_page'),
     path("book/", include("mainsite.urls")),
+    path("download/",volume_download, name='volume_download'),
     path('accounts/', include('account.urls')),
     path('search/', include('mainsite.urls_search')),
     path('pushtask/',include('pushmonitor.urls')),
+    path('converts/',convert_queue,name='convert_queue'),
     path('admin/', admin.site.urls),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

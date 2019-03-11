@@ -40,13 +40,13 @@ class BookAdmin(admin.ModelAdmin):
     list_display_links = ['id','title']
     fieldsets = [
         ["基本信息",{'fields':['id','title','title_chinese','update_time'],}],
-        ["关联网站",{"fields":[('bangumi_site_path','get_info_from_bangumi'),('mediaarts_site_path','get_info_from_mediaarts')]}],
+        ["关联网站",{"fields":[('mangazenkan_site_path','get_info_from_mangazenkan'),('bangumi_site_path','get_info_from_bangumi'),('mediaarts_site_path','get_info_from_mediaarts')]}],
         ["作者",{"fields":['author']}],
         ["标签",{"fields":['tags']}],
         ["封面",{"fields":["relative_covers_tags","cover_id"]}],
         ["简介",{"fields":["desc"]}],
     ]
-    readonly_fields = ['id','update_time','relative_covers_tags','cover_id','get_info_from_mediaarts','get_info_from_bangumi']
+    readonly_fields = ['id','update_time','relative_covers_tags','cover_id','get_info_from_mediaarts','get_info_from_bangumi','get_info_from_mangazenkan']
     filter_horizontal = ['author','tags']
     inlines = [VolumeInline]
     # autocomplete_fields = ['author']
@@ -73,7 +73,14 @@ class BookAdmin(admin.ModelAdmin):
             <button id="update_book_info_banmgumi" type="button" book_id=%d>获取信息</button>
             </div>
         """ % obj.id)
-
+    def get_info_from_mangazenkan(self,obj):
+        if obj.id is None:
+            return mark_safe("""<div></div>""")
+        return mark_safe("""
+            <div>
+            <button id="update_book_info_mangazenkan" type="button" book_id=%d>获取信息</button>
+            </div>
+        """ % obj.id)
     def get_info_from_mediaarts(self,obj):
         if obj.id is None:
             return mark_safe("""<div></div>""")

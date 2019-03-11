@@ -137,8 +137,10 @@ class Book(models.Model):
     bangumi_site_path = models.IntegerField(verbose_name="Bangumi网站id",default=0,blank=False)
     mediaarts_site_path = models.IntegerField(verbose_name="メディア芸術データベース网站id",default=0,blank=False)
     sakuhindb_path = models.TextField(verbose_name="sakuhindb网站路径",default=0)
+    mangazenkan_site_path = models.CharField(verbose_name='漫画全卷网站id',default='',null=True,blank=True,max_length=255)
     desc = models.TextField(verbose_name="描述",blank=True)
     show = models.BooleanField(default=True)
+
 
     def get_newest_volume(self):
         q = self.volume_set.all().order_by('-edited_data')

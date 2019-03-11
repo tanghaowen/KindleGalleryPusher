@@ -73,21 +73,36 @@ def get_info_from_online(request,book_id):
     elif site == "mediaarts":
         book_info = rq.get_book_info_from_mediaarts(site_id)
         book.mediaarts_site_path = int(site_id)
+    elif site == 'mangazenkan':
+        book_info = rq.get_book_info_from_mangazenkan(site_id)
+        book.mangazenkan_site_path = site_id
     else:
         raise Http404("指定的网站不存在")
 
-    if "cover_img" in book_info:
-        print("开始下载封面")
-        cover_url = book_info.get("cover_img")
-        p, ext = os.path.splitext( os.path.basename(cover_url) )
-        cover_response = rq.get(cover_url,headers={},stream=True)
-        if cover_response.status_code == 200 :
-            print("下载成功")
-            f_memo = BytesIO(cover_response.content)
-            image = ImageWithThumb(image=File(f_memo,"tmp"+ext),thumb_image=File(None,None))
-            image.save()
-            book.covers.add( image )
-            book.setCover(image.id)
+    if "covers" in book_info:
+        total_covers_num = len(book_info['covers'])
+        print("有封面，共%d张" % total_covers_num)
+        for idx,cover_url in enumerate(book_info['covers']):
+            print("%d/%d 开始下载封面" % (idx+1, total_covers_num))
+            print(cover_url)
+            p, ext = os.path.splitext( os.path.basename(cover_url) )
+            try:
+                cover_response = rq.get(cover_url,headers={},stream=True)
+                if cover_response.status_code == 200:
+                    print("下载成功")
+                    f_memo = BytesIO(cover_response.content)
+                    image = ImageWithThumb(image=File(f_memo, "tmp" + ext), thumb_image=File(None, None),normal_image=File(None,None))
+                    image.save()
+                    book.covers.add(image)
+                    book.setCover(image.id)
+                else:
+                    print("下载失败")
+            except Exception as e:
+                print(e)
+                print("下载失败")
+
+
+
 
     book.set_book_info(book_info)
     return HttpResponse("OK")

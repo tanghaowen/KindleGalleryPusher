@@ -1,14 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
 from os import path
-from urllib.parse import urlparse,urlunparse
+from urllib.parse import urlparse, urlunparse, urlsplit, parse_qs
+
+
 class BookInfoSpider:
     headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0",
                "Accept-Language":"zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2"}
     bangumi_host = 'bgm.tv'
     mediaarts_host = 'mediaarts-db.bunka.go.jp'
     sakuhindb_host = 'sakuhindb.com'
-
+    mangazenkan = 'www.mangazenkan.com'
     def __init__(self):
         self.session = requests.Session()
 
@@ -79,8 +81,67 @@ class BookInfoSpider:
             book_info = {"title":title,"title_chinese":title_chinese,"author":author,"desc":desc,"tags":tags}
             return book_info
 
+    def get_book_info_from_mangazenkan(self,book_id):
+        title = ""
+        title_chinese = ""
+        author = []
+        desc = ""
+        tags = []
+        end = False
+        covers = []
+        publisher = ''
+        catalogs = []
+        full_url = "https://%s/item/%s.html" % (self.mangazenkan, book_id)
+
+        append_headers = {"Referer":"https://"+self.mediaarts_host,"Host":self.mediaarts_host}
+        response = self.get(full_url,{**append_headers,**self.headers})
+        response_text = response.content.decode("utf-8")
+
+        html = BeautifulSoup(response_text,features="lxml")
+        title_li = html.select('ol.breadcrumb > li')[-1]
+        title_a_url = title_li.a['href']
+        query = urlsplit(title_a_url).query
+        title = parse_qs(query).get('name')[0]
+        print(title)
+
+        title_h1 = html.select('div.product-detail h1')[0]
+        if '全巻' in title_h1.string:
+            end = True
+
+        covers_li = html.select('ul.inline > li')
+        for li in covers_li:
+            img = li.select('img')[0]
+            img_url = img['data-src'].replace("&quality=30",'')
+            covers.append(img_url)
+        desc_strings = html.select('div[itemprop="description"]')[0].stripped_strings
+        for string in desc_strings:
+            if string=='': continue
+            desc += string +'\n'
+        desc = desc[:-1]
+        info_table_row = html.select('table.product-description')[0].select("tr")
+        for row in info_table_row:
+            head = row.th.string
+            if '出版社' in head:
+                publisher = row.td.a.string
+            if 'カテゴリ' in head:
+                a_s = row.select("a")
+                for a in a_s:
+                    catalogs.append(a.string.strip())
+            if 'タグ' in head:
+                a_s = row.select("a")
+                for a in a_s:
+                    tags.append(a.string.strip())
+            if '作者' in head:
+                a_s = row.select("a")
+                for a in a_s:
+                    author.append(a.string)
+
+
+        book_info = {"title":title,"title_chinese":title_chinese,"author":author,"desc":desc,
+                     "tags":tags,'end':end,'covers':covers,'publisher':publisher, 'catalog':catalogs}
+        return book_info
 
 if __name__ == '__main__':
     book_info_request = BookInfoSpider()
-    book_info = book_info_request.get_book_info_from_bangumi(183672)
+    book_info = book_info_request.get_book_info_from_mangazenkan(10341030)
     print(book_info)

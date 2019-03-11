@@ -54,6 +54,13 @@ class MonitorThread(threading.Thread):
         self.logger.addHandler(self.handler)
         self.logger.addHandler(self.console)
 
+        # 如果是linux系统，为目录下的kindlegen设置+x权限
+        if 'linux' in sys.platform:
+            print("检测到为linux系统，将kindlegen设置为+x")
+            cmd = ['chmod', '+x', './kindlegen']
+            p = subprocess.Popen(cmd)
+            p.wait()
+
     def run(self):
         time.sleep(10)
         self.init()

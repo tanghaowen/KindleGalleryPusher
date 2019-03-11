@@ -2,6 +2,5 @@
 __pycache__/
 media/
 migrations/
+convert_error_log.txt
 push_error_log.txt
-convert_error_log.txt
-convert_error_log.txt

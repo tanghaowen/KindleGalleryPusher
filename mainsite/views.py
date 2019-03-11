@@ -40,19 +40,28 @@ def search_page(request):
 
     keyword = request.GET.get("keyword",None) # type:str
     author = request.GET.get("author",None) # type:str
+    catalog = request.GET.get("catalog",None)
+    tag = request.GET.get("tag",None)
     #keywords = keyword.split(' ')
     if keyword is None and author is None:
         books = []
         keyword = ""
-    if author is None and keyword is not None:
+    elif author is None and keyword is not None:
         books = Book.objects.filter(title__contains=keyword)
         keyword = keyword
-    if author is not None and keyword is None:
+    elif author is not None and keyword is None:
         books = Book.objects.filter(author__name__contains=author)
         keyword = author
-    if author is not None and keyword is not None:
+    elif author is not None and keyword is not None:
         books = Book.objects.filter(author__name__contains=author, title__contains=keyword)
         keyword = "%s %s" % (keyword, author)
+
+    if catalog is not None:
+        books = Book.objects.filter(tags__name__contains=catalog,tags__group = 'catalog')
+        keyword =  "分类 %s" % ( catalog)
+    if tag is not None:
+        books = Book.objects.filter(tags__name__contains=tag, tags__group__isnull=True)
+        keyword = "标签 %s" % (catalog)
     context = {"books":books,
                "keyword":keyword}
     return render(request, 'mainsite/search_res.html',context=context)

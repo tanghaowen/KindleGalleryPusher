@@ -190,7 +190,7 @@
 		<div class="col-md-12 column">
 			<div class="page-header">
 				<h1>
-					{{book.title}} <small> {{ book.title_chinese }} </small>
+					{{book.title}} <small> {% if book.end %}已完结{% else %}未完结{% endif %} </small>
 				</h1>
 
 			</div>
@@ -199,6 +199,7 @@
 	<div class="row clearfix">
 		<div class="col-md-4 column" style="text-align: center" >
 			<div><img alt="cover_img" src="{{ cover_image.normal_image.url }}"  class="img-rounded" style="width: 150px;" /></div>
+            <div style="height: 1em;"></div>
             <div >
             {% if user.id %}
                 <button id="bt-unsbsc" class="btn btn-light" {% if book in user.subscriptes.all %}style="display: none" {% endif %} onclick="sbsc()"><img src="{% static 'mainsite/icons/unsubscribe.svg' %}"> <span>未订阅</span></button>
@@ -215,25 +216,28 @@
 
 		</div>
 		<div class="col-md-8 column">
+            <p style="font-size: 1.2em;margin-top: 1em">分类:&ensp;
+                {% for catalog_tag in book.get_book_catalogs %}<a href="{% url 'search_site:search_page' %}?catalog={{ catalog_tag.name }}"> {{ catalog_tag.name }}</a> {% endfor %}</p>
 
+            <p style="font-size: 1.2em;margin-top: 1em"> 作者:&ensp;
+            {% for author in book.author.all %}
+                <a href="{% url 'search_site:search_page' %}?author={{ author.name }}">{{ author.name }}</a>&ensp;
+            {% endfor %}</p>
 
             <h3>简介</h3>
 			<p>
 				{{ book.desc|linebreaks }}
 			</p>
 
-            {% for tag in book.tags.all %}
-                <span class="badge badge badge-pill badge-primary">{{ tag.name }}</span>
+            {% for tag in book.get_book_normal_tas %}
+                <a class="badge badge badge-pill badge-primary" href="{% url 'search_site:search_page' %}?tag={{ tag.name }}">{{ tag.name }}</a>
             {% endfor %}
 
-            <p style="font-size: 1.2em;margin-top: 1em"> 作者:&ensp;
-            {% for author in book.author.all %}
-                <a href="{% url 'search_site:search_page' %}?author={{ author.name }}">{{ author.name }}</a>&ensp;
-            {% endfor %}</p>
-                            {% if user.username == 'admin' %}
-                    <a href="{%  url 'admin:mainsite_book_change' book.id  %}">编辑书本</a>
-                    <a href="{%  url 'admin:mainsite_book_add' %}">添加书本</a>
-                {% endif %}
+            <div>
+            {% if user.username == 'admin' %}
+                <a href="{%  url 'admin:mainsite_book_change' book.id  %}">编辑书本</a>
+                <a href="{%  url 'admin:mainsite_book_add' %}">添加书本</a>
+            {% endif %}</div>
 		</div>
 	</div>
     <div class="row clearfix">

@@ -142,11 +142,12 @@ class BookInfoSpider:
             img = li.select('img')[0]
             img_url = img['data-src'].replace("&quality=30",'')
             covers.append(img_url)
-        desc_strings = html.select('div[itemprop="description"]')[0].stripped_strings
-        for string in desc_strings:
-            if string=='': continue
-            desc += string +'\n'
-        desc = desc[:-1]
+        if len( html.select('div[itemprop="description"]') )>0:
+            desc_strings = html.select('div[itemprop="description"]')[0].stripped_strings
+            for string in desc_strings:
+                if string=='': continue
+                desc += string +'\n'
+            desc = desc[:-1]
         info_table_row = html.select('table.product-description')[0].select("tr")
         for row in info_table_row:
             head = row.th.string
@@ -167,7 +168,7 @@ class BookInfoSpider:
 
 
         book_info = {"title":title,"title_chinese":title_chinese,"author":author,"desc":desc,
-                     "tags":tags,'end':end,'covers':covers,'publisher':publisher, 'catalog':catalogs}
+                     "tags":tags,'end':end,'covers':covers,'publisher':publisher, 'catalogs':catalogs}
         return book_info
 
 

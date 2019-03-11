@@ -125,6 +125,7 @@ class ImageWithThumb(models.Model):
     # instance.thumb_image.save()
 
 
+
 class Book(models.Model):
     title = models.CharField(max_length=255,verbose_name="书名",blank=True)
     title_chinese = models.CharField(max_length=255,verbose_name="中文名",blank=True)
@@ -140,7 +141,8 @@ class Book(models.Model):
     mangazenkan_site_path = models.CharField(verbose_name='漫画全卷网站id',default='',null=True,blank=True,max_length=255)
     desc = models.TextField(verbose_name="描述",blank=True)
     show = models.BooleanField(default=True)
-
+    end = models.BooleanField(default=False,verbose_name="是否完结")
+    publisher = models.CharField(max_length=100,verbose_name='出版社',null=True, blank=True)
 
     def get_newest_volume(self):
         q = self.volume_set.all().order_by('-edited_data')
@@ -148,6 +150,12 @@ class Book(models.Model):
             return q[0]
         else:
             return False
+
+    def get_book_catalogs(self):
+        return self.tags.filter(group='catalog')
+
+    def get_book_normal_tas(self):
+        return self.tags.filter(group__isnull=True)
 
     def setCover(self,cover_img_id):
         if cover_img_id == "" or cover_img_id is None:
@@ -185,16 +193,28 @@ class Book(models.Model):
                 a.save()
                 self.author.add(a)
 
-        for t in self.tags.all(): self.tags.remove(t)
+        for t in self.get_book_normal_tas(): self.tags.remove(t)
         tags = book_info_json.get("tags",[])
         for tag_name in tags:
             try:
-                tag = Tag.objects.get(name=tag_name)
+                tag = Tag.objects.get(name=tag_name,group__isnull=True)
                 self.tags.add(tag)
             except ObjectDoesNotExist:
                 tag = Tag(name=tag_name)
                 tag.save()
                 self.tags.add(tag)
+        catalogs = book_info_json.get("catalogs",None)
+        if catalogs is not None:
+            for c in self.get_book_catalogs(): self.tags.remove(c)
+            for catalog_name in catalogs:
+                try:
+                    catalog = Tag.objects.get(name=catalog_name,group='catalog')
+                    self.tags.add(catalog)
+                except ObjectDoesNotExist:
+                    catalog = Tag(name=catalog_name,group='catalog')
+                    catalog.save()
+                    self.tags.add(catalog)
+
         self.save()
 
     def relative_covers_tags(self):

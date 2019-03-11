@@ -4,3 +4,4 @@ media/
 migrations/
 convert_error_log.txt
 push_error_log.txt
+log_uwsgi.log

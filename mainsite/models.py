@@ -149,9 +149,16 @@ class Book(models.Model):
     sakuhindb_path = models.TextField(verbose_name="sakuhindb网站路径",default=0)
     mangazenkan_site_path = models.CharField(verbose_name='漫画全卷网站id',default='',null=True,blank=True,max_length=255)
     desc = models.TextField(verbose_name="描述",blank=True)
-    show = models.BooleanField(default=True)
+    show = models.BooleanField(default=False)
     end = models.BooleanField(default=False,verbose_name="是否完结")
     publisher = models.CharField(max_length=100,verbose_name='出版社',null=True, blank=True)
+
+    def get_showed_volume_count(self):
+        """
+        获取书本可见volume的数量，用来volume转换完成后，判断这书本是否是更创创建完成的书本
+        :return:
+        """
+        return len(self.volume_set.filter(show=True))
 
     def get_newest_volume(self):
         q = self.volume_set.all().order_by('-edited_data')
@@ -246,7 +253,6 @@ class Book(models.Model):
         return self.title
 @receiver(pre_save,sender=Book)
 def book_pre_save(sender:Book,instance:Book,**kwargs):
-    instance.update_time = now()
     try:
         image = ImageWithThumb.objects.get(id=instance.cover_id)
         instance.cover_used = image
@@ -405,11 +411,19 @@ class EbookConvertQueue(models.Model):
         # 如果转换完成，则删除自己这个任务并且将此卷设置为前端可见
         # 最后的not selfe.volume.show是用来防止多次调用这个判断函数后，多次发送推送信号
         if self.epub_ok and self.mobi_ok and self.mobi_push_ok and (not self.volume.show):
+            # 这里是volume转换完成了
+            # volume转换完成后，再更新书本的最近更新时间
             print("所有格式都转换完成")
             self.volume.show = True
             self.volume.book.update_time = now()
             self.volume.bandwidth_cost = self.volume.get_volume_bandwidth_cost()
             self.volume.save()
+
+            # 检测下对应书本有几卷的可见volume，如果只有一卷的话证明是新加入的书本
+            # 将书本设置为可见
+            count = self.volume.book.get_showed_volume_count()
+            if count == 1:
+                self.volume.book.show = True
             # volume被设置为可见，发送信号，将这卷和订阅的用户送入待推送队列
             new_volume_showed_signal.send(EbookConvertQueue, volume=self.volume)
 

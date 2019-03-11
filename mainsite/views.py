@@ -51,7 +51,7 @@ def search_page(request):
         keyword = keyword
     elif author is not None and keyword is None:
         books = Book.objects.filter(author__name__contains=author)
-        keyword = author
+        keyword = "作者 %s" % ( author)
     elif author is not None and keyword is not None:
         books = Book.objects.filter(author__name__contains=author, title__contains=keyword)
         keyword = "%s %s" % (keyword, author)
@@ -61,7 +61,7 @@ def search_page(request):
         keyword =  "分类 %s" % ( catalog)
     if tag is not None:
         books = Book.objects.filter(tags__name__contains=tag, tags__group__isnull=True)
-        keyword = "标签 %s" % (catalog)
+        keyword = "标签 %s" % (tag)
     context = {"books":books,
                "keyword":keyword}
     return render(request, 'mainsite/search_res.html',context=context)

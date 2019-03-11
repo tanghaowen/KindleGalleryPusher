@@ -424,6 +424,7 @@ class EbookConvertQueue(models.Model):
             count = self.volume.book.get_showed_volume_count()
             if count == 1:
                 self.volume.book.show = True
+                self.volume.book.save()
             # volume被设置为可见，发送信号，将这卷和订阅的用户送入待推送队列
             new_volume_showed_signal.send(EbookConvertQueue, volume=self.volume)
 

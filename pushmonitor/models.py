@@ -94,7 +94,10 @@ def new_volume_showed(sender, **kwargs):
     print(volume.name)
     print("开始获取此volume对应的book的订阅用户")
     volume_push_size = int(volume.mobi_push_file.size/1024.0/1024.0)
-    book_subscripte_users = volume.book.subscripte_books.all().filter(kindle_email__contains="@kindle.", bandwidth_remain__gte=volume_push_size)
+    # TODO: 推送的策略，可以考虑下订阅推送的书本不消耗流量
+    # book_subscripte_users = volume.book.subscripte_books.all().filter(kindle_email__contains="@kindle.", bandwidth_remain__gte=volume_push_size)
+    book_subscripte_users = volume.book.subscripte_books.all().filter(kindle_email__contains="@kindle.",
+                                                                      bandwidth_remain__gte=volume_push_size)
     for user in book_subscripte_users:
         print("用户：", user.username)
         res = put_task_to_push_queue(user,volume)

@@ -214,7 +214,8 @@ class Book(models.Model):
                     catalog = Tag(name=catalog_name,group='catalog')
                     catalog.save()
                     self.tags.add(catalog)
-
+        if 'end' in book_info_json:
+            self.end = book_info_json['end']
         self.save()
 
     def relative_covers_tags(self):

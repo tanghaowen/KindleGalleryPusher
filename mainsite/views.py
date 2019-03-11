@@ -88,6 +88,7 @@ def get_info_from_online(request,book_id):
     else:
         raise Http404("指定的网站不存在")
 
+    print(book_info)
     if "covers" in book_info:
         total_covers_num = len(book_info['covers'])
         print("有封面，共%d张" % total_covers_num)

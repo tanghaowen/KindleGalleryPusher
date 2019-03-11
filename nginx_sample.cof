@@ -1,0 +1,36 @@
+upstream django {
+    # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
+    server 127.0.0.1:3031; # for a web port socket (we'll use this first)
+}
+
+# configuration of the server
+server {
+    # the port your site will be served on
+    listen      9000;
+    # the domain name it will serve for
+    server_name 127.0.0.1; # substitute your machine's IP address or FQDN
+    charset     utf-8;
+
+    # max upload size
+    client_max_body_size 1000M;   # adjust to taste
+
+    # Django media
+    location /media/img  {
+        alias /mnt/e/project/KindleComicPusher/media/img;  # your Django project's media files - amend as required
+    }
+
+    location /static {
+        alias /mnt/e/project/KindleComicPusher/static; # your Django project's static files - amend as required
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        uwsgi_pass  django;
+        include      /etc/nginx/uwsgi_params; # the uwsgi_params file you installed
+    }
+location /donwloadbook {
+    internal;
+    alias /mnt/e/project/KindleComicPusher/media;
+}
+
+}

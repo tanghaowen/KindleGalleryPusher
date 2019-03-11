@@ -101,10 +101,23 @@ def get_info_from_online(request,book_id):
                 if cover_response.status_code == 200:
                     print("下载成功")
                     f_memo = BytesIO(cover_response.content)
-                    image = ImageWithThumb(image=File(f_memo, "tmp" + ext), thumb_image=File(None, None),normal_image=File(None,None))
-                    image.save()
-                    book.covers.add(image)
-                    book.setCover(image.id)
+                    f_memo.seek(0)
+                    image_already_in_database = ImageWithThumb.image_already_in_database(f_memo)
+                    if image_already_in_database:
+                        print("此图片已经存在于图库中！开始检测是否存在于这本书中！")
+                        res = book.covers.filter(id=image_already_in_database.id)
+                        if len(res)>0:
+                            print('此图片已和这本书关联，跳过！')
+                        else:
+                            print("此图片未和这本书关联，将此图片关联到书本")
+                            book.covers.add(image_already_in_database)
+                            book.setCover(image_already_in_database.id)
+                            book.save()
+                    else:
+                        image = ImageWithThumb(image=File(f_memo, "tmp" + ext), thumb_image=File(None, None),normal_image=File(None,None))
+                        image.save()
+                        book.covers.add(image)
+                        book.setCover(image.id)
                 else:
                     print("下载失败")
             except Exception as e:

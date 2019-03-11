@@ -4,6 +4,8 @@ from django.db.models.signals import pre_save, post_save
 from django.utils.timezone import now
 from django.utils.html import mark_safe
 from django.shortcuts import get_object_or_404
+
+from mainsite.tools import get_hash_filename
 from . import tools
 from io import BytesIO
 from django.core.files.temp import NamedTemporaryFile
@@ -70,7 +72,7 @@ class ImageWithThumb(models.Model):
         else:
             print("要更新的图片字段%s 不存在于ImageWithThumb中")
     def save(self):
-        image_file_name = tools.get_hash_filename(self.image) + os.path.splitext(self.image.name)[1]
+        image_file_name = tools.get_hash_filename(self.image.file) + os.path.splitext(self.image.name)[1]
         print("保存ImageWithThumb")
         print("当前image的name是",self.image.name)
         print("计算出来的hash路径是",image_file_name)
@@ -114,6 +116,13 @@ class ImageWithThumb(models.Model):
         return mark_safe('<img src="%s" width="100" /><img src="/%s" width="100" /> ' % (self.thumb_image.url,self.image.url))
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
+
+    def image_already_in_database(file_object):
+        file_hash = get_hash_filename(file_object)
+        img = ImageWithThumb.objects.filter(image__contains=file_hash)
+        if len(img) > 0:
+            return img[0]
+        return False
 
     class Meta:
         verbose_name = "图片"

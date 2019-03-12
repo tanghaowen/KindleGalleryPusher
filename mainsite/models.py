@@ -417,6 +417,7 @@ class EbookConvertQueue(models.Model):
             print(self.volume.book.title,self.volume.name)
             self.volume.show = True
             self.volume.book.update_time = now()
+            self.volume.book.save()
             self.volume.bandwidth_cost = self.volume.get_volume_bandwidth_cost()
             self.volume.save()
             print('是否显示以及更新时间',self.volume.show)

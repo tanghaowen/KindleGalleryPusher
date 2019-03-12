@@ -143,6 +143,10 @@ class BookInfoSpider:
             img = li.select('img')[0]
             img_url = img['data-src'].replace("&quality=30",'')
             covers.append(img_url)
+        if len(covers_li) == 0:
+            cover_img = html.select('img.cover-image')
+            if len(cover_img) > 0:
+                covers.append(cover_img[0]['src'])
         if len( html.select('div[itemprop="description"]') )>0:
             desc_strings = html.select('div[itemprop="description"]')[0].stripped_strings
             for string in desc_strings:

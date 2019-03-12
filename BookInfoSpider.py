@@ -113,6 +113,11 @@ class BookInfoSpider:
             img = li.select('img')[0]
             img_url = img['data-src'].replace("&quality=30",'')
             covers.append(img_url)
+        if len(covers_li) == 0:
+            cover_img = html.select('img.cover-image')
+            if len(cover_img) > 0:
+                covers.append(cover_img[0]['src'])
+
         desc_strings = html.select('div[itemprop="description"]')[0].stripped_strings
         for string in desc_strings:
             if string=='': continue
@@ -143,5 +148,5 @@ class BookInfoSpider:
 
 if __name__ == '__main__':
     book_info_request = BookInfoSpider()
-    book_info = book_info_request.get_book_info_from_mangazenkan(10341030)
+    book_info = book_info_request.get_book_info_from_mangazenkan(10653870)
     print(book_info)

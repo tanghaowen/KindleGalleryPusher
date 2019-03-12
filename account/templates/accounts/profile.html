@@ -175,18 +175,18 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="profile-work">
-                            <p>WORK LINK</p>
-                            <a href="">Website Link</a><br/>
-                            <a href="">Bootsnipp Profile</a><br/>
-                            <a href="">Bootply Profile</a>
-                            <p>SKILLS</p>
-                            <a href="">Web Designer</a><br/>
-                            <a href="">Web Developer</a><br/>
-                            <a href="">WordPress</a><br/>
-                            <a href="">WooCommerce</a><br/>
-                            <a href="">PHP, .Net</a><br/>
-                        </div>
+{#                        <div class="profile-work">#}
+{#                            <p>WORK LINK</p>#}
+{#                            <a href="">Website Link</a><br/>#}
+{#                            <a href="">Bootsnipp Profile</a><br/>#}
+{#                            <a href="">Bootply Profile</a>#}
+{#                            <p>SKILLS</p>#}
+{#                            <a href="">Web Designer</a><br/>#}
+{#                            <a href="">Web Developer</a><br/>#}
+{#                            <a href="">WordPress</a><br/>#}
+{#                            <a href="">WooCommerce</a><br/>#}
+{#                            <a href="">PHP, .Net</a><br/>#}
+{#                        </div>#}
                     </div>
                     <div class="col-md-8">
                         <div class="tab-content profile-tab" id="myTabContent">
@@ -209,26 +209,6 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>昵称</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                            {% if edit %}
-                                                {% if user.nick_name %}
-                                                    <input style="height: 1.5em;"  name="nick_name" type="text"class="form-control border border-primary" value="{{ user.nick_name }}"></input>
-                                                    {% else %}
-                                                     <input style="height: 1.5em;"  name="nick_name" type="text"class="form-control border border-primary" placeholder="无"></input>
-                                                {% endif %}
-                                            {% else %}
-                                                <p>{% if user.nick_name %}
-                                                    {{ user.nick_name }}
-                                                    {% else %}
-                                                     无
-                                                    {% endif %}</p>
-                                            {% endif %}
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
                                                 <label>kindle邮箱</label>
                                             </div>
                                             <div class="col-md-6">
@@ -245,10 +225,10 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>Profession</label>
+                                                <label>新密码</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p>Web Developer and Designer</p>
+                                                <input style="height: 1.5em;"  name="password" type="password"class="form-control border border-primary" placeholder="重置密码后需重登陆(密码最少6位！)"></input>
                                             </div>
                                         </div>
                                         <div class="row">

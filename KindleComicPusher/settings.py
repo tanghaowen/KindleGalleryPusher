@@ -133,8 +133,8 @@ LOGIN_URL = '/accounts/login/'
 
 AUTH_USER_MODEL = 'account.User'
 
-EMAIL_HOST = 'smtp.lpanda.net'
-EMAIL_HOST_USER = 'admin@lpanda.net'
+EMAIL_HOST = 'smtp.asairo.net'
+EMAIL_HOST_USER = 'admin@asairo.net'
 EMAIL_HOST_PASSWORD = 'shinonomehana'
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465

@@ -336,3 +336,26 @@ def volume_download(request):
         else:
             return HttpResponse("bandwidth not enough")
     raise Http404
+
+
+# TODO: 因为只有我一个人上传，所以这里直接判断用户admin就行
+# 如果今后要增加协助者，得做好完整的权限判断
+@login_required
+def upload_file(request,book_id):
+    if request.user.username != 'admin': raise Http404
+
+    if request.method == "GET":
+        book = get_object_or_404(Book,id=book_id)
+        context = {"book":book}
+        return render(request,'mainsite/upload_page.html',context=context)
+    elif request.method == 'POST':
+        volume_type = request.POST.get("volume_type",None)
+        zip_FILE = request.FILES.get("zip_file",None)
+        if book_id is None or volume_type is None or zip_FILE is None: raise Http404
+        book = get_object_or_404(Book, id = book_id)
+        volume_type_obj = get_object_or_404(VolumeType, name=volume_type)
+        volume = Volume( book=book,type=volume_type_obj,zip_file=zip_FILE )
+        volume.save()
+        return HttpResponse("OK")
+
+

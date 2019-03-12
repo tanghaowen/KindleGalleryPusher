@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.title}} 书本管理 卷上传</title>
+    <script>
+        function fileSelected() {
+          var files = document.getElementById('fileToUpload').files;
+          document.files = files;
+          document.getElementById('files').innerHTML = '';
+          for (let i = 0; i < files.length; ++i){
+              let file = files[i];
+              if (file) {
+                var fileSize = 0;
+                if (file.size > 1024 * 1024){
+                  fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+                }else{
+                  fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+                }
+
+                let progress_span = document.createElement('span');
+                progress_span.innerHTML = '0%';
+                let file_name = document.createElement('span');
+                file_name.innerHTML = file.name;
+                let size_span = document.createElement('span');
+                size_span.innerHTML = ''+fileSize;
+
+                let div = document.createElement('div');
+                div.appendChild(progress_span);
+                div.appendChild(file_name);
+                div.appendChild(size_span);
+                document.getElementById('files').appendChild(div);
+              }
+          }
+
+        }
+    </script>
+    <script>
+        function uploadFile() {
+            for (let i = 0; i<document.files.length; i ++){
+                let xhr = new XMLHttpRequest();
+                let fd = new FormData();
+                let csrf = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+                fd.append("volume_type", "单行本");
+                fd.append("index", "1");
+                fd.append("zip_file", document.files[0]);
+                fd.append('csrfmiddlewaretoken', csrf);
+                  /* 事件监听 */
+                  xhr.upload.addEventListener("progress", function (evt) {
+                      if (evt.lengthComputable) {
+                        var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                        console.log(percentComplete);
+                      }
+                      else {
+                        document.getElementById('progressNumber').innerHTML = '无法计算';
+                      }
+                  }, false);
+                  xhr.addEventListener("load", uploadComplete, false);
+                  xhr.addEventListener("error", uploadFailed, false);
+                  xhr.addEventListener("abort", uploadCanceled, false);
+
+                  /* 下面的url一定要改成你要发送文件的服务器url */
+                  xhr.open("POST", "{% url 'main_site:book_upload' book.id %}");
+                  xhr.send(fd);
+
+            }
+
+
+        }
+  
+
+    function uploadComplete(evt) {
+      /* 当服务器响应后，这个事件就会被触发 */
+      alert(evt.target.responseText);
+    }
+
+    function uploadFailed(evt) {
+      alert("上传文件发生了错误尝试");
+    }
+
+    function uploadCanceled(evt) {
+      alert("上传被用户取消或者浏览器断开连接");
+    }
+    </script>
+</head>
+<body>
+
+<form id="form1" enctype="multipart/form-data" method="post" action="Upload.aspx">
+    {% csrf_token %}
+</form>
+    <div class="row">
+      <label for="fileToUpload">Select a File to Upload</label><br>
+      <input type="file" name="fileToUpload" id="fileToUpload" multiple="multiple" onchange="fileSelected();">
+    </div>
+    <div id="files">
+    </div>
+
+<div class="row">    <button type="button" onclick="uploadFile()" value="Upload"> </button></div>
+
+</body>
+</html>

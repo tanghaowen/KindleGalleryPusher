@@ -36,12 +36,20 @@
 
             let username = document.getElementById('username').value;
             let password = document.getElementById('password').value;
+            let email = document.getElementById('email').value;
             if (password.length <6){
                 message_box_text.innerHTML = "密码长度小于6个字符！";
                 message_box.style.display = 'block';
-            }else{
+            }else if (email.length<3){
+                message_box_text.innerHTML = "邮箱长度太短！";
+                message_box.style.display = 'block';
+            }
+            else{
+                message_box.style.display='block';
+                message_box_text.innerHTML = '正在创建账户...';
+                document.getElementById('reg-btn').disabled = true;
                 let crsfsession = $("[name='csrfmiddlewaretoken']")[0].value;
-                let postdata = `username=${username}&password=${password}&csrfmiddlewaretoken=${crsfsession}`;
+                let postdata = `username=${username}&password=${password}&csrfmiddlewaretoken=${crsfsession}&email=${email}`;
 
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.onload = function (event) {
@@ -58,22 +66,32 @@
                         }else if (res.includes('same username already exits')) {
                         message_box.style.display='block';
                         message_box_text.innerHTML = '用户名已存在！';
+                        }else if (res.includes('email already used')) {
+                        message_box.style.display='block';
+                        message_box_text.innerHTML = '邮箱已经注册过！';
+                        }else if (res.includes('email can\'t use')) {
+                        message_box.style.display='block';
+                        message_box_text.innerHTML = '邮箱格式有问题！';
                         }else{
                             message_box.style.display='block';
-                            message_box_text.innerHTML = '注册成功！1s后重定向。';
-                            {% if redirect_path != None %}
-                                setTimeout("location.href = '{{ redirect_path }}';",1000);
-
-                            {% else %}
-                                setTimeout(" location.href = '/'",1000);
-                            {% endif %}
+                            message_box_text.innerHTML = '注册成功！已经发送激活邮件，请去邮箱查收。';
+{#                            {% if redirect_path != None %}#}
+{#                                setTimeout("location.href = '{{ redirect_path }}';",1000);#}
+{##}
+{#                            {% else %}#}
+{#                                setTimeout(" location.href = '/'",1000);#}
+{#                            {% endif %}#}
                         }
 
 
 
-
                     }
-
+                    else{
+                        document.getElementById('reg-btn').disabled = false;
+                        message_box.style.display='block';
+                        message_box_text.innerHTML = '未知服务器错误';
+                    }
+                    document.getElementById('reg-btn').disabled = false;
             };
                 xmlhttp.error = onloginerror;
                 xmlhttp.open('post',"{% url 'account:register' %}");
@@ -97,7 +115,13 @@
 					<span class="login100-form-title p-t-20 p-b-45">
 						注册
 					</span>
-
+					<div class="wrap-input100 validate-input m-b-10" data-validate = "Email is required">
+						<input class="input100" id="email" type="text" name="email" placeholder="邮箱">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-user"></i>
+						</span>
+					</div>
 					<div class="wrap-input100 validate-input m-b-10" data-validate = "Username is required">
 						<input class="input100" id="username" type="text" name="username" placeholder="用户名">
 						<span class="focus-input100"></span>
@@ -115,7 +139,7 @@
 					</div>
 
 					<div class="container-login100-form-btn p-t-10">
-						<button class="login100-form-btn" onclick="register()" type="button">
+						<button id="reg-btn" class="login100-form-btn" onclick="register()" type="button">
 							注册
 						</button>
 					</div>
@@ -128,7 +152,7 @@
 
 					<div class="text-center w-full">
 						<a class="txt1" href="{% url 'account:login' %}">
-							登陆
+							登陆 - 漫推
 							<i class="fa fa-long-arrow-right"></i>
 						</a>
 					</div>

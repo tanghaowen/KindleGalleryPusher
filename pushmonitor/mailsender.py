@@ -5,9 +5,9 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
 
 
-smtp_username = 'admin@lpanda.net'
+smtp_username = 'admin@asairo.net'
 smtp_password = 'shinonomehana'
-smtp_hostname = 'smtp.lpanda.net'
+smtp_hostname = 'smtp.asairo.net'
 
 
 def send_mail_use_smtp(reciviers_adress,file_url,file_name):

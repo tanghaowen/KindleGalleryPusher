@@ -1,13 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
+from django.utils.crypto import get_random_string
+
 from mainsite.models import *
 from django.utils.timezone import now, timedelta
 from django.core.validators import validate_email
 
 
 DOWNLOAD_LINK_AVAILABLE_HOURS = 1
-
+ACCOUNT_ACTIVATE_TOKEN_AVAILABLE_HOURS = 1
 
 class User(AbstractUser):
     nick_name = models.CharField(max_length=40,blank=True,null=True)
@@ -23,6 +25,8 @@ class User(AbstractUser):
     bandwidth_remain =models.IntegerField(default=0)
     bandwidth_percent = models.PositiveIntegerField(default=100)
     kindle_email = models.EmailField(null=True,blank=True, unique=True, validators=[validate_email,])
+    activate_token = models.CharField(default="",max_length=50,blank=True,null=True)
+    activate_token_create_time = models.DateTimeField(null=True)
 
     def add_bandwidth_cost(self,volume):
         """
@@ -127,3 +131,32 @@ class BandwidthCostRecord(models.Model):
         verbose_name_plural = '用户流量消费记录'
 
 
+class MailVertifySendRecord(models.Model):
+    send_date = models.DateTimeField(default=now)
+    # 重置密码的话，关联的uid
+    relative_uid = models.IntegerField(null=True)
+    # activate为注册时激活账号， resetpwd 为重置密码
+    type = models.CharField(max_length=20)
+    token = models.CharField(max_length=50)
+    # 注册时激活账号后，用来生成用户的用户名
+    user_name = models.CharField(max_length=100,null=True)
+    # 邮箱
+    email = models.EmailField(null=True)
+    password = models.CharField(max_length=255,null=True)
+
+
+    class Meta:
+        verbose_name_plural = '邮件验证发送列表'
+        verbose_name = '邮件验证发送列表'
+
+class PasswordResetMailSendRecord(models.Model):
+    send_date = models.DateTimeField(default=now)
+    # 重置密码的话，关联的uid
+    user = models.ForeignKey(User,on_delete=models.DO_NOTHING)
+    token = models.CharField(max_length=50)
+    used = models.BooleanField(default=False)
+
+
+    class Meta:
+        verbose_name_plural = '密码重置邮件发送列表'
+        verbose_name = '密码重置邮件发送列表'

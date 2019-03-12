@@ -39,7 +39,7 @@ class BookAdmin(admin.ModelAdmin):
     list_display = ["id","title","update_time"]
     list_display_links = ['id','title']
     fieldsets = [
-        ["基本信息",{'fields':['id','title','title_chinese','update_time'],}],
+        ["基本信息",{'fields':['id','title','title_chinese','update_time','end'],}],
         ["关联网站",{"fields":[('mangazenkan_site_path','get_info_from_mangazenkan'),('bangumi_site_path','get_info_from_bangumi'),('mediaarts_site_path','get_info_from_mediaarts')]}],
         ["作者",{"fields":['author']}],
         ["标签",{"fields":['tags']}],

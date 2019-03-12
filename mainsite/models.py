@@ -414,17 +414,22 @@ class EbookConvertQueue(models.Model):
             # 这里是volume转换完成了
             # volume转换完成后，再更新书本的最近更新时间
             print("所有格式都转换完成")
+            print(self.volume.book.title,self.volume.name)
             self.volume.show = True
             self.volume.book.update_time = now()
             self.volume.bandwidth_cost = self.volume.get_volume_bandwidth_cost()
             self.volume.save()
+            print('是否显示以及更新时间',self.volume.show,self.volume.update_time)
 
             # 检测下对应书本有几卷的可见volume，如果只有一卷的话证明是新加入的书本
             # 将书本设置为可见
             count = self.volume.book.get_showed_volume_count()
             if count == 1:
+                print('此卷为当前第一卷，将book设置为show')
                 self.volume.book.show = True
                 self.volume.book.save()
+            else:
+                print("此卷非最新卷，不变更book设置")
             # volume被设置为可见，发送信号，将这卷和订阅的用户送入待推送队列
             new_volume_showed_signal.send(EbookConvertQueue, volume=self.volume)
 

@@ -104,7 +104,6 @@ class TagAdmin(admin.ModelAdmin):
 
 class EbookConvertQueueAdmin(admin.ModelAdmin):
     list_display = ['volume','epub_ok','mobi_ok','mobi_push_ok','status','added_date']
-    readonly_fields = ['epub_ok', 'mobi_ok', "mobi_push_ok"]
 
 
 

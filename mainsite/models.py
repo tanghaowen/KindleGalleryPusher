@@ -419,7 +419,7 @@ class EbookConvertQueue(models.Model):
             self.volume.book.update_time = now()
             self.volume.bandwidth_cost = self.volume.get_volume_bandwidth_cost()
             self.volume.save()
-            print('是否显示以及更新时间',self.volume.show,self.volume.update_time)
+            print('是否显示以及更新时间',self.volume.show)
 
             # 检测下对应书本有几卷的可见volume，如果只有一卷的话证明是新加入的书本
             # 将书本设置为可见

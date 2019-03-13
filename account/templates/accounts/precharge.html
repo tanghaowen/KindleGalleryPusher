@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>漫推 捐赠Vip</title>
+    {% include 'mainsite/load_bootstrap.html' %}
+</head>
+<body>
+{% include 'mainsite/book_info_header.html' %}
+<div class="container">
+
+<div class="row" style="height: 4em;"></div>
+{% if is_global %}
+<div class="row"> <h3>捐赠套餐</h3></div>
+{% else %}
+<div class="row"> <h3> </h3></div>
+{% endif %}
+
+
+<div class="row">
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">套餐一(1个月)</h5>
+    <h6 class="card-subtitle mb-2 text-muted">20¥</h6>
+    <p class="card-text">捐赠后您将成为Vip会员，获得20GB流量</p>
+      <p class="card-text">推送不消耗流量</p>
+    <a href="{% url 'account:charge' %}?mode=vip" class="card-link">捐赠</a>
+  </div>
+</div>
+</div>
+
+</div>
+
+</body>
+</html>

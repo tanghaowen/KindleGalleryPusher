@@ -14,6 +14,10 @@ urlpatterns = [
     path('user/profile', views.set_profile, name='set_profile'),
     path('user/<int:uid>/', views.account_profile, name='other_profile'),
     path('user/queue/', views.push_queue, name='push_queue'),
+    path('charge/', views.kakin, name='charge'),
+    path('payoknDxx4S0qCf/', views.payok, name='pay_ok'),
+    path('precharge/', views.precharge, name='precharge'),
+    path('records/', views.bandwidth_cost_records, name='bandwidth_records'),
 
 
 ]

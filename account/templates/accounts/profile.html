@@ -104,9 +104,9 @@
     </style>
 </head>
 <body>
-<div class="container fixed-top
+
     {% include 'mainsite/book_info_header.html' %}
-</div>
+    <div style="height: 3em;"></div>
 <div class="container emp-profile">
 
 
@@ -166,11 +166,7 @@
                             </ul>
                         </div>
                     </div>
-                    {% if edit %}
-                    <div class="col-md-2">
-                        <input type="submit" class="profile-edit-btn" name="btnAddMore" value="保存"/>
-                    </div>
-                    {% endif %}
+
 
                 </div>
                 <div class="row">
@@ -191,7 +187,8 @@
                     <div class="col-md-8">
                         <div class="tab-content profile-tab" id="myTabContent">
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                        <div class="row">
+
+                                <div class="row">
                                             <div class="col-md-6">
                                                 <label>用户ID</label>
                                             </div>
@@ -223,7 +220,7 @@
                                             {% endif %}
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row" style="margin-top: 1em">
                                             <div class="col-md-6">
                                                 <label>新密码</label>
                                             </div>
@@ -231,7 +228,7 @@
                                                 <input style="height: 1.5em;"  name="password" type="password"class="form-control border border-primary" placeholder="重置密码后需重登陆(密码最少6位！)"></input>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row" style="margin-top: 1em">
                                             <div class="col-md-12">
                                                 <label>个性签名</label><br/>
                                             {% if edit %}
@@ -249,6 +246,11 @@
                                             {% endif %}
 
                                             </div>
+                                                                                          {% if edit %}
+                    <div class="col-md-2">
+                        <input type="submit" class="profile-edit-btn" name="btnAddMore" value="保存"/>
+                    </div>
+                    {% endif %}
                                         </div>
                             </div>
                             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -307,11 +309,11 @@
 
                             </div>
                             <div class="tab-pane fade" id="subc" role="tabpanel" aria-labelledby="profile-tab">
-                                        <div class="row">
+                                        <div class="row" >
                                             {% for book in user.subscriptes.all %}
-                                                <div class="col-md-2">
-                                                    <div><img src="{{ book.cover_used.thumb_image.url }}" style="width: 70px;"></div>
-                                                    <div><a href="/book/{{ book.id }}/">{{ book.title }}</a></div>
+                                                <div class="col-md-2 col-3" style="text-align: center">
+                                                    <div style="width:100px"><img src="{{ book.cover_used.thumb_image.url }}" style="width: 70px;"></div>
+                                                    <div style="width: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="/book/{{ book.id }}/"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">{{ book.title }}</p></a></div>
                                                 </div>
                                             {% endfor %}
                                         </div>
@@ -319,11 +321,11 @@
 
                             </div>
                             <div class="tab-pane fade" id="collec" role="tabpanel" aria-labelledby="profile-tab">
-                                        <div class="row">
+                                        <div class="row" >
                                             {% for book in user.collections.all %}
-                                                <div class="col-md-2">
-                                                    <div><img src="{{ book.cover_used.thumb_image.url }}" style="width: 70px;"></div>
-                                                    <div><a href="/book/{{ book.id }}/">{{ book.title }}</a></div>
+                                                <div class="col-md-2 col-3" style="text-align: center">
+                                                    <div style="width:100px"><img src="{{ book.cover_used.thumb_image.url }}" style="width: 70px;"></div>
+                                                    <div style="width: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="/book/{{ book.id }}/"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">{{ book.title }}</p></a></div>
                                                 </div>
                                             {% endfor %}
                                         </div>

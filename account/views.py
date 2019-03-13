@@ -2,7 +2,9 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpRequest, HttpResponseRedirect
-from account.models import User, MailVertifySendRecord, PasswordResetMailSendRecord
+from django.views.decorators.csrf import csrf_exempt
+
+from account.models import User, MailVertifySendRecord, PasswordResetMailSendRecord, ChargeRecord, CHARGE_MODE_VIP
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -283,7 +285,79 @@ def push_queue(request):
     return c
 
 
+@login_required
+def bandwidth_cost_records(request):
+    user = request.user
+    page_idx = request.GET.get('page',1)
+    is_global = request.GET.get('global',0)
 
 
+    records  = user.get_uer_bandwidth_records()
 
+    pages = Paginator(records,20)
+    page = pages.get_page(page_idx)
+    context = {"records":records,
+               "user":user,
+               'page':page,}
+    c = render(request, 'accounts/bandwidth_records.html',context=context)
 
+    return c
+@login_required
+def kakin(request):
+    if request.method == 'GET':
+        mode = request.GET.get("mode",None)
+        if mode is None: raise Http404
+        if mode =='vip':
+            user = request.user
+            price = 0.1
+            price_string = str(price)
+
+            order_id = user.username+"-"+get_random_string(length=10)
+            order_url = 'https://codepay.fateqq.com/creat_order/creat_order/?id=194647&type=1&price=%s&pay_id=%s&token=IyncS6FVdsVrz6wGOLZLx6Km9M1j1O3f' % (price_string,order_id)
+            print("订单URL")
+            print(order_url)
+            context =  {'user':user,
+                        'order_url': order_url,
+                        'order_id':order_id}
+            crd = ChargeRecord(user=user,price=price,content='测试订单',order_id=order_id)
+            crd.save()
+            return  render(request,'accounts/kakin_page.html',context=context)
+        else:
+            raise Http404
+    raise Http404
+
+@csrf_exempt
+def payok(request):
+    """
+    <QueryDict: {'app_time': ['1552472848'], 'chart': ['utf-8'], 'id': ['194647'], 'money': ['0.11'], 'pay_id': ['admin-2ep7tkLPIR'], 'pay_no': ['2019031322001458761021330417'], 'pay_time': ['1552469228'], 'price': ['0.1'], 'status': ['1'], 'tag': ['0'], 'trade_no': ['1155246920711946475526273402'], 'trueID': ['194647'], 'type': ['1'], 'version': ['6.400'], 'sign': ['86fc9304b1f129f8c22368ec6c61726e']}>
+    :param request:
+    :return:
+    """
+    print(request.POST)
+    print("有新的付款成功订单！")
+    order_id = request.GET.get('pay_id')
+    print("order id",order_id)
+    charge_record = get_object_or_404(ChargeRecord,order_id=order_id)
+    status = request.GET.get('status','0')
+    if status is not None and status == '1':
+        print("订单状态为1，成功")
+        price = request.GET.get('price')
+        charge_record.status = 'ok'
+        charge_record.payed = True
+        charge_record.save()
+        charge_record.user.charge_bandwidth(CHARGE_MODE_VIP)
+
+    else:
+        print('订单状态为0，失败')
+        charge_record.payed = False
+        charge_record.status = 'error'
+        return HttpResponse("ok")
+    return HttpResponse('ok')
+
+@login_required
+def precharge(request):
+    if request.method == 'GET':
+        user = request.user
+        context = {'user':user}
+        return render(request,'accounts/precharge.html',context)
+    raise Http404

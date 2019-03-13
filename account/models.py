@@ -10,7 +10,9 @@ from django.core.validators import validate_email
 
 DOWNLOAD_LINK_AVAILABLE_HOURS = 1
 ACCOUNT_ACTIVATE_TOKEN_AVAILABLE_HOURS = 1
-
+USER_BASE_BANDWIDTH = 200
+VIP_PLUS_BANDWIDTH = 20 * 1024
+CHARGE_MODE_VIP = 1
 class User(AbstractUser):
     nick_name = models.CharField(max_length=40,blank=True,null=True)
     signature = models.TextField(blank=True,null=True)
@@ -27,6 +29,15 @@ class User(AbstractUser):
     kindle_email = models.EmailField(null=True,blank=True, unique=True, validators=[validate_email,])
     activate_token = models.CharField(default="",max_length=50,blank=True,null=True)
     activate_token_create_time = models.DateTimeField(null=True)
+
+    def charge_bandwidth(self,charge_mode):
+        if charge_mode == CHARGE_MODE_VIP:
+            self.bandwidth_total = USER_BASE_BANDWIDTH + VIP_PLUS_BANDWIDTH
+            self.save()
+
+    def get_uer_bandwidth_records(self):
+        records = BandwidthCostRecord.objects.filter(user=self).order_by('-cost_date')
+        return records
 
     def add_bandwidth_cost(self,volume):
         """
@@ -160,3 +171,18 @@ class PasswordResetMailSendRecord(models.Model):
     class Meta:
         verbose_name_plural = '密码重置邮件发送列表'
         verbose_name = '密码重置邮件发送列表'
+
+class ChargeRecord(models.Model):
+    user = models.ForeignKey( User, on_delete=models.DO_NOTHING,verbose_name='下订单用户')
+    price = models.FloatField(verbose_name="价格")
+    created_time = models.DateTimeField(default=now,verbose_name='创建订单的时间')
+    payed_time = models.DateTimeField(null=True,verbose_name='付款成功时间')
+    content = models.TextField(verbose_name="充值的注释")
+    order_id = models.CharField(max_length=100,verbose_name='订单id')
+    payed = models.BooleanField(default=False,verbose_name='付款是否成功')
+    status = models.CharField(default='created',max_length=20)
+    def set_payed(self):
+        self.payed_time=now()
+        self.payed=True
+        self.save()
+

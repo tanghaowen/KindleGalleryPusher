@@ -39,54 +39,54 @@
 <body>
     {% include 'mainsite/book_info_header.html' %}
     <div style="height: 5em;"></div>
-<div class="container">
-<div class="row">
-    <div class="col-sm-12 col-xs-12 col-md-8 col-lg-8">
+    <div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-xs-12 col-md-8 col-lg-8">
 
-    <div class="row"> <div class="col-12">
-        <div class="head-div"><h4><span>最近更新</span></h4></div>
-        </div></div>
-    <div class="row" style="padding: 7px; margin-bottom: 2em">
-        {% for book in recent_updated %}
-            <div class="col-xs-4 col-sm-3 col-md-2 col-lg-2 book-info" style="width: 100px">
-                <a href="{% url 'main_site:book' book_id=book.id %}"  data-toggle="popover" data-placement="right" data-container="{{ book.desc }}" data-title="{{ book.title }}">
-                <img src="{{ book.cover_used.thumb_image.url }}" width="100" class="rounded img-responsive"></a>
-                <div style="width: 100px;text-align: center;margin: 4px;"><a style="margin-bottom: 2px" href="/book/{{ book.id }}"> <p> {{ book.title }}</p> </a></div>
-                <div style="width: 100px;text-align: center"><p>
-                {{ book.get_newest_volume.name }}
-                </p></div>
+        <div class="row"> <div class="col-12">
+            <div class="head-div"><h4><span>最近更新</span></h4></div>
+            </div></div>
+        <div class="row" style="padding: 7px; margin-bottom: 2em">
+            {% for book in recent_updated %}
+                <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2 col-4 book-info" style="width: 100px; margin-bottom: 1em">
+                    <a href="{% url 'main_site:book' book_id=book.id %}"  data-toggle="popover" data-placement="right" data-container="{{ book.desc }}" data-title="{{ book.title }}">
+                    <img src="{{ book.cover_used.thumb_image.url }}" width="100" class="rounded img-responsive"></a>
+                    <div style="width: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a style="margin-bottom: 2px" href="/book/{{ book.id }}"> <p> {{ book.title }}</p> </a></div>
+                    <div style="width: 100px;text-align: center"><p>
+                    {{ book.get_newest_volume.name }}
+                    </p></div>
 
-            </div>
-
-        {% endfor %}
-    </div>
-    {% for group in homepage_book_groups %}
-        <div class="row head-div"> <div class="col-12"> <h4>{{ group.name }}</h4></div></div>
-        <div class="row" style='text-align: center; margin-bottom: 2em'>
-            {% for book in group.books.all %}
-                <div class="col-xs-4 col-sm-3 col-md-2 col-lg-2 book-info" style="width: 50px;">
-                    <div><a href="{% url 'main_site:book' book_id=book.id %}"><img src="{{ book.cover_used.thumb_image.url }}" width="100" class="rounded img-responsive"></a> </div>
-                    <div><a href="/book/{{ book.id }}"><p style="text-overflow:ellipsis"> {{ book.title }}</p> </a></div>
-                    <div><p>
-                        {% for author in book.author.all %}
-                            {{ author.name }}&ensp;
-                        {% endfor %}</p></div>
                 </div>
 
             {% endfor %}
         </div>
+        {% for group in homepage_book_groups %}
+            <div class="row head-div"> <div class="col-12"> <h4>{{ group.name }}</h4></div></div>
+            <div class="row" style='text-align: center; margin-bottom: 2em'>
+                {% for book in group.books.all %}
+                    <div class="col-xs-4 col-sm-3 col-md-2 col-lg-2 col-4 book-info" style="width: 50px;">
+                        <div><a href="{% url 'main_site:book' book_id=book.id %}"><img src="{{ book.cover_used.thumb_image.url }}" width="100" class="rounded img-responsive"></a> </div>
+                        <div><a href="/book/{{ book.id }}"><p style="text-overflow:ellipsis"> {{ book.title }}</p> </a></div>
+                        <div><p>
+                            {% for author in book.author.all %}
+                                {{ author.name }}&ensp;
+                            {% endfor %}</p></div>
+                    </div>
+
+                {% endfor %}
+            </div>
 
 
-    {% endfor %}
-</div>
-    <div class="col-md-4 hidden-xs hidden-sm">
-        <img src="{% static 'mainsite/img/moe.jpg' %}" style="width:100%">
-        <img src="{% static 'mainsite/img/moe2.jpg' %}" style="width:100%">
-</div>
+        {% endfor %}
+    </div>
+        <div class="col-md-4 hidden-xs hidden-sm">
+            <img src="{% static 'mainsite/img/moe.jpg' %}" style="width:100%">
+            <img src="{% static 'mainsite/img/moe2.jpg' %}" style="width:100%">
+    </div>
 
-</div>
+    </div>
 
-</div>
+    </div>
 
 
 

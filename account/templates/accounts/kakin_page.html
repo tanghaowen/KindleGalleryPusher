@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>漫推 充值</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <p>你好 {{ user.name }}, 您的订单id为: {{ order_id }}</p>
+        <p> 付款后因到账需要一点时间，前耐心等待付款状态变更（2分钟内到账）</p>
+        <p> 如5分钟内后流量依旧没有到账，请使用站内的问题反馈界面。并提供您上面的订单id和付款截图</p>
+    </div>
+    <div class="row">
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" allowfullscreen width="100%" height="1000px" src="{{ order_url }}"></iframe>
+        </div>
+    </div>
+</div>
+</body>
+</html>

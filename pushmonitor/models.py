@@ -17,6 +17,8 @@ def get_global_push_tasks_from_queue():
     tasks = PushQueue.objects.all().order_by('-id')
     return tasks
 
+
+
 def task_already_in_push_queue(user, volume):
     """
     检测user和book的推送任务是否已经在推送队列内

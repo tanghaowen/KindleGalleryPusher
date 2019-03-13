@@ -22,7 +22,7 @@ DOWNLOAD_LINK_AVAILABLE_HOURS = 2
 
 def home_page(request):
     homepage_book_groups = HomePageGroup.objects.all()
-    recent_updated = Book.objects.filter(show=True).order_by('-update_time')
+    recent_updated = Book.objects.filter(show=True).order_by('-update_time')[:18]
     book = Book.objects.get(id=1)
     books = [book for i in range(0,10)]
     headers = [book for i in range(0,3)]

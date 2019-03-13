@@ -50,6 +50,9 @@ def account_activate(request):
         mvr.password=''
         mvr.save()
         login(request,u)
+        send_mail('漫推 - 新用户注册：' % user_name,
+                  "新用户注册:%s" % user_name,
+                  'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
 
         return HttpResponseRedirect('/')
 
@@ -346,6 +349,10 @@ def payok(request):
         charge_record.payed = True
         charge_record.save()
         charge_record.user.charge_bandwidth(CHARGE_MODE_VIP)
+        send_mail('漫推 - 有用户氪金拉！ %s' %order_id ,
+                  "漫推 - 有用户氪金拉！",
+                  'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
+
 
     else:
         print('订单状态为0，失败')

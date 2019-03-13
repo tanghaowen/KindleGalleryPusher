@@ -250,9 +250,7 @@ def book_score(request, book_id):
 
 @login_required()
 def book_push(request, book_id):
-    if request.method == "GET":
-        raise Http404
-    elif request.method == "POST":
+    if request.method == "POST":
         volume_id = request.POST.get("volume_id",None)
         force_push = request.POST.get("fore_push",False)
         if force_push == 'true': force_push = True
@@ -328,13 +326,24 @@ def volume_download(request):
     if request.method == 'POST':
         user = request.user
         volume_id = int(request.POST.get('volume_id',''))
+        volume_type = request.POST.get('type','')
+        if volume_type not in [VOLUME_TYPE_MOBI,VOLUME_TYPE_ZIP, VOLUME_TYPE_EPUB]: raise Http404
         volume = get_object_or_404(Volume,id=volume_id)
 
-        res = user.add_bandwidth_cost(volume)
-        if res :
+        #res = user.add_bandwidth_cost(volume)
+        cost_res = user.bandwidth_cost(volume,'download',volume_type)
+        status = cost_res['status']
+        # BANDWIDTH_COST为流量消耗成功了  BANDWIDTH_NO_COST为最近已经消费过不必消费流量
+        if status == BANDWIDTH_COST or status == BANDWIDTH_NO_COST :
             return HttpResponse("ok")
-        else:
+        elif status == BANDWIDTH_NOT_ENOUGH:
             return HttpResponse("bandwidth not enough")
+        elif status == ONLY_VIP:
+            return HttpResponse("only vip")
+        elif status == ERROR:
+            raise Http404
+        else:
+            raise Http404
     raise Http404
 
 

@@ -87,7 +87,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">
-                            {{ user.username }}
+                            {{ user.username }}{% if user.vip %}(VIP){% endif %}
                         </a>
                         <div class="dropdown-menu  dropdown-menu-lg-right" aria-labelledby="navbarDropdownMenuLink">
                             <div class="dropdown-item"><p>
@@ -95,17 +95,19 @@
                             <div class="progress" style="margin-left: 20px;margin-right: 20px">
                                 <div class="progress-bar bg-info" role="progressbar"
                                      style="width: {{ user.bandwidth_percent }}%" aria-valuenow="50" aria-valuemin="0"
-                                     aria-valuemax="100">{{ user.bandwidth_remain }}MB
+                                     aria-valuemax="100">剩余{{ user.bandwidth_remain }}MB
                                 </div>
                             </div>
 
                             {% if user.username == 'admin' %}
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'account:bandwidth_records' %}">流量消耗记录</a>
+
                                 <a class="dropdown-item" href="{% url 'convert_queue' %}?global=1">转换队列</a>
-                                <a class="dropdown-item" href="{% url 'account:push_queue' %}">推送队列</a>
+
                             {% endif %}
                             <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'account:push_queue' %}">推送队列</a>
+                            <a class="dropdown-item" href="{% url 'account:bandwidth_records' %}">流量消耗记录</a>
                             <a class="dropdown-item" href="{% url 'account:self_profile' %}">个人信息</a>
                             <a class="dropdown-item" href="{% url 'account:precharge' %}">捐助Vip</a>
 

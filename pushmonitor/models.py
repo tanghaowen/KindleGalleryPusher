@@ -37,22 +37,23 @@ def task_already_in_push_queue(user, volume):
         return 'doing'
     if len(query_done)>0:
         return 'done'
-    return 'ok'
+    return 'note exits'
 
 
-def put_task_to_push_queue(user, volume, force=False):
+def put_task_to_push_queue(user, volume, force=False, ignore_bandwidth = False):
     """
     将user和volume插入到待推送队列中
-    今后该用redis时要改写这部分
+    今后改用redis时要改写这部分
     :param user:
     :param volume:
+    :param force:
+    :param ignore_bandwidth: 被动订阅推送因为不消耗流量，所以这个是用来被动订阅推送的
     :return:
     """
+    # 检测kindle邮箱是否设置完成
     if user.kindle_email is None or ('@kindle.' not in user.kindle_email):
         return 'no kindle email'
     volume_push_size = int(volume.mobi_push_file.size / 1024.0 / 1024.0)
-    if (user.bandwidth_total - user.bandwidth_used) < volume_push_size:
-        return 'bandwidth less'
     task_already_in_queue = task_already_in_push_queue(user,volume)
     if task_already_in_queue == 'pending':
         print("用户: %d %s %s 已经在待推送队列中" %(user.id, volume.book.title, volume.name))
@@ -64,7 +65,35 @@ def put_task_to_push_queue(user, volume, force=False):
         if not force:
             print("用户: %d %s %s 之前已经推送过" % (user.id, volume.book.title, volume.name))
             return 'done'
+
+    # 被动订阅推送因为不消耗流量，所以检测到之后直接推入队内
+    if ignore_bandwidth:
+        print("因为为被动推送，不消耗流量")
+        record = BandwidthCostRecord(user=user, volume=volume, bandwidth_cost=volume_push_size,
+                                     user_bandwidth_before=user.bandwidth_remain,
+                                     user_bandwidth_after=user.bandwidth_remain,
+                                     action='subsc push')
+        record.save()
+        queue = PushQueue(user=user, volume=volume, status='pending')
+        queue.save()
+
+        return 'ok'
+
+    # 这里的是之前没有推送过，或者推送过后依旧设置force的
+    if user.vip:
+        # vip因为扣除流量后所有推送下载都免费，这里传入push会自动检测最近的push和download记录
+        res = user.have_cost_bandwidth_recently(volume=volume)
+        if res:
+            print("用户: %d %s %s 为vip未在推送队列中，最近花费过流量，无流量消耗推送任务入队" % (user.id, volume.book.title, volume.name))
+            queue = PushQueue(user=user, volume=volume, status='pending')
+            queue.save()
+            return 'ok'
         else:
+            # 最近有花费过流量，不计入流量直接入队
+            print("用户: %d %s %s 为vip未在推送队列中，最近没有花费过流量，消耗后推送任务入队" % (user.id, volume.book.title, volume.name))
+            if (user.bandwidth_total - user.bandwidth_used) < volume_push_size:
+                print('流量不够')
+                return 'bandwidth less'
             user_bandwidth_before = user.bandwidth_remain
             user.bandwidth_used += volume_push_size
             user.save()
@@ -75,17 +104,25 @@ def put_task_to_push_queue(user, volume, force=False):
             record.save()
             queue = PushQueue(user=user, volume=volume, status='pending')
             queue.save()
-            print("用户: %d %s %s 之前已经推送过" % (user.id, volume.book.title, volume.name))
-            print("但因为force=True强制再次入队")
             return 'ok'
     else:
-        print("用户: %d %s %s 未在推送队列中，推送任务入队" % (user.id, volume.book.title, volume.name))
-        queue = PushQueue(user=user, volume=volume, status='pending')
-        queue.save()
+        # 非vip每次推送都要消耗流量
+        print("用户: %d %s %s 为非vip未在推送队列中，消耗流量。" % (user.id, volume.book.title, volume.name))
+        if (user.bandwidth_total - user.bandwidth_used) < volume_push_size:
+            print('流量不够')
+            return 'bandwidth less'
+        user_bandwidth_before = user.bandwidth_remain
         user.bandwidth_used += volume_push_size
         user.save()
-        # TODO: 在这里通知推送队列有新的书籍
+        record = BandwidthCostRecord(user=user, volume=volume, bandwidth_cost=volume_push_size,
+                                     user_bandwidth_before=user_bandwidth_before,
+                                     user_bandwidth_after=user.bandwidth_remain,
+                                     action='push')
+        record.save()
+        queue = PushQueue(user=user, volume=volume, status='pending')
+        queue.save()
         return 'ok'
+
 
 
 @receiver(new_volume_showed_signal, sender= EbookConvertQueue, dispatch_uid='new_volume_showed_signal_reciver')
@@ -96,12 +133,12 @@ def new_volume_showed(sender, **kwargs):
     print(volume.name)
     print("开始获取此volume对应的book的订阅用户")
     volume_push_size = int(volume.mobi_push_file.size/1024.0/1024.0)
-    # TODO: 推送的策略，可以考虑下订阅推送的书本不消耗流量
+    # 被动推送时，不消耗流量
+    # TODO: 或者消耗流量只为1/10？
     # book_subscripte_users = volume.book.subscripte_books.all().filter(kindle_email__contains="@kindle.", bandwidth_remain__gte=volume_push_size)
-    book_subscripte_users = volume.book.subscripte_books.all().filter(kindle_email__contains="@kindle.",
-                                                                      bandwidth_remain__gte=volume_push_size)
+    book_subscripte_users = volume.book.subscripte_books.all().filter(kindle_email__contains="@kindle.")
     for user in book_subscripte_users:
         print("用户：", user.username)
-        res = put_task_to_push_queue(user,volume)
+        res = put_task_to_push_queue(user,volume,ignore_bandwidth=True)
 
 

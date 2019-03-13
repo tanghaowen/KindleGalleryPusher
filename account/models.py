@@ -116,6 +116,7 @@ class User(AbstractUser):
     def charge_bandwidth(self,charge_mode):
         if charge_mode == CHARGE_MODE_VIP:
             self.bandwidth_total =self.bandwidth_total + USER_BASE_BANDWIDTH + VIP_PLUS_BANDWIDTH
+            self.vip = True
             self.save()
 
     def get_uer_bandwidth_records(self):

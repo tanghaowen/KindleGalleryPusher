@@ -291,6 +291,7 @@
 
         </div>
     </div>
+
     <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="tabbable" id="tabs-285843">
@@ -312,6 +313,7 @@
                                 <em>mobi</em>为适用kindle等设备的格式<br>
                                 按照<em>Kindle PaperWhite 3</em>规格进行制作
                             </p>
+                            <a href="{% url 'bandwidth_rule' %}" target="_blank"> <p>关于流量消耗策略？</p> </a>
                         </blockquote>
                         {% for volume_group_name,volumes in volumes_dict.items %}
                             <div><p>{{ volume_group_name }}</p></div>
@@ -361,6 +363,7 @@
                                 按照<em>Kobo Aura HD</em>规格进行制作
                             </p>
                         </blockquote>
+                    <a href="{% url 'bandwidth_rule' %}" target="_blank"> <p>关于流量消耗策略？</p> </a>
                         {% for volume_group_name,volumes in volumes_dict.items %}
                             <div><p>{{ volume_group_name }}</p></div>
                             <table class="table table-striped table-hover table-condensed .table-sm">
@@ -391,6 +394,7 @@
 
                             </p>
                         </blockquote>
+                        <a href="{% url 'bandwidth_rule' %}" target="_blank"> <p>关于流量消耗策略？</p> </a>
                         {% for volume_group_name,volumes in volumes_dict.items %}
                             <div><p class="">{{ volume_group_name }}</p></div>
                             <table class="table .table-sm table-striped table-hover ">

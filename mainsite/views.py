@@ -18,7 +18,7 @@ from django.urls import reverse
 from account.models import *
 from pushmonitor.models import put_task_to_push_queue
 
-DOWNLOAD_LINK_AVAILABLE_HOURS = 2
+DOWNLOAD_LINK_AVAILABLE_HOURS = 1
 
 def home_page(request):
     homepage_book_groups = HomePageGroup.objects.all()
@@ -367,4 +367,8 @@ def upload_file(request,book_id):
         volume.save()
         return HttpResponse("OK")
 
+
+@csrf_exempt
+def show_bandwidth_rule(request):
+    return render(request,'mainsite/bandwidth_rule.html')
 

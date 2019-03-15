@@ -204,6 +204,14 @@
                                                 <p>{{ user.username }}</p>
                                             </div>
                                         </div>
+                               <div class="row">
+                                            <div class="col-md-6">
+                                                <label>邀请码</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{ user.invite_code }} <a href="{% url 'account:register' %}?code={{ user.invite_code }}">邀请链接</a></p>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label>kindle邮箱</label>
@@ -225,7 +233,7 @@
                                                 <label>新密码</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <input style="height: 1.5em;"  name="password" type="password"class="form-control border border-primary" placeholder="重置密码后需重登陆(密码最少6位！)"></input>
+                                                <input style="height: 1.5em;"  name="password" type="password"class="form-control border border-primary" placeholder="更改密码后需重登陆(密码最少6位！)"></input>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 1em">

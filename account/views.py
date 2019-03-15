@@ -1,10 +1,14 @@
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpRequest, HttpResponseRedirect
+from django.utils import timezone
+
 from django.views.decorators.csrf import csrf_exempt
 
-from account.models import User, MailVertifySendRecord, PasswordResetMailSendRecord, ChargeRecord, CHARGE_MODE_VIP
+from account.models import User, MailVertifySendRecord, PasswordResetMailSendRecord, ChargeRecord, CHARGE_MODE_VIP, \
+    AccountRegisterIpRecord, get_unique_invite_code, USER_BASE_BANDWIDTH, INVITED_USER_BASE_BANDWIDTH
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -24,7 +28,15 @@ def account_login(request : HttpRequest):
     elif request.method == 'POST':
         user_name = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request,username = user_name, password=password)
+        try:
+            validate_email(user_name)
+            users = User.objects.filter(email=user_name)
+            if len(users) == 0:
+                return HttpResponse("Login Failed. Error username or password!", status=401)
+            else:
+                user = authenticate(request, username=users[0].username, password=password)
+        except ValidationError:
+            user = authenticate(request,username = user_name, password=password)
         if user is not None:
             login_res = login(request,user)
             print("login res",login_res)
@@ -40,17 +52,43 @@ def account_activate(request):
     if vid is None or token is None or vid == '' or token == '': raise Http404
     mvr = get_object_or_404(MailVertifySendRecord,id=vid)
     if mvr.token == token:
+        if 'HTTP_X_FORWARDED_FOR' in request.META:
+            ip = request.META['HTTP_X_FORWARDED_FOR']
+        else:
+            ip = request.META['REMOTE_ADDR']
+        print('有用户点击了激活链接，ip:')
+        print(ip)
+        print("token",token)
+
+
         user_name = mvr.user_name
         email = mvr.email
         password = mvr.password
-        if len(User.objects.filter(username=user_name)) > 0: return HttpResponse("您已激活账号")
-        u = User(username=user_name,email=email)
+        inviter = mvr.who_inviter
+        print(user_name,email)
+        print("邀请者",inviter)
+        #if len(User.objects.filter(username=user_name)) > 0: return HttpResponse("您已激活过账号")
+
+        ips = AccountRegisterIpRecord.objects.filter(reg_date__date=timezone.datetime.today(),
+                                                     ip=ip,action='active')
+        print('此ip今日激活账号数量:%s' % len(ips))
+        if len(ips)>=1:
+            return HttpResponse("您好，请勿多次重复注册账号！")
+        new_user_invite_code = get_unique_invite_code()
+
+        u = User(username=user_name,email=email, invite_code=new_user_invite_code, inviter=inviter)
         u.set_password(password)
+        if inviter is None:
+            u.bandwidth_total = USER_BASE_BANDWIDTH
+        else:
+            u.bandwidth_total = INVITED_USER_BASE_BANDWIDTH
         u.save()
         mvr.password=''
         mvr.save()
         login(request,u)
-        send_mail('漫推 - 新用户注册：' % user_name,
+        r = AccountRegisterIpRecord(ip=ip,action='active')
+        r.save()
+        send_mail('漫推 - 新用户注册：%s' % user_name,
                   "新用户注册:%s" % user_name,
                   'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
 
@@ -133,13 +171,46 @@ def account_register(request : HttpRequest):
     if request.method == 'GET':
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('main_site:home_page'))
-        return render(request, 'accounts/register.html')
+        invite_code = request.GET.get('code',None)
+        context = {"invite_code":invite_code}
+
+        return render(request, 'accounts/register.html',context=context)
     elif request.method == 'POST':
         email = request.POST.get('email',"").strip()
         user_name = request.POST.get('username','').strip()
         password = request.POST.get('password',"")
+        invite_code = request.POST.get('invite_code',None)
+        inviter = None
+        if invite_code is not None:
+            inviters = User.objects.filter(invite_code=invite_code)
+            if len(inviters)>0:
+                inviter= inviters[0]
+
+
+        # 获取用户的ip
+        if 'HTTP_X_FORWARDED_FOR' in request.META:
+            ip = request.META['HTTP_X_FORWARDED_FOR']
+        else:
+            ip = request.META['REMOTE_ADDR']
+        print('有新用户发送注册邮件，ip:')
+        print(ip)
+        ips = AccountRegisterIpRecord.objects.filter(reg_date__date=timezone.datetime.today(),
+                                                     ip=ip,action='mail')
+        #ips = AccountRegisterIpRecord.objects.filter(ip=ip,date__date=timezone.datetime.date.today(),action='mail')
+
+        print('此ip今日发送邮件数量%d' % len(ips))
+        if len(ips)>10:
+            print('此地址今天请求发送邮件数量超过10封')
+            return HttpResponse("mail over limit")
+
+
         if user_name == "":
             return HttpResponse("username can't use!")
+        try:
+            validate_email(user_name)
+            return HttpResponse("don't use email as username")
+        except ValidationError:
+            pass
         if len(password)< 6:
             return HttpResponse("password too short!")
         if len(User.objects.filter(username=user_name)) > 0:
@@ -157,7 +228,7 @@ def account_register(request : HttpRequest):
         # new_user.save()
         print("有新注册的账户: %s %s" % (user_name, email))
         token = get_random_string(length=40)
-        mvr = MailVertifySendRecord(type='active',token=token, user_name=user_name, email=email,password=password)
+        mvr = MailVertifySendRecord(type='active',token=token, user_name=user_name, email=email,password=password,who_inviter=inviter)
         mvr.save()
 
         # 激活邮件
@@ -165,7 +236,7 @@ def account_register(request : HttpRequest):
         host = request.get_host()
         active_url ="http://"+ host + active_url + '?vid=%d&token=%s' % (mvr.id, token)
         html_body = """
-        <h1>您好：</h1>
+        <p>您好：</p>
         <p>%s</p>
         <p>感谢您注册漫推，请点击下面的链接激活账号。</p>
         <a href='%s'>点击激活</a>
@@ -180,6 +251,8 @@ def account_register(request : HttpRequest):
                   'admin@asairo.net', [email], html_message=html_body,fail_silently=False)
 
         print("发送完毕")
+        ip_record = AccountRegisterIpRecord(action='mail',ip=ip)
+        ip_record.save()
         #login_res = login(request,new_user)
         #print("login res",login_res)
         return HttpResponse("ok")

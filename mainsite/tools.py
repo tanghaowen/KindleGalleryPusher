@@ -131,7 +131,7 @@ class BookInfoSpider:
         title_li = html.select('ol.breadcrumb > li')[-1]
         title_a_url = title_li.a['href']
         query = urlsplit(title_a_url).query
-        title = parse_qs(query).get('name')[0]
+        title = parse_qs(query).get('name')[0].replace("【入荷予約】","")
         print(title)
 
         title_h1 = html.select('div.product-detail h1')[0]

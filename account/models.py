@@ -11,6 +11,7 @@ from django.core.validators import validate_email
 DOWNLOAD_LINK_AVAILABLE_HOURS = 1
 ACCOUNT_ACTIVATE_TOKEN_AVAILABLE_HOURS = 1
 USER_BASE_BANDWIDTH = 200
+INVITED_USER_BASE_BANDWIDTH = 500
 VIP_PLUS_BANDWIDTH = 20 * 1024
 CHARGE_MODE_VIP = 1
 
@@ -23,6 +24,20 @@ ERROR = 3
 VOLUME_TYPE_ZIP = 'zip'
 VOLUME_TYPE_MOBI = 'mobi'
 VOLUME_TYPE_EPUB = 'epub'
+
+def get_unique_invite_code():
+    """
+    获取随机的邀请码，如果数据库里已经存在了则循环获取
+    :return:
+    """
+    while True:
+        code = get_random_string(length=10)
+        res = User.objects.filter(invite_code=code)
+        if len(res) > 0:
+            continue
+        else:
+            break
+    return code
 
 class User(AbstractUser):
     nick_name = models.CharField(max_length=40,blank=True,null=True)
@@ -40,7 +55,8 @@ class User(AbstractUser):
     kindle_email = models.EmailField(null=True,blank=True, unique=True, validators=[validate_email,])
     activate_token = models.CharField(default="",max_length=50,blank=True,null=True)
     activate_token_create_time = models.DateTimeField(null=True)
-    # 会员等级，0为普通会员，1为vip 2为搞基vip
+    inviter = models.ForeignKey("self",null=True,verbose_name='邀请者', on_delete=models.DO_NOTHING)
+    invite_code = models.CharField(max_length=20,default=get_unique_invite_code)
 
     def bandwidth_cost(self,volume,action,volume_type):
         """
@@ -117,6 +133,10 @@ class User(AbstractUser):
         if charge_mode == CHARGE_MODE_VIP:
             self.bandwidth_total =self.bandwidth_total + USER_BASE_BANDWIDTH + VIP_PLUS_BANDWIDTH
             self.vip = True
+            if self.inviter is not None:
+                # 有邀请者的话，每次氪金都给邀请者充值一半的流量
+                self.inviter.bandwidth_total += int((USER_BASE_BANDWIDTH + VIP_PLUS_BANDWIDTH)/2)
+                self.inviter.save()
             self.save()
 
     def get_uer_bandwidth_records(self):
@@ -253,6 +273,7 @@ class MailVertifySendRecord(models.Model):
     # 邮箱
     email = models.EmailField(null=True)
     password = models.CharField(max_length=255,null=True)
+    who_inviter = models.ForeignKey(User,on_delete=models.DO_NOTHING,null=True,verbose_name='邀请者')
 
 
     class Meta:
@@ -297,3 +318,8 @@ class ChargeRecord(models.Model):
         self.payed=True
         self.save()
 
+
+class AccountRegisterIpRecord(models.Model):
+    ip = models.CharField(max_length=20,verbose_name='ip地址')
+    reg_date = models.DateTimeField(default=now, verbose_name='请求时间')
+    action = models.CharField(max_length=20, verbose_name='请求类型')

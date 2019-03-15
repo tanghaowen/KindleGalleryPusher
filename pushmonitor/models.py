@@ -89,7 +89,6 @@ def put_task_to_push_queue(user, volume, force=False, ignore_bandwidth = False):
             queue.save()
             return 'ok'
         else:
-            # 最近有花费过流量，不计入流量直接入队
             print("用户: %d %s %s 为vip未在推送队列中，最近没有花费过流量，消耗后推送任务入队" % (user.id, volume.book.title, volume.name))
             if (user.bandwidth_total - user.bandwidth_used) < volume_push_size:
                 print('流量不够')

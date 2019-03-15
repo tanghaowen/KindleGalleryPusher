@@ -49,7 +49,11 @@
                 message_box_text.innerHTML = '正在创建账户...';
                 document.getElementById('reg-btn').disabled = true;
                 let crsfsession = $("[name='csrfmiddlewaretoken']")[0].value;
-                let postdata = `username=${username}&password=${password}&csrfmiddlewaretoken=${crsfsession}&email=${email}`;
+                {% if invite_code %}
+                    let postdata = `username=${username}&password=${password}&csrfmiddlewaretoken=${crsfsession}&email=${email}&invite_code={{ invite_code }}`;
+                {% else %}
+                    let postdata = `username=${username}&password=${password}&csrfmiddlewaretoken=${crsfsession}&email=${email}`;
+                {% endif %}
 
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.onload = function (event) {
@@ -65,16 +69,22 @@
                         message_box_text.innerHTML = '密码小于6个字符！';
                         }else if (res.includes('same username already exits')) {
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '用户名已存在！';
+                        message_box_text.innerHTML = '用户名已存在！ 请通过下方链接登陆';
                         }else if (res.includes('email already used')) {
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '邮箱已经注册过！';
+                        message_box_text.innerHTML = `邮箱已经注册过！ 请通过下方链接登陆`;
                         }else if (res.includes('email can\'t use')) {
                         message_box.style.display='block';
                         message_box_text.innerHTML = '邮箱格式有问题！';
+                        }else if (res.includes('mail over limit')) {
+                        message_box.style.display='block';
+                        message_box_text.innerHTML = '您好，为防止恶意注册，一天内只能发送10封邮件！';
+                        }else if (res.includes('don\'t use email as username')) {
+                        message_box.style.display='block';
+                        message_box_text.innerHTML = '请勿使用邮箱地址作为用户名！';
                         }else{
                             message_box.style.display='block';
-                            message_box_text.innerHTML = '注册成功！已经发送激活邮件，请去邮箱查收。';
+                            message_box_text.innerHTML = '注册成功！已经发送激活邮件。如未收到请查看垃圾邮件箱';
 {#                            {% if redirect_path != None %}#}
 {#                                setTimeout("location.href = '{{ redirect_path }}';",1000);#}
 {##}
@@ -123,7 +133,7 @@
 						</span>
 					</div>
 					<div class="wrap-input100 validate-input m-b-10" data-validate = "Username is required">
-						<input class="input100" id="username" type="text" name="username" placeholder="用户名">
+						<input class="input100" id="username" type="text" name="username" placeholder="用户名(可中文但勿使用邮箱地址作为用户名)">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-user"></i>
@@ -137,6 +147,7 @@
 							<i class="fa fa-lock"></i>
 						</span>
 					</div>
+
 
 					<div class="container-login100-form-btn p-t-10">
 						<button id="reg-btn" class="login100-form-btn" onclick="register()" type="button">

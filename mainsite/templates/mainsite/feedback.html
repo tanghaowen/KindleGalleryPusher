@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>漫推 问题反馈</title>
+    {% include 'mainsite/load_bootstrap.html' %}
+</head>
+<body>
+<div class="container">
+    {% include 'mainsite/book_info_header.html' %}
+    <div style="height: 4em;"></div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<form role="form" id="feedback-form" method="post" action="{% url 'feedback' %}">
+
+				<div class="form-group">
+					 <label for="exampleInputEmail1">您的邮箱地址或者qq等</label><input type="text" class="form-control" name="email" />
+				</div>
+				<div class="form-group">
+					 <label for="exampleInputEmail1">反馈的问题</label><textarea  rows="10" class="form-control" name="message" id="message" form="feedback-form" placeholder="您要反馈的问题" /></textarea>
+				</div>
+                <button type="submit" class="btn btn-primary">提交反馈</button>
+
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+</html>

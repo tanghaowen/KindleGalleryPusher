@@ -1,6 +1,8 @@
 import time
 from urllib.parse import quote, urlencode
 
+from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from django.utils.timezone import now, timedelta
 
 from django.shortcuts import render
@@ -22,16 +24,25 @@ DOWNLOAD_LINK_AVAILABLE_HOURS = 1
 
 def home_page(request):
     homepage_book_groups = HomePageGroup.objects.all()
+    side_special = HomePageSpecialSide.objects.all()
     recent_updated = Book.objects.filter(show=True).order_by('-update_time')[:18]
-    book = Book.objects.get(id=1)
-    books = [book for i in range(0,10)]
-    headers = [book for i in range(0,3)]
 
-    print(headers)
-    context = {"banner":books,
-               "homepage_book_groups":homepage_book_groups,
-               "recent_updated":recent_updated}
+    context = { "homepage_book_groups":homepage_book_groups,
+               "recent_updated":recent_updated,
+                "side_special":side_special}
     return render(request,'mainsite/homepage.html', context=context)
+
+
+def full_recently_updated_books(request):
+    page_idx = request.GET.get("page",1)
+    recent_updated = Book.objects.filter(show=True).order_by('-update_time')
+    recent_updated_pages = Paginator(recent_updated,20)
+    page = recent_updated_pages.get_page(page_idx)
+
+    context = { "page":page,
+                "title":'最近更新的漫画列表'}
+    return render(request,'mainsite/book_list.html', context=context)
+
 
 
 def search_page(request):
@@ -372,3 +383,26 @@ def upload_file(request,book_id):
 def show_bandwidth_rule(request):
     return render(request,'mainsite/bandwidth_rule.html')
 
+@csrf_exempt
+def feedback(request):
+    if request.method == "GET":
+        return render(request,'mainsite/feedback.html')
+    elif request.method == "POST":
+        email = request.POST.get("email",'无邮箱')
+        message = request.POST.get("message","无内容")
+        user = request.user
+        id = -1 if user.id is None else user.id
+        username = '游客用户' if user.id is None else user.username
+        if 'HTTP_X_FORWARDED_FOR' in request.META:
+            ip = request.META['HTTP_X_FORWARDED_FOR']
+        else:
+            ip = request.META['REMOTE_ADDR']
+        send_mail('漫推 - 有用户反馈问题了:%s' % username,
+                  "用户ID:%d 用户名%s \n 对方联系方式: %s  IP:%s\n反馈问题:\n%s" % (id,username,email,ip,message),
+                  'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
+        if user.id is not None:
+            ufeed = UserFeedback(email=email,ip=ip,message=message,user=user)
+        else:
+            ufeed = UserFeedback(email=email, ip=ip, message=message, user=None)
+        ufeed.save()
+        return render(request,'mainsite/feedback_ok.html')

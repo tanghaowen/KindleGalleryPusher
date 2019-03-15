@@ -45,7 +45,7 @@ class UserAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email','kindle_email','signature')}),
-        (_('Vip info'), {'fields': ('vip', 'vip_expire', 'bandwidth_total', 'bandwidth_used', 'bandwidth_remain')}),
+        (_('Vip info'), {'fields': ('vip', 'vip_expire', 'get_bandwidth_total', 'bandwidth_used', 'bandwidth_remain')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
 

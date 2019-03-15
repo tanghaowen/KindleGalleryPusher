@@ -79,9 +79,9 @@ def account_activate(request):
         u = User(username=user_name,email=email, invite_code=new_user_invite_code, inviter=inviter)
         u.set_password(password)
         if inviter is None:
-            u.bandwidth_total = USER_BASE_BANDWIDTH
+            u.bandwidth_tmp = USER_BASE_BANDWIDTH
         else:
-            u.bandwidth_total = INVITED_USER_BASE_BANDWIDTH
+            u.bandwidth_tmp = INVITED_USER_BASE_BANDWIDTH
         u.save()
         mvr.password=''
         mvr.save()
@@ -263,17 +263,24 @@ def account_register(request : HttpRequest):
 @login_required
 def set_self_account(request):
     user =  request.user # type: User
-
+    collections = user.collections.all()[:12]
+    subscs = user.subscriptes.all()[:12]
     context = {'user':user,
-               'edit':True}
+               'edit':True,
+               'collections':collections,
+               'subscs':subscs}
     return render(request,'accounts/profile.html',context=context)
 
 
 def account_profile(request,uid):
     user = get_object_or_404(User, id=uid)
-
+    collections = user.collections.all()[:12]
+    subscs = user.subscriptes.all()[:12]
     context = {'user':user,
-               'edit':False}
+               'edit':False,
+               'collections':collections,
+               'subscs':subscs}
+
     return render(request,'accounts/profile.html',context=context)
 
 @login_required
@@ -441,3 +448,46 @@ def precharge(request):
         context = {'user':user}
         return render(request,'accounts/precharge.html',context)
     raise Http404
+
+
+@login_required
+def full_collection(request):
+    page_idx = request.GET.get("page", 1)
+    uid = request.GET.get('uid',None)
+    try:
+        uid = int(uid)
+    except (ValueError, TypeError):
+        user = request.user
+        collections = user.collections.all()
+    else:
+        user = get_object_or_404(User, id=uid)
+        collections = user.collections.all()
+
+    collections_pages = Paginator(collections, 20)
+    page = collections_pages.get_page(page_idx)
+
+    context = {"page": page,
+               "title": '%s 的收藏列表'% user.username}
+    return render(request, 'mainsite/book_list.html', context=context)
+
+
+@login_required
+def full_subscs(request):
+    page_idx = request.GET.get("page", 1)
+    uid = request.GET.get('uid',None)
+    try:
+        uid = int(uid)
+    except  (ValueError, TypeError):
+        user = request.user
+        subscriptes = user.subscriptes.all()
+    else:
+        user = get_object_or_404(User, id=uid)
+        subscriptes = user.subscriptes.all()
+
+
+    subscriptes_pages = Paginator(subscriptes, 20)
+    page = subscriptes_pages.get_page(page_idx)
+
+    context = {"page": page,
+               "title": '%s 的订阅列表'% user.username}
+    return render(request, 'mainsite/book_list.html', context=context)

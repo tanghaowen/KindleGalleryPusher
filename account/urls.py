@@ -18,6 +18,8 @@ urlpatterns = [
     path('payoknDxx4S0qCf/', views.payok, name='pay_ok'),
     path('precharge/', views.precharge, name='precharge'),
     path('records/', views.bandwidth_cost_records, name='bandwidth_records'),
+    path('collections/', views.full_collection, name='collections'),
+    path('subscs/', views.full_subscs, name='subscs'),
 
 
 ]

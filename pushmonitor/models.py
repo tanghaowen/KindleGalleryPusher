@@ -54,6 +54,8 @@ def put_task_to_push_queue(user, volume, force=False, ignore_bandwidth = False):
     if user.kindle_email is None or ('@kindle.' not in user.kindle_email):
         return 'no kindle email'
     volume_push_size = int(volume.mobi_push_file.size / 1024.0 / 1024.0)
+    if len(HomePageSpecialSide.objects.filter(book=volume.book))>0:
+        volume_push_size = 0
     task_already_in_queue = task_already_in_push_queue(user,volume)
     if task_already_in_queue == 'pending':
         print("用户: %d %s %s 已经在待推送队列中" %(user.id, volume.book.title, volume.name))
@@ -90,7 +92,7 @@ def put_task_to_push_queue(user, volume, force=False, ignore_bandwidth = False):
             return 'ok'
         else:
             print("用户: %d %s %s 为vip未在推送队列中，最近没有花费过流量，消耗后推送任务入队" % (user.id, volume.book.title, volume.name))
-            if (user.bandwidth_total - user.bandwidth_used) < volume_push_size:
+            if (user.bandwidth_remain) < volume_push_size:
                 print('流量不够')
                 return 'bandwidth less'
             user_bandwidth_before = user.bandwidth_remain

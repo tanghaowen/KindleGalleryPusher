@@ -48,7 +48,12 @@ class User(AbstractUser):
     avatar = models.OneToOneField(ImageWithThumb,on_delete=models.CASCADE,null=True,blank=True)
     vip = models.BooleanField(default=False,blank=False,null=False)
     vip_expire = models.DateTimeField(blank=True,null=True)
-    bandwidth_total = models.IntegerField(default=0)
+    # 每个月会重置的流量
+    bandwidth_tmp = models.IntegerField(default=0)
+    # 永久流量
+    bandwidth_forever = models.IntegerField(default=0)
+    # vip流量
+    bandwidth_vip = models.IntegerField(default=0)
     bandwidth_used = models.PositiveIntegerField(default=0)
     bandwidth_remain =models.IntegerField(default=0)
     bandwidth_percent = models.PositiveIntegerField(default=100)
@@ -57,6 +62,9 @@ class User(AbstractUser):
     activate_token_create_time = models.DateTimeField(null=True)
     inviter = models.ForeignKey("self",null=True,verbose_name='邀请者', on_delete=models.DO_NOTHING)
     invite_code = models.CharField(max_length=20)
+
+    def get_bandwidth_total(self):
+        return self.bandwidth_tmp + self.bandwidth_vip + self.bandwidth_forever
 
     def bandwidth_cost(self,volume,action,volume_type):
         """
@@ -98,6 +106,7 @@ class User(AbstractUser):
             elif volume_type == VOLUME_TYPE_MOBI: volume_bandwidth = volume.mobi_file.size/1024.0/1024.0
             elif volume_type == VOLUME_TYPE_EPUB: volume_bandwidth = volume.epub_file.size/1024.0/1024.0
             else: return {"status":ERROR}
+            if len(HomePageSpecialSide.objects.filter(book=volume.book))>0: volume_bandwidth = 0
             # 检测下最近是否有下载过对应格式的卷，有下载过的话就不消耗流量
             res = self.have_cost_bandwidth_recently(volume,'download',volume_type)
             if res:
@@ -131,11 +140,11 @@ class User(AbstractUser):
 
     def charge_bandwidth(self,charge_mode):
         if charge_mode == CHARGE_MODE_VIP:
-            self.bandwidth_total =self.bandwidth_total + USER_BASE_BANDWIDTH + VIP_PLUS_BANDWIDTH
+            self.bandwidth_vip += self.bandwidth_vip + USER_BASE_BANDWIDTH + VIP_PLUS_BANDWIDTH
             self.vip = True
             if self.inviter is not None:
-                # 有邀请者的话，每次氪金都给邀请者充值一半的流量
-                self.inviter.bandwidth_total += int((USER_BASE_BANDWIDTH + VIP_PLUS_BANDWIDTH)/2)
+                # 有邀请者的话，每次氪金都给邀请者永久流量增加200M
+                self.inviter.bandwidth_forever += 200
                 self.inviter.save()
             self.save()
 
@@ -196,11 +205,11 @@ class User(AbstractUser):
             return True
 
     def save(self, *args, **kwargs):
-        self.bandwidth_remain = self.bandwidth_total - self.bandwidth_used
-        if self.bandwidth_total == 0:
+        self.bandwidth_remain = self.get_bandwidth_total() - self.bandwidth_used
+        if self.get_bandwidth_total() == 0:
             self.bandwidth_percent = 100
         else:
-            p = int(self.bandwidth_remain*100.0/self.bandwidth_total)
+            p = int(self.bandwidth_remain*100.0/self.get_bandwidth_total())
             if p < 0: self.bandwidth_percent = 100
             else: self.bandwidth_percent = p
 
@@ -323,3 +332,12 @@ class AccountRegisterIpRecord(models.Model):
     ip = models.CharField(max_length=20,verbose_name='ip地址')
     reg_date = models.DateTimeField(default=now, verbose_name='请求时间')
     action = models.CharField(max_length=20, verbose_name='请求类型')
+
+
+
+class UserFeedback(models.Model):
+    email = models.CharField(max_length=255)
+    message = models.TextField()
+    user = models.ForeignKey(User,on_delete=models.DO_NOTHING,null=True)
+    date = models.DateTimeField(default=now)
+    ip = models.CharField(max_length=100)

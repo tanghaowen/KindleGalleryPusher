@@ -110,6 +110,11 @@ class EbookConvertQueueAdmin(admin.ModelAdmin):
 class HomePageGroupAdmin(admin.ModelAdmin):
     filter_vertical = ['books']
 
+
+class HomePageSideSpecialAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Book, BookAdmin)
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(ImageWithThumb, ImageAdmin)
@@ -119,3 +124,4 @@ admin.site.register(EbookConvertQueue,EbookConvertQueueAdmin)
 admin.site.register(Volume)
 admin.site.register(Permission)
 admin.site.register(HomePageGroup,HomePageGroupAdmin)
+admin.site.register(HomePageSpecialSide,HomePageSideSpecialAdmin)

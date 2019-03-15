@@ -102,6 +102,12 @@
             color: #0062cc;
         }
     </style>
+    <script>
+
+        $(document).ready(function(){
+    $('#show-pop').popover();
+});
+    </script>
 </head>
 <body>
 
@@ -206,10 +212,10 @@
                                         </div>
                                <div class="row">
                                             <div class="col-md-6">
-                                                <label>邀请码</label>
+                                                <label>邀请链接</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p>{{ user.invite_code }} <a href="{% url 'account:register' %}?code={{ user.invite_code }}">邀请链接</a></p>
+                                                <p><a href="{% url 'account:register' %}?code={{ user.invite_code }}">邀请链接</a> <a id="show-pop" href="#" data-toggle="popover" title="邀请链接" data-content="通过您的邀请链接注册的用户，将初始获得500M流量（无邀请的用户只获得200M流量）。并且每当对方捐助一次vip服务，您每个月的可用流量上限就永久增加200M）">邀请链接的作用？</a></p>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -292,7 +298,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 {% if edit %}
-                                                    <p>{{ user.bandwidth_used }}MB/{{ user.bandwidth_total }}MB</p>
+                                                    <p>{{ user.bandwidth_remain }}MB/{{ user.get_bandwidth_total }}MB</p>
                                                 {% else %}
                                                     <p>******</p>
                                                 {% endif %}
@@ -300,43 +306,55 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>English Level</label>
+                                                <label>永久流量</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p>Expert</p>
+                                                <p>{{user.bandwidth_forever}}MB</p>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>Availability</label>
+                                                <label>已使用流量</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p>6 months</p>
+                                                <p>{{user.bandwidth_used}}MB</p>
                                             </div>
                                         </div>
 
                             </div>
                             <div class="tab-pane fade" id="subc" role="tabpanel" aria-labelledby="profile-tab">
                                         <div class="row" >
-                                            {% for book in user.subscriptes.all %}
+                                            {% for book in subscs %}
                                                 <div class="col-md-2 col-3" style="text-align: center">
                                                     <div style="width:100px"><img src="{{ book.cover_used.thumb_image.url }}" style="width: 70px;"></div>
                                                     <div style="width: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="/book/{{ book.id }}/"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">{{ book.title }}</p></a></div>
                                                 </div>
                                             {% endfor %}
+                                        {% if user.subscriptes.all > 17 %}
+                                            <div class="col-md-2 col-3" style="text-align: center; height: 100px">
+                                                <div style="height: 100px;line-height: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="{% url 'account:collections' %}"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">完整列表</p></a></div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
                                         </div>
 
 
                             </div>
                             <div class="tab-pane fade" id="collec" role="tabpanel" aria-labelledby="profile-tab">
                                         <div class="row" >
-                                            {% for book in user.collections.all %}
+                                            {% for book in collections %}
                                                 <div class="col-md-2 col-3" style="text-align: center">
                                                     <div style="width:100px"><img src="{{ book.cover_used.thumb_image.url }}" style="width: 70px;"></div>
                                                     <div style="width: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="/book/{{ book.id }}/"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">{{ book.title }}</p></a></div>
                                                 </div>
+
                                             {% endfor %}
+                                        {% if user.collections.all > 17 %}
+                                            <div class="col-md-2 col-3" style="text-align: center; height: 100px">
+                                                <div style="height: 100px;line-height: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="{% url 'account:collections' %}"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">完整列表</p></a></div>
+                                            </div>
                                         </div>
+                                        {% endif %}
 
                             </div>
                         </div>

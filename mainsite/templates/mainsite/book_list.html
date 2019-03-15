@@ -40,14 +40,14 @@
     {% include 'mainsite/book_info_header.html' %}
     <div style="height: 5em;"></div>
     <div class="container">
-    <div class="row">
-        <div class="col-sm-12 col-xs-12 col-md-10 col-lg-10">
+        <div class="row">
+        <div class="col-12">
 
         <div class="row"> <div class="col-12">
-            <div class="head-div" style="display:inline-block"><h4><span><a href="{% url 'main_site:book_recently' %}">最近更新</a></span></h4></div>
+            <div class="head-div"><h4><span>{{title}}</span></h4></div>
             </div></div>
         <div class="row" style="padding: 7px; margin-bottom: 2em">
-            {% for book in recent_updated %}
+            {% for book in page %}
                 <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2 col-4 book-info" style="width: 100px; margin-bottom: 1em">
                     <a href="{% url 'main_site:book' book_id=book.id %}"  data-toggle="popover" data-placement="right" data-container="{{ book.desc }}" data-title="{{ book.title }}">
                     <img src="{{ book.cover_used.thumb_image.url }}" width="100" class="rounded img-responsive"></a>
@@ -60,37 +60,36 @@
 
             {% endfor %}
         </div>
-        {% for group in homepage_book_groups %}
-            <div class="row head-div"> <div class="col-12"> <h4>{{ group.name }}</h4></div></div>
-            <div class="row" style='text-align: center; margin-bottom: 2em'>
-                {% for book in group.books.all %}
-                    <div class="col-xs-4 col-sm-3 col-md-2 col-lg-2 col-4 book-info" style="width: 50px;">
-                        <div><a href="{% url 'main_site:book' book_id=book.id %}"><img src="{{ book.cover_used.thumb_image.url }}" width="100" class="rounded img-responsive"></a> </div>
-                        <div><a href="/book/{{ book.id }}"><p class="myp" style="text-overflow:ellipsis"> {{ book.title }}</p> </a></div>
-                        <div><p class="myp">
-                            {% for author in book.author.all %}
-                                {{ author.name }}&ensp;
-                            {% endfor %}</p></div>
-                    </div>
 
-                {% endfor %}
-            </div>
+    </div>    </div>
+        <nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+      {% if page.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">首页</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">首页</a></li>
+      {% endif %}
+      {% if page.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}" tabindex="-1" aria-disabled="true">上一页</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">上一页</a></li>
+      {% endif %}
+        <li class="page-item"><a class="page-link active">{{ page.number }}</a> </li>
+    {% if page.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">下一页</a></li>
+    {% else %}
+    <li class="page-item disabled"><a class="page-link" href="#">下一页</a></li>
+    {% endif %}
+    {% if page.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page.paginator.num_pages  }}">尾页</a></li>
+    {% else %}
+    <li class="page-item disabled"><a class="page-link" href="#">尾页</a></li>
+    {% endif %}
+  </ul>
+</nav>
 
 
-        {% endfor %}
-    </div>
-        <div class="col-md-2 col-lg-2 hidden-xs hidden-sm">
-            <h2>特别推荐</h2>
 
-            {% for b in side_special %}
-                <img src="{{ b.book.cover_used.thumb_image.url }}">
-                <p class="myp"><a href="/book/{{ b.book.id }}">{{ b.book.title }}</a></p>
-                <p style="text-overflow:ellipsis">{{ b.desc }}</p>
-
-            {% endfor %}
-    </div>
-
-    </div>
 
     </div>
 

@@ -288,6 +288,10 @@ class Volume(models.Model):
     bandwidth_cost = models.IntegerField(null=True,blank=True)
 
     def get_volume_bandwidth_cost(self):
+        #在首页特别推荐里的书籍都只消耗0MB
+        books = HomePageSpecialSide.objects.filter(book=self.book)
+        if len(books) == 0:
+            return 0
         sizes = [self.zip_file.size, self.epub_file.size, self.mobi_file.size, self.mobi_push_file.size]
         size_min = min(sizes)
         return size_min/1024.0/1024.0
@@ -465,6 +469,17 @@ class HomePageGroup(models.Model):
     class Meta:
         verbose_name = "首页分组"
         verbose_name_plural = "首页分组"
+
+    def __str__(self):
+        return self.name
+
+class HomePageSpecialSide(models.Model):
+    name = models.CharField(max_length=100)
+    book = models.ForeignKey(Book,on_delete=models.DO_NOTHING)
+    desc = models.CharField(max_length=255)
+    class Meta:
+        verbose_name = "首页特别推荐"
+        verbose_name_plural = "首页特别推荐"
 
     def __str__(self):
         return self.name

@@ -106,22 +106,29 @@ class EbookConvertQueueAdmin(admin.ModelAdmin):
     list_display = ['volume','epub_ok','mobi_ok','mobi_push_ok','status','added_date']
 
 
+class EbookConvertOverAdmin(admin.ModelAdmin):
+    list_display = ['volume','epub_ok','mobi_ok','mobi_push_ok','status','over_date']
+
+
 
 class HomePageGroupAdmin(admin.ModelAdmin):
     filter_vertical = ['books']
 
 
 class HomePageSideSpecialAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name','book','desc']
+
+
 
 
 admin.site.register(Book, BookAdmin)
-admin.site.register(Author, AuthorAdmin)
-admin.site.register(ImageWithThumb, ImageAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(VolumeType)
-admin.site.register(EbookConvertQueue,EbookConvertQueueAdmin)
 admin.site.register(Volume)
+admin.site.register(Author, AuthorAdmin)
+admin.site.register(VolumeType)
+admin.site.register(Tag, TagAdmin)
+admin.site.register(ImageWithThumb, ImageAdmin)
 admin.site.register(Permission)
 admin.site.register(HomePageGroup,HomePageGroupAdmin)
 admin.site.register(HomePageSpecialSide,HomePageSideSpecialAdmin)
+admin.site.register(EbookConvertQueue,EbookConvertQueueAdmin)
+admin.site.register(EbookConvertOver,EbookConvertOverAdmin)

@@ -273,7 +273,7 @@ class BandwidthCostRecord(models.Model):
 class MailVertifySendRecord(models.Model):
     send_date = models.DateTimeField(default=now)
     # 重置密码的话，关联的uid
-    relative_uid = models.IntegerField(null=True)
+    relative_uid = models.IntegerField(null=True,verbose_name='重置密码uid')
     # activate为注册时激活账号， resetpwd 为重置密码
     type = models.CharField(max_length=20)
     token = models.CharField(max_length=50)
@@ -289,6 +289,7 @@ class MailVertifySendRecord(models.Model):
         verbose_name_plural = '邮件验证发送列表'
         verbose_name = '邮件验证发送列表'
 
+
 class PasswordResetMailSendRecord(models.Model):
     send_date = models.DateTimeField(default=now)
     # 重置密码的话，关联的uid
@@ -300,6 +301,7 @@ class PasswordResetMailSendRecord(models.Model):
     class Meta:
         verbose_name_plural = '密码重置邮件发送列表'
         verbose_name = '密码重置邮件发送列表'
+
 
 class DownloadRecord(models.Model):
     user = models.ForeignKey(User,verbose_name='用户', on_delete=models.DO_NOTHING)
@@ -319,13 +321,17 @@ class ChargeRecord(models.Model):
     created_time = models.DateTimeField(default=now,verbose_name='创建订单的时间')
     payed_time = models.DateTimeField(null=True,verbose_name='付款成功时间')
     content = models.TextField(verbose_name="充值的注释")
-    order_id = models.CharField(max_length=100,verbose_name='订单id')
+    order_id = models.CharField(max_length=255,verbose_name='订单id')
     payed = models.BooleanField(default=False,verbose_name='付款是否成功')
     status = models.CharField(default='created',max_length=20)
     def set_payed(self):
         self.payed_time=now()
         self.payed=True
         self.save()
+
+    class Meta:
+        verbose_name = '充值记录'
+        verbose_name_plural = '充值记录'
 
 
 class AccountRegisterIpRecord(models.Model):
@@ -334,6 +340,10 @@ class AccountRegisterIpRecord(models.Model):
     action = models.CharField(max_length=20, verbose_name='请求类型')
 
 
+    class Meta:
+        verbose_name = '注册ip记录'
+        verbose_name_plural = '注册ip记录'
+
 
 class UserFeedback(models.Model):
     email = models.CharField(max_length=255)
@@ -341,3 +351,7 @@ class UserFeedback(models.Model):
     user = models.ForeignKey(User,on_delete=models.DO_NOTHING,null=True)
     date = models.DateTimeField(default=now)
     ip = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = '用户问题反馈'
+        verbose_name_plural = '用户问题反馈'

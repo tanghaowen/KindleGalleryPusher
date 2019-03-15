@@ -206,6 +206,39 @@ class UserAdmin(admin.ModelAdmin):
             request.POST['_continue'] = 1
         return super().response_add(request, obj, post_url_continue)
 
+
+class AccountRegisterIpRecordAdmini(admin.ModelAdmin):
+    list_display = ['ip','reg_date','action']
+
+
+class ChargeRecordAdmin(admin.ModelAdmin):
+    list_display = ['user','price','order_id','payed','created_time','payed_time']
+
+class DownloadRecordAdmin(admin.ModelAdmin):
+    list_display = ['user', 'volume','get_book_name','volume_type','vip','info','download_date']
+
+    def get_book_name(self,obj):
+        return obj.volume.book
+
+
+class UserFeedbackAdmin(admin.ModelAdmin):
+    list_display = ['user', 'ip', 'email','message','date']
+
+
+class BandwidthCostRecordAdmin(admin.ModelAdmin):
+    list_display = ['user', 'volume', 'volume_type', 'bandwidth_cost','user_bandwidth_before','user_bandwidth_after','cost_date']
+
+
+class MailVertifySendRecordAdmin(admin.ModelAdmin):
+    list_display = ['type','token','user_name','email','who_inviter','relative_uid','send_date']
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Comment)
 admin.site.register(Score)
+admin.site.register(AccountRegisterIpRecord,AccountRegisterIpRecordAdmini)
+admin.site.register(ChargeRecord,ChargeRecordAdmin)
+admin.site.register(DownloadRecord,DownloadRecordAdmin)
+admin.site.register(UserFeedback,UserFeedbackAdmin)
+admin.site.register(BandwidthCostRecord,BandwidthCostRecordAdmin)
+admin.site.register(MailVertifySendRecord,MailVertifySendRecordAdmin)

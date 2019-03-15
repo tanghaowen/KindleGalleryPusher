@@ -266,6 +266,9 @@ class VolumeType(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = '卷类型'
+        verbose_name_plural = '卷类型'
 
 class Volume(models.Model):
     zip_file = models.FileField(upload_to="books",verbose_name="zip文件")
@@ -461,7 +464,9 @@ class EbookConvertOver(models.Model):
     status = models.CharField(default="pending",verbose_name="状态",max_length=100)
     over_date = models.DateTimeField(default=now)
 
-
+    class Meta:
+        verbose_name = "格式转换完成记录"
+        verbose_name_plural = "格式转换完成记录"
 class HomePageGroup(models.Model):
     name = models.CharField(max_length=100)
     books = models.ManyToManyField(Book)

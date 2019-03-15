@@ -56,7 +56,7 @@ class User(AbstractUser):
     activate_token = models.CharField(default="",max_length=50,blank=True,null=True)
     activate_token_create_time = models.DateTimeField(null=True)
     inviter = models.ForeignKey("self",null=True,verbose_name='邀请者', on_delete=models.DO_NOTHING)
-    invite_code = models.CharField(max_length=20,default=get_unique_invite_code)
+    invite_code = models.CharField(max_length=20)
 
     def bandwidth_cost(self,volume,action,volume_type):
         """

@@ -109,7 +109,7 @@ def put_task_to_push_queue(user, volume, force=False, ignore_bandwidth = False):
     else:
         # 非vip每次推送都要消耗流量
         print("用户: %d %s %s 为非vip未在推送队列中，消耗流量。" % (user.id, volume.book.title, volume.name))
-        if (user.bandwidth_total - user.bandwidth_used) < volume_push_size:
+        if (user.get_bandwidth_total() - user.bandwidth_used) < volume_push_size:
             print('流量不够')
             return 'bandwidth less'
         user_bandwidth_before = user.bandwidth_remain

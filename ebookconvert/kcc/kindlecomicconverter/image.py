@@ -220,14 +220,14 @@ class ComicPage:
         self.rotated = False
         self.orgPath = os.path.join(path[0], path[1])
         if 'N' in mode:
-            self.targetPath = os.path.join(path[0], os.path.splitext(path[1])[0]) + '-KCC'
+            self.targetPath = os.path.join(path[0], os.path.splitext(path[1])[0]) + '-ManPush'
         elif 'R' in mode:
-            self.targetPath = os.path.join(path[0], os.path.splitext(path[1])[0]) + '-KCC-A'
+            self.targetPath = os.path.join(path[0], os.path.splitext(path[1])[0]) + '-ManPush-A'
             self.rotated = True
         elif 'S1' in mode:
-            self.targetPath = os.path.join(path[0], os.path.splitext(path[1])[0]) + '-KCC-B'
+            self.targetPath = os.path.join(path[0], os.path.splitext(path[1])[0]) + '-ManPush-B'
         elif 'S2' in mode:
-            self.targetPath = os.path.join(path[0], os.path.splitext(path[1])[0]) + '-KCC-C'
+            self.targetPath = os.path.join(path[0], os.path.splitext(path[1])[0]) + '-ManPush-C'
 
     def saveToDir(self):
         try:
@@ -275,7 +275,7 @@ class ComicPage:
             method = Image.BICUBIC
         else:
             method = Image.LANCZOS
-        if self.opt.stretch or (self.opt.kfx and ('-KCC-B' in self.targetPath or '-KCC-C' in self.targetPath)):
+        if self.opt.stretch or (self.opt.kfx and ('-ManPush-B' in self.targetPath or '-ManPush-C' in self.targetPath)):
             self.image = self.image.resize(self.size, method)
         elif self.image.size[0] <= self.size[0] and self.image.size[1] <= self.size[1] and not self.opt.upscale:
             if self.opt.format == 'CBZ' or self.opt.kfx:

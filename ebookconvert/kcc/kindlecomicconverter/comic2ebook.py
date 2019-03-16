@@ -500,9 +500,9 @@ def buildEPUB(path, chapternames, tomenumber):
         for aChapter in options.chapters:
             pageid = aChapter[0]
             for x in range(0, pageid + globaldiff + 1):
-                if '-kcc-b' in filelist[x][1]:
+                if '-ManPush-b' in filelist[x][1]:
                     pageid += 1
-            if '-kcc-c' in filelist[pageid][1]:
+            if '-ManPush-c' in filelist[pageid][1]:
                 pageid -= 1
             filename = filelist[pageid][1]
             chapterlist.append((filelist[pageid][0].replace('Images', 'Text'), filename))
@@ -588,7 +588,7 @@ def getWorkFolder(afile):
     if os.path.isdir(afile):
         if disk_usage(gettempdir())[2] < getDirectorySize(afile) * 2.5:
             raise UserWarning("Not enough disk space to perform conversion.")
-        workdir = mkdtemp('', 'KCC-')
+        workdir = mkdtemp('', 'ManPush-')
         try:
             os.rmdir(workdir)
             fullPath = os.path.join(workdir, 'OEBPS', 'Images')
@@ -608,7 +608,7 @@ def getWorkFolder(afile):
                 rmtree(path, True)
                 raise UserWarning("Failed to extract images from PDF file.")
         else:
-            workdir = mkdtemp('', 'KCC-')
+            workdir = mkdtemp('', 'ManPush-')
             cbx = cbxarchive.CBxArchive(afile)
             if cbx.isCbxFile():
                 try:
@@ -622,7 +622,7 @@ def getWorkFolder(afile):
     else:
         raise UserWarning("Failed to open source file/directory.")
     sanitizePermissions(path)
-    newpath = mkdtemp('', 'KCC-')
+    newpath = mkdtemp('', 'ManPush-')
     copytree(path, os.path.join(newpath, 'OEBPS', 'Images'))
     rmtree(path, True)
     return newpath
@@ -648,16 +648,16 @@ def getOutputFilename(srcpath, wantedname, ext, tomenumber):
             path = srcpath.split(os.path.sep)
             path[-1] = ''.join(e for e in path[-1].split('.')[0] if e.isalnum()) + tomenumber + ext
             if not path[-1].split('.')[0]:
-                path[-1] = 'KCCPlaceholder' + tomenumber + ext
+                path[-1] = 'ManPushPlaceholder' + tomenumber + ext
             filename = os.path.sep.join(path)
         else:
             filename = os.path.splitext(srcpath)[0] + tomenumber + ext
     if os.path.isfile(filename):
         counter = 0
         basename = os.path.splitext(filename)[0]
-        while os.path.isfile(basename + '_kcc' + str(counter) + ext):
+        while os.path.isfile(basename + '_ManPush' + str(counter) + ext):
             counter += 1
-        filename = basename + '_kcc' + str(counter) + ext
+        filename = basename + '_ManPush' + str(counter) + ext
     return filename
 
 
@@ -712,7 +712,7 @@ def getComicInfo(path, originalpath):
             options.authors = list(set(options.authors))
             options.authors.sort()
         else:
-            options.authors = ['KCC']
+            options.authors = ['ManPush.org']
         if xml.data['MUid']:
             options.remoteCovers = getCoversFromMCB(xml.data['MUid'])
         if xml.data['Bookmarks']:
@@ -878,7 +878,7 @@ def detectCorruption(tmppath, orgpath):
     for root, _, files in os.walk(tmppath, False):
         for name in files:
             if getImageFileName(name) is not None:
-                if not alreadyProcessed and getImageFileName(name)[0].endswith('-kcc'):
+                if not alreadyProcessed and getImageFileName(name)[0].endswith('-ManPush'):
                     alreadyProcessed = True
                 path = os.path.join(root, name)
                 pathOrg = orgpath + path.split('OEBPS' + os.path.sep + 'Images')[1]
@@ -902,9 +902,9 @@ def detectCorruption(tmppath, orgpath):
             else:
                 os.remove(os.path.join(root, name))
     if alreadyProcessed:
-        print("WARNING: Source files are probably created by KCC. The second conversion will decrease quality.")
+        print("WARNING: Source files are probably created by ManPush. The second conversion will decrease quality.")
         if GUI:
-            GUI.addMessage.emit('Source files are probably created by KCC. The second conversion will decrease quality.'
+            GUI.addMessage.emit('Source files are probably created by ManPush. The second conversion will decrease quality.'
                                 , 'warning', False)
             GUI.addMessage.emit('', '', False)
     if imageSmaller > imageNumber * 0.25 and not options.upscale and not options.stretch:
@@ -917,7 +917,7 @@ def detectCorruption(tmppath, orgpath):
 
 
 def createNewTome():
-    tomePathRoot = mkdtemp('', 'KCC-')
+    tomePathRoot = mkdtemp('', 'ManPush-')
     tomePath = os.path.join(tomePathRoot, 'OEBPS', 'Images')
     os.makedirs(tomePath)
     return tomePath, tomePathRoot
@@ -948,7 +948,7 @@ def makeZIP(zipfilename, basedir, isepub=False):
 
 
 def makeParser():
-    psr = OptionParser(usage="Usage: kcc-c2e [options] comic_file|comic_folder", add_help_option=False)
+    psr = OptionParser(usage="Usage: ManPush-c2e [options] comic_file|comic_folder", add_help_option=False)
 
     mainOptions = OptionGroup(psr, "MAIN")
     processingOptions = OptionGroup(psr, "PROCESSING")
@@ -1102,7 +1102,7 @@ def checkPre(source):
     # Make sure that all temporary files are gone
     for root, dirs, _ in walkLevel(gettempdir(), 0):
         for tempdir in dirs:
-            if tempdir.startswith('KCC-'):
+            if tempdir.startswith('ManPush-'):
                 rmtree(os.path.join(root, tempdir), True)
     # Make sure that target directory is writable
     if os.path.isdir(source):
@@ -1110,7 +1110,7 @@ def checkPre(source):
     else:
         src = os.path.dirname(source)
     try:
-        with TemporaryFile(prefix='KCC-', dir=src):
+        with TemporaryFile(prefix='ManPush-', dir=src):
             pass
     except Exception:
         raise UserWarning("Target directory is not writable.")
@@ -1263,7 +1263,7 @@ def makeMOBIWorker(item):
             kindlegenErrorCode = 23026
         return [kindlegenErrorCode, kindlegenError, item]
     except Exception as err:
-        # ERROR: KCC unknown generic error
+        # ERROR: ManPush unknown generic error
         kindlegenErrorCode = 1
         kindlegenError = format(err)
         return [kindlegenErrorCode, kindlegenError, item]

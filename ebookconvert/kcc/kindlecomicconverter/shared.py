@@ -93,9 +93,9 @@ def check7ZFile(fpath):
 
 
 def removeFromZIP(zipfname, *filenames):
-    tempdir = mkdtemp('', 'KCC-')
+    tempdir = mkdtemp('', 'ManPush-')
     try:
-        tempname = os.path.join(tempdir, 'KCC.zip')
+        tempname = os.path.join(tempdir, 'ManPush.zip')
         with ZipFile(zipfname, 'r') as zipread:
             with ZipFile(tempname, 'w', compression=ZIP_DEFLATED) as zipwrite:
                 for item in zipread.infolist():
@@ -108,12 +108,12 @@ def removeFromZIP(zipfname, *filenames):
 
 def sanitizeTrace(traceback):
     return ''.join(format_tb(traceback))\
-        .replace('C:/projects/kcc/', '') \
-        .replace('c:/projects/kcc/', '') \
+        .replace('C:/projects/ManPush/', '') \
+        .replace('c:/projects/ManPush/', '') \
         .replace('C:/python36-x64/', '')\
         .replace('c:/python36-x64/', '')\
-        .replace('C:\\projects\\kcc\\', '') \
-        .replace('c:\\projects\\kcc\\', '') \
+        .replace('C:\\projects\\ManPush\\', '') \
+        .replace('c:\\projects\\ManPush\\', '') \
         .replace('C:\\python36-x64\\', '')\
         .replace('c:\\python36-x64\\', '')
 

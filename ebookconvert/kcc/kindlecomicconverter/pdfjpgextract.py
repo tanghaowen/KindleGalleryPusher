@@ -30,7 +30,7 @@ class PdfJpgExtract:
     def __init__(self, fname):
         self.fname = fname
         self.filename = os.path.splitext(fname)
-        self.path = self.filename[0] + "-KCC-" + ''.join(choice(ascii_uppercase + digits) for _ in range(3))
+        self.path = self.filename[0] + "-ManPush-" + ''.join(choice(ascii_uppercase + digits) for _ in range(3))
 
     def getPath(self):
         return self.path

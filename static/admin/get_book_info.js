@@ -38,4 +38,26 @@ function setButton(){
 
     }
 }
+
+function setVolumeIndex() {
+    inputs = document.querySelectorAll(".inline-related input.vTextField");
+    for (let i in inputs) {
+        let input = inputs[i];
+        let i_int = parseInt(i);
+        if (i_int+1 == inputs.length) {
+            continue
+        }
+        if (input.value == "" && !isNaN(i_int)){
+
+            input.value = i_int+1;
+
+        }
+
+    }
+    
+}
 window.addEventListener('load',setButton);
+window.addEventListener('load',setVolumeIndex);
+window.addEventListener('load',function () {
+    document.getElementsByClassName('add-row')[0].children[0].addEventListener('click',setVolumeIndex);
+})

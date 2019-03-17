@@ -90,6 +90,7 @@ class BookAdmin(admin.ModelAdmin):
             </div>
         """% obj.id)
 
+
     class Media:
         js=['admin/get_book_info.js']
 

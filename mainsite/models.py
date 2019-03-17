@@ -153,6 +153,9 @@ class Book(models.Model):
     end = models.BooleanField(default=False,verbose_name="是否完结")
     publisher = models.CharField(max_length=100,verbose_name='出版社',null=True, blank=True)
 
+    def get_volume_count(self):
+        return Volume.objects.filter(book=self).count()
+
     def get_showed_volume_count(self):
         """
         获取书本可见volume的数量，用来volume转换完成后，判断这书本是否是更创创建完成的书本
@@ -270,6 +273,10 @@ class VolumeType(models.Model):
         verbose_name = '卷类型'
         verbose_name_plural = '卷类型'
 
+def get_book_volume_count(v):
+    return Volume.objects.filter(book=v.book).count()
+
+
 class Volume(models.Model):
     zip_file = models.FileField(upload_to="books",verbose_name="zip文件")
     epub_file = models.FileField(upload_to="",verbose_name="epub文件",null=True,blank=True)
@@ -289,6 +296,9 @@ class Volume(models.Model):
     uploaded_data = models.DateTimeField(default=now,blank=True,verbose_name='此卷的zip上传时间')
     edited_data = models.DateTimeField(default=now,blank=True,verbose_name='此卷被编辑过的时间（格式转换后也算编辑）')
     bandwidth_cost = models.IntegerField(null=True,blank=True)
+
+
+
 
     def get_volume_bandwidth_cost(self):
         #在首页特别推荐里的书籍都只消耗0MB

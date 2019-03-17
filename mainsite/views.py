@@ -1,3 +1,4 @@
+import re
 import time
 from urllib.parse import quote, urlencode
 
@@ -361,7 +362,7 @@ def volume_download(request):
 # TODO: 因为只有我一个人上传，所以这里直接判断用户admin就行
 # 如果今后要增加协助者，得做好完整的权限判断
 @login_required
-def upload_file(request,book_id):
+def upload_file_old(request,book_id):
     if request.user.username != 'admin': raise Http404
 
     if request.method == "GET":
@@ -378,6 +379,62 @@ def upload_file(request,book_id):
         volume.save()
         return HttpResponse("OK")
 
+@login_required
+def upload_file(request,book_id):
+    if request.method == 'GET':
+        if request.user.username != "admin": raise Http404
+        book = get_object_or_404(Book,id=book_id)
+        context = {"book":book}
+        return render(request,'mainsite/upload_by_localfile.html',context=context)
+    elif request.method == 'POST':
+        if request.user.username != "admin": raise Http404
+        book = get_object_or_404(Book, id=book_id)
+        local_path = request.POST.get("path",None)
+        action = request.POST.get("action",None)
+        if action == 'show':
+            files = []
+            pattern = re.compile(r'\d+')
+            for f in os.listdir(local_path):
+                full_path = os.path.join(local_path,f)
+                if not os.path.isfile(full_path): continue
+                fl = []
+                fl.append(f)
+                res = pattern.findall(f)
+                if len(res)>0: volume_number = int(res[0])
+                else: volume_number=-1
+                fl.append(volume_number)
+                files.append(fl)
+
+            return render(request,'mainsite/upload_by_localfile_show_list.html',context={"book":book,"files":files, "path":local_path})
+        elif action == 'set':
+            v = Volume()
+            files = []
+            pattern = re.compile(r'\d+')
+            for f in os.listdir(local_path):
+                full_path = os.path.join(local_path,f)
+                if not os.path.isfile(full_path): continue
+                fl = []
+                fl.append(f)
+                res = pattern.findall(f)
+                if len(res)>0: volume_number = int(res[0])
+                else: volume_number=-1
+                fl.append(volume_number)
+                files.append(fl)
+            volume_type = VolumeType.objects.get(name='单行本')
+            for f in files:
+                file, volume_number = f
+                full_path = os.path.join(local_path, file)
+                fh = open(full_path,'rb')
+                zip_file = File(fh,name=file)
+                v = Volume(book=book,name="",volume_number=str(volume_number), type=volume_type,
+                           zip_file=zip_file)
+                v.save()
+            return HttpResponse("成功")
+    raise Http404
+
+@login_required
+def upload_file_set(request,book_id):
+    pass
 
 @csrf_exempt
 def show_bandwidth_rule(request):

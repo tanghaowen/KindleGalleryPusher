@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>从服务器本地上传</title>
+</head>
+<body>
+<form method="post" action="{% url 'main_site:book_upload' book.id %}">
+    {% csrf_token %}
+    <input name="path" id="path" type="text">
+    <input name="action" value="show" hidden>
+    <input type="submit">
+</form>
+</body>
+</html>

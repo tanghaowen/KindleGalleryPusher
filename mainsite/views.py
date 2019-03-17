@@ -394,7 +394,8 @@ def upload_file(request,book_id):
         if action == 'show':
             files = []
             pattern = re.compile(r'\d+')
-            for f in os.listdir(local_path):
+            lsdir = sorted(os.listdir(local_path))
+            for f in lsdir:
                 full_path = os.path.join(local_path,f)
                 if not os.path.isfile(full_path): continue
                 fl = []
@@ -410,7 +411,8 @@ def upload_file(request,book_id):
             v = Volume()
             files = []
             pattern = re.compile(r'\d+')
-            for f in os.listdir(local_path):
+            lsdir = sorted(os.listdir(local_path))
+            for f in lsdir:
                 full_path = os.path.join(local_path,f)
                 if not os.path.isfile(full_path): continue
                 fl = []

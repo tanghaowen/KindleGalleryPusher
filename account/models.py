@@ -49,11 +49,11 @@ class User(AbstractUser):
     vip = models.BooleanField(default=False,blank=False,null=False)
     vip_expire = models.DateTimeField(blank=True,null=True)
     # 每个月会重置的流量
-    bandwidth_tmp = models.IntegerField(default=0)
+    bandwidth_tmp = models.IntegerField(default=0,verbose_name='临时流量（每个月重置）')
     # 永久流量
-    bandwidth_forever = models.IntegerField(default=0)
+    bandwidth_forever = models.IntegerField(default=0,verbose_name='永久流量')
     # vip流量
-    bandwidth_vip = models.IntegerField(default=0)
+    bandwidth_vip = models.IntegerField(default=0, verbose_name='vip流量（有效期一个月）')
     bandwidth_used = models.PositiveIntegerField(default=0)
     bandwidth_remain =models.IntegerField(default=0)
     bandwidth_percent = models.PositiveIntegerField(default=100)
@@ -142,6 +142,7 @@ class User(AbstractUser):
         if charge_mode == CHARGE_MODE_VIP:
             self.bandwidth_vip += self.bandwidth_vip + USER_BASE_BANDWIDTH + VIP_PLUS_BANDWIDTH
             self.vip = True
+            self.vip_expire = now() + timedelta(days=30)
             if self.inviter is not None:
                 # 有邀请者的话，每次氪金都给邀请者永久流量增加200M
                 self.inviter.bandwidth_forever += 200

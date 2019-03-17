@@ -45,12 +45,13 @@ class UserAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email','kindle_email','signature')}),
-        (_('Vip info'), {'fields': ('vip', 'vip_expire', 'get_bandwidth_total', 'bandwidth_used', 'bandwidth_remain')}),
+        (_('Vip info'), {'fields': ('vip', 'vip_expire', 'user_total_bandwidth', 'bandwidth_tmp', 'bandwidth_forever','bandwidth_vip', 'bandwidth_used','bandwidth_remain','bandwidth_percent')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
 
         (_('Important dates'), {'fields': ('last_login', 'date_joined','subscriptes','collections')}),
     )
+    readonly_fields = ['user_total_bandwidth']
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -65,6 +66,9 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('username', 'first_name', 'last_name', 'email')
     ordering = ('username',)
     filter_horizontal = ('groups', 'user_permissions',)
+
+    def user_total_bandwidth(self,instance):
+        return instance.get_bandwidth_total()
 
     def get_fieldsets(self, request, obj=None):
         if not obj:

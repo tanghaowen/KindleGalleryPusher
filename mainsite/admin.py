@@ -28,7 +28,7 @@ class VolumeInline(admin.StackedInline):
         [None,{"fields":[ 'zip_file', 'epub_file', 'mobi_file', 'mobi_push_file']}],
     ]
     extra = 0
-    readonly_fields = ['need_convert','name']
+    readonly_fields = ['need_convert','name','show']
     ordering = ['index']
 
 

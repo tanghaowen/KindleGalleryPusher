@@ -39,14 +39,14 @@ class BookAdmin(admin.ModelAdmin):
     list_display = ["id","title","update_time"]
     list_display_links = ['id','title']
     fieldsets = [
-        ["基本信息",{'fields':['id','title','title_chinese','update_time','end','show'],}],
+        ["基本信息",{'fields':['id','title','title_chinese','update_time','end','show','go_to_book_info_page'],}],
         ["关联网站",{"fields":[('mangazenkan_site_path','get_info_from_mangazenkan'),('bangumi_site_path','get_info_from_bangumi'),('mediaarts_site_path','get_info_from_mediaarts')]}],
         ["作者",{"fields":['author']}],
         ["标签",{"fields":['tags']}],
         ["封面",{"fields":["relative_covers_tags","cover_id"]}],
         ["简介",{"fields":["desc"]}],
     ]
-    readonly_fields = ['id','update_time','relative_covers_tags','cover_id','get_info_from_mediaarts','get_info_from_bangumi','get_info_from_mangazenkan']
+    readonly_fields = ['id','update_time','relative_covers_tags','cover_id','get_info_from_mediaarts','get_info_from_bangumi','get_info_from_mangazenkan','go_to_book_info_page']
     filter_horizontal = ['author','tags']
     inlines = [VolumeInline]
     # autocomplete_fields = ['author']
@@ -89,7 +89,14 @@ class BookAdmin(admin.ModelAdmin):
             <button id="update_book_info_mediaarts" type="button" book_id=%d>获取信息</button>
             </div>
         """% obj.id)
-
+    def go_to_book_info_page(self,obj):
+        if obj.id is None:
+            return mark_safe("""<div></div>""")
+        return mark_safe("""
+            <div>
+            <button id="go_to_book_info_page" type="button" onclick="location.href='/book/%d'">前往书籍页面</button>
+            </div>
+        """ % obj.id)
 
     class Media:
         js=['admin/get_book_info.js']

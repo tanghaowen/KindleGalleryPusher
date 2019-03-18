@@ -283,6 +283,7 @@
                 {% if user.username == 'admin' %}
                     <a href="{% url 'admin:mainsite_book_change' book.id %}">编辑书本</a>
                     <a href="{% url 'admin:mainsite_book_add' %}">添加书本</a>
+                    <a href="{% url 'main_site:book_upload' book.id %}">upload</a>
                 {% endif %}</div>
         </div>
     </div>

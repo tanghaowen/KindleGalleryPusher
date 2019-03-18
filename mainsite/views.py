@@ -401,7 +401,7 @@ def upload_file(request,book_id):
                 fl = []
                 fl.append(f)
                 res = pattern.findall(f)
-                if len(res)>0: volume_number = int(res[0])
+                if len(res)>0: volume_number = int(res[-1])
                 else: volume_number=-1
                 fl.append(volume_number)
                 files.append(fl)
@@ -418,7 +418,7 @@ def upload_file(request,book_id):
                 fl = []
                 fl.append(f)
                 res = pattern.findall(f)
-                if len(res)>0: volume_number = int(res[0])
+                if len(res)>0: volume_number = int(res[-1])
                 else: volume_number=-1
                 fl.append(volume_number)
                 files.append(fl)

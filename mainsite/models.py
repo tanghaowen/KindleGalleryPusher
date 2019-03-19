@@ -303,7 +303,7 @@ class Volume(models.Model):
     def get_volume_bandwidth_cost(self):
         #在首页特别推荐里的书籍都只消耗0MB
         books = HomePageSpecialSide.objects.filter(book=self.book)
-        if len(books) == 0:
+        if len(books) > 0:
             return 0
         sizes = [self.zip_file.size, self.epub_file.size, self.mobi_file.size, self.mobi_push_file.size]
         size_min = min(sizes)

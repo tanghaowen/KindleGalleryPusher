@@ -102,7 +102,7 @@ class BookAdmin(admin.ModelAdmin):
         js=['admin/get_book_info.js']
 
 class ImageAdmin(admin.ModelAdmin):
-    fields = ['image','image_tag','uploaded_time']
+    fields = ['id','image','image_tag','uploaded_time']
     readonly_fields = ['uploaded_time','image_tag']
 
 
@@ -112,7 +112,7 @@ class TagAdmin(admin.ModelAdmin):
 
 class EbookConvertQueueAdmin(admin.ModelAdmin):
     list_display = ['volume','epub_ok','mobi_ok','mobi_push_ok','status','added_date']
-
+    ordering = ['added_date']
 
 class EbookConvertOverAdmin(admin.ModelAdmin):
     list_display = ['volume','epub_ok','mobi_ok','mobi_push_ok','status','over_date']

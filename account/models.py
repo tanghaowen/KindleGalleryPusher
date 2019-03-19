@@ -106,6 +106,7 @@ class User(AbstractUser):
             elif volume_type == VOLUME_TYPE_MOBI: volume_bandwidth = volume.mobi_file.size/1024.0/1024.0
             elif volume_type == VOLUME_TYPE_EPUB: volume_bandwidth = volume.epub_file.size/1024.0/1024.0
             else: return {"status":ERROR}
+            # 如果是特别推荐里的书籍，流量消耗为0
             if len(HomePageSpecialSide.objects.filter(book=volume.book))>0: volume_bandwidth = 0
             # 检测下最近是否有下载过对应格式的卷，有下载过的话就不消耗流量
             res = self.have_cost_bandwidth_recently(volume,'download',volume_type)

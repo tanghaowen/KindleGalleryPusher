@@ -333,7 +333,7 @@
                                         <td>{{ volume.name }}</td>
                                         <td><a href='javascript:void(0);' vid="{{ volume.id }}"
                                                onclick="download_volume(this,'mobi')">{{ volume.get_mobi_file_size_MB }}
-                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost}}MB){% endif %}</td>
+                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost|floatformat:1}}MB){% endif %}</td>
                                         <td>{{ volume.get_mobi_push_file_size_MB }}MB
                                         </td>
                                         {% if user.id %}
@@ -380,7 +380,7 @@
                                         <td>{{ volume.name }}</td>
                                         <td><a href='javascript:void(0);' vid="{{ volume.id }}"
                                                onclick="download_volume(this,'epub')">{{ volume.get_epub_file_size_MB }}
-                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost}}MB){% endif %}</td>
+                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost|floatformat:1}}MB){% endif %}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -411,7 +411,7 @@
                                         <td>{{ volume.name }}</td>
                                         <td><a href='javascript:void(0);' vid="{{ volume.id }}"
                                                onclick="download_volume(this,'zip')">{{ volume.get_zip_file_size_MB }}
-                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost}}MB){% endif %}</td>
+                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost|floatformat:1}}MB){% endif %}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

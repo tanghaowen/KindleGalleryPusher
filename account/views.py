@@ -73,7 +73,7 @@ def account_activate(request):
                                                      ip=ip,action='active')
         print('此ip今日激活账号数量:%s' % len(ips))
         if len(ips)>=1:
-            return HttpResponse("您好，请勿多次重复注册账号！")
+            return HttpResponse("何回もアカウントを作らないでください！")
         new_user_invite_code = get_unique_invite_code()
 
         u = User(username=user_name,email=email, invite_code=new_user_invite_code, inviter=inviter)
@@ -121,17 +121,17 @@ def account_reset_password(request):
         host = request.get_host()
         reset_url ="http://"+ host + reset_url + '?prmr=%d&token=%s' % (prmr.id, token)
         html_body = """
-        <h1>您好：</h1>
+        <h1>KindleGalleryPusher：</h1>
         <p>%s</p>
-        <p>请点击下面的链接重置密码。</p>
-        <a href='%s'>点击重置</a>
-        <p>如果未显示按钮，请复制粘贴下面的地址到浏览器中激活账号：</p>
+        <p>下のリンクをクリックして、パスワードをリセットしてください。</p>
+        <a href='%s'>リセット</a>
+        <p></p>
         <p>%s</p>
         """ % (user.username,reset_url,reset_url)
-        plain_body = """您好：\n%s\n 请点击下面的链接重置密码。如果未显示超链接，请复制粘贴下面的地址到浏览器中激活账号: %s""" % (user.username,reset_url)
+        plain_body = """KindleGalleryPusherへ\n%s\n 下のリンクをクリックして、パスワードをリセットしてください。 %s""" % (user.username,reset_url)
         print("重置密码token:",reset_url)
         print("开始发送激活邮件...")
-        send_mail('KindleGalleryPusher密码重置 - %s' % user.username,
+        send_mail('KindleGalleryPusherパスワードリセット - %s' % user.username,
                   plain_body,
                   'admin@lpanda.net', [email], html_message=html_body,fail_silently=False)
 
@@ -236,17 +236,17 @@ def account_register(request : HttpRequest):
         host = request.get_host()
         active_url ="http://"+ host + active_url + '?vid=%d&token=%s' % (mvr.id, token)
         html_body = """
-        <p>您好：</p>
+        <p>KindleGalleryPusher</p>
         <p>%s</p>
-        <p>感谢您注册KindleGalleryPusher，请点击下面的链接激活账号。</p>
-        <a href='%s'>点击激活</a>
-        <p>如果未显示按钮，请复制粘贴下面的地址到浏览器中激活账号：</p>
+        <p>KindleGalleryPusherへようこそ，下のリンクをクリックして、アカウントを有効にしてください。</p>
+        <a href='%s'>アカウントを有効にする</a>
+        <p></p>
         <p>%s</p>
         """ % (user_name,active_url,active_url)
-        plain_body = """您好：\n%s\n感谢您注册KindleGalleryPusher，请点击下面的链接激活账号。如果未显示超链接，请复制粘贴下面的地址到浏览器中激活账号: %s""" % (user_name,active_url)
+        plain_body = """KindleGalleryPusher　\n%s\nKindleGalleryPusherへようこそ，下のリンクをクリックして、アカウントを有効にしてください: %s""" % (user_name,active_url)
         print("激活token:",active_url)
         print("开始发送激活邮件...")
-        send_mail('KindleGalleryPusher注册激活邮件 - %s' % user_name,
+        send_mail('KindleGalleryPusherへようこそ - %s' % user_name,
                   plain_body,
                   'admin@lpanda.net', [email], html_message=html_body,fail_silently=False)
 

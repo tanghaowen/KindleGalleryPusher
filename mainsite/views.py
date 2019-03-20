@@ -163,7 +163,7 @@ def book_info(request,book_id):
 
     # values_list
     for type_string, iter in type_list:
-        v = Volume.objects.filter(book=book_id,show=True,type__name=type_string)
+        v = Volume.objects.filter(book=book_id,show=True,type__name=type_string).order_by('index')
         volumes_dict[type_string] = v
     context = {"book":book,
                "cover_image":cover_image,

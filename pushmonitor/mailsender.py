@@ -7,7 +7,7 @@ from email.utils import formataddr
 
 smtp_username = 'admin@lpanda.net'
 smtp_password = 'shinonomehana'
-smtp_hostname = 'smtp.asairo.net'
+smtp_hostname = 'smtp.lpanda.net'
 
 
 def send_mail_use_smtp(reciviers_adress,file_url,file_name):

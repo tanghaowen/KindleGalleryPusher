@@ -25,7 +25,7 @@ SECRET_KEY = 'dm3t$e$&h5&+bty6j=q-y#u(5*zr&q-qjs27wt0y)-ji2qt&i!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['server.asairo.net','127.0.0.1','localhost','192.168.1.3','50.115.166.181' ]
+ALLOWED_HOSTS = ['server.lpanda.net','127.0.0.1','localhost','192.168.1.3','50.115.166.181' ]
 
 
 # Application definition
@@ -132,7 +132,7 @@ LOGIN_URL = '/accounts/login/'
 
 AUTH_USER_MODEL = 'account.User'
 
-EMAIL_HOST = 'smtp.asairo.net'
+EMAIL_HOST = 'smtp.lpanda.net'
 EMAIL_HOST_USER = 'admin@lpanda.net'
 EMAIL_HOST_PASSWORD = 'shinonomehana'
 EMAIL_USE_SSL = True

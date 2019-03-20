@@ -45,7 +45,7 @@
         <div class="col-sm-12 col-xs-12 col-md-10 col-lg-10">
 
         <div class="row"> <div class="col-12">
-            <div class="head-div" style="display:inline-block"><h4><span><a href="{% url 'main_site:book_recently' %}">最近更新</a></span></h4></div>
+            <div class="head-div" style="display:inline-block"><h4><span><a href="{% url 'main_site:book_recently' %}">最新写真集</a></span></h4></div>
             </div></div>
         <div class="row" style="padding: 7px; margin-bottom: 2em">
             {% for book in recent_updated %}
@@ -81,7 +81,7 @@
         {% endfor %}
     </div>
         <div class="col-md-2 col-lg-2 hidden-xs hidden-sm">
-            <h4>すすめ写真集</h4>
+            <h4>すすめ</h4>
 
             {% for b in side_special %}
                 <img src="{{ b.book.cover_used.thumb_image.url }}">

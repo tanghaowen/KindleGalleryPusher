@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'dm3t$e$&h5&+bty6j=q-y#u(5*zr&q-qjs27wt0y)-ji2qt&i!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['server.asairo.net','127.0.0.1','localhost','192.168.1.3' ]
 
@@ -83,11 +83,9 @@ WSGI_APPLICATION = 'KindleComicPusher.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'kindlecomicsite',
-        'USER': 'root',
-        'PASSWORD': 'shinonomehana',
-        'HOST': '127.0.0.1',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'datas.sql',
+
     }
 }
 

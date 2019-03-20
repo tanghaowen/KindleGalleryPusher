@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>漫推 问题反馈</title>
+    <title>KindleGalleryPusher Feedback</title>
     {% include 'mainsite/load_bootstrap.html' %}
 </head>
 <body>
@@ -14,12 +14,12 @@
 			<form role="form" id="feedback-form" method="post" action="{% url 'feedback' %}">
 
 				<div class="form-group">
-					 <label for="exampleInputEmail1">您的邮箱地址或者qq等</label><input type="text" class="form-control" name="email" />
+					 <label for="exampleInputEmail1">貴方のメールアドレス</label><input type="text" class="form-control" name="email" />
 				</div>
 				<div class="form-group">
-					 <label for="exampleInputEmail1">反馈的问题</label><textarea  rows="10" class="form-control" name="message" id="message" form="feedback-form" placeholder="您要反馈的问题" /></textarea>
+					 <label for="exampleInputEmail1">問題</label><textarea  rows="10" class="form-control" name="message" id="message" form="feedback-form" placeholder="問題" /></textarea>
 				</div>
-                <button type="submit" class="btn btn-primary">提交反馈</button>
+                <button type="submit" class="btn btn-primary">Feedback送り</button>
 
 			</form>
 		</div>

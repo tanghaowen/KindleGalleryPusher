@@ -23,7 +23,7 @@
     <a class="navbar-brand" href="/">
         <img src="{% static 'mainsite/logo.png' %}" width="30" height="30"
              class="d-inline-block align-top" alt="">
-        漫推
+        KindleGalleryPusher
     </a>
 
 
@@ -37,20 +37,18 @@
                     <a class="active nav-link" href="#top">Top</a>
                 </li>
                 <li onclick="activate_self(this)" class="nav-item">
-                    <a class="nav-link" href="#panel-mobi" onclick="activate_tab_and_go_to('panel-mobi')">Mobi格式</a>
+                    <a class="nav-link" href="#panel-mobi" onclick="activate_tab_and_go_to('panel-mobi')">Mobi</a>
                 </li>
                 <li onclick="activate_self(this)" class="nav-item">
-                    <a class="nav-link" href="#panel-epub" onclick="activate_tab_and_go_to('panel-epub')">Epub格式</a>
+                    <a class="nav-link" href="#panel-epub" onclick="activate_tab_and_go_to('panel-epub')">Epub</a>
                 </li>
-                <li onclick="activate_self(this)" class="nav-item">
-                    <a class="nav-link" href="#panel-zip" onclick="activate_tab_and_go_to('panel-zip')">Zip格式</a>
-                </li>
+
             </ul>
         {% endif %}
         <form class="form-inline" style="max-width: 400px; margin-right: 2em" role="search"
               action="{% url 'search_site:search_page' %}" method="get">
-            <input type="text" style="width: 200px;" name="keyword" class="form-control mr-sm-2" placeholder="输入书名"/>
-            <button type="submit"  class="btn btn-outline-primary my-2 my-sm-0">查找</button>
+            <input type="text" style="width: 200px;" name="keyword" class="form-control mr-sm-2" placeholder="写真集名"/>
+            <button type="submit"  class="btn btn-outline-primary my-2 my-sm-0">検索</button>
         </form>
 
         {% if user.id is None %}
@@ -65,10 +63,10 @@
                             游客
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{% url 'account:login' %}">登陆</a>
-                            <a class="dropdown-item" href="{% url 'account:register' %}">注册</a>
+                            <a class="dropdown-item" href="{% url 'account:login' %}">ログイン</a>
+                            <a class="dropdown-item" href="{% url 'account:register' %}">登録</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'feedback' %}">问题反馈</a>
+                            <a class="dropdown-item" href="{% url 'feedback' %}">Feedback</a>
                         </div>
                     </li>
                 </ul>
@@ -89,39 +87,39 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">
-                            {{ user.username }}{% if user.vip %}(VIP){% endif %}
+                            {{ user.username }}
                         </a>
                         <div class="dropdown-menu  dropdown-menu-lg-right" aria-labelledby="navbarDropdownMenuLink">
                             <div class="dropdown-item"><p>
-                                剩余流量: {{ user.bandwidth_remain }}MB/{{ user.get_bandwidth_total }}MB</p></div>
+                                残り: {{ user.bandwidth_remain }}MB/{{ user.get_bandwidth_total }}MB</p></div>
                             <div class="progress" style="margin-left: 20px;margin-right: 20px">
                                 <div class="progress-bar bg-info" role="progressbar"
                                      style="width: {{ user.bandwidth_percent }}%" aria-valuenow="50" aria-valuemin="0"
-                                     aria-valuemax="100">剩余{{ user.bandwidth_remain }}MB
+                                     aria-valuemax="100">残り{{ user.bandwidth_remain }}MB
                                 </div>
                             </div>
 
                             {% if user.username == 'admin' %}
                                 <div class="dropdown-divider"></div>
 
-                                <a class="dropdown-item" href="{% url 'convert_queue' %}?global=1">转换队列</a>
-                                <a class="dropdown-item" href="/admin">管理面板</a>
+                                <a class="dropdown-item" href="{% url 'convert_queue' %}?global=1">Convert隊列</a>
+                                <a class="dropdown-item" href="/admin">サイト管理</a>
 
                             {% endif %}
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'account:push_queue' %}">推送队列</a>
-                            <a class="dropdown-item" href="{% url 'account:bandwidth_records' %}">流量消耗记录</a>
-                            <a class="dropdown-item" href="{% url 'account:self_profile' %}">个人信息</a>
-                            <a class="dropdown-item" href="{% url 'account:precharge' %}">捐助Vip</a>
+                            <a class="dropdown-item" href="{% url 'account:push_queue' %}">プッシュ隊列</a>
+                            <a class="dropdown-item" href="{% url 'account:bandwidth_records' %}">データ量消費履歴</a>
+                            <a class="dropdown-item" href="{% url 'account:self_profile' %}">個人情報</a>
+
 
 
                             <form id="logout" method="post" action="{% url 'account:logout' %}">
                                 {% csrf_token %}
-                                <a class="dropdown-item" href="#" onclick="logout()">登出</a>
+                                <a class="dropdown-item" href="#" onclick="logout()">ロゴアウト</a>
 
                             </form>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'feedback' %}">问题反馈</a>
+                            <a class="dropdown-item" href="{% url 'feedback' %}">Feedback</a>
                         </div>
                     </li>
                 </ul>

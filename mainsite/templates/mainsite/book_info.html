@@ -19,22 +19,22 @@
                 button.disabled = false;
                 if (xmlhttp.status == 200) {
                     if (xmlhttp.responseText.includes('Already in queue')) {
-                        alert("此卷正在你的待推送队列中！请勿重复提交推送！")
+                        alert("この写真集は今プッシュ隊列の中にあります！")
                     } else if (xmlhttp.responseText.includes('Have pushed before')) {
-                        if (confirm("此卷之前已经推送完成过，是否再次推送？")) {
+                        if (confirm("すでにプッシュした写真集です、もう一回しますか？")) {
                             push_volume(button, true);
                         }
                     } else if (xmlhttp.responseText == "ok") {
-                        alert("加入推送队列成功！ 具体推送进度请参照个人的推送队列页面！")
+                        alert("プッシュ隊列に入りました！")
                     } else if (xmlhttp.responseText.includes('Now in pushing')) {
-                        alert("当前正在推送这本书！")
+                        alert("いまこの写真集をプッシュしています！")
                     } else if (xmlhttp.responseText.includes('bandwidth less')) {
                         alert("推送流量已不够，是否考虑捐助Vip？")
                     } else if (xmlhttp.responseText.includes('No kindle email')) {
-                        alert("您未设置推送的kindle邮箱，请去个人主页中设置！")
+                        alert("kindleメールアドレスまだ設定していません！")
                     }
                     else {
-                        alert("推送失败！");
+                        alert("プッシュ失敗しました！");
                     }
 
                 } else if (xmlhttp.status == 404) {
@@ -210,7 +210,7 @@
             <div class="page-header">
                 <h1>
                     {{ book.title }}
-                    <small> {% if book.end %}已完结{% else %}未完结{% endif %} </small>
+
                 </h1>
 
             </div>
@@ -225,33 +225,33 @@
                 {% if user.id %}
                     <button id="bt-unsbsc" class="btn btn-light"
                             {% if book in user.subscriptes.all %}style="display: none" {% endif %} onclick="sbsc()"><img
-                            src="{% static 'mainsite/icons/unsubscribe.svg' %}"> <span>未订阅</span></button>
+                            src="{% static 'mainsite/icons/unsubscribe.svg' %}"> <span>この写真集をフォローする</span></button>
                     <button id="bt-sbsc" class="btn btn-light"
                             {% if not book in user.subscriptes.all %}style="display: none" {% endif %}
-                            onclick="unsbsc()"><img src="{% static 'mainsite/icons/subscribe.svg' %}"> <span>已订阅</span>
+                            onclick="unsbsc()"><img src="{% static 'mainsite/icons/subscribe.svg' %}"> <span>フォロー済み</span>
                     </button>
                     <button id="bt-uncollec" class="btn btn-light"
                             {% if book in user.collections.all %}style="display: none" {% endif %} onclick="collec()">
-                        <img src="{% static 'mainsite/icons/unstared.svg' %}"> <span>未收藏</span></button>
+                        <img src="{% static 'mainsite/icons/unstared.svg' %}"> <span>この写真集をコレクションに加える</span></button>
                     <button id="bt-collec" class="btn btn-light"
                             {% if not book in user.collections.all %}style="display: none" {% endif %}
-                            onclick="uncollec()"><img src="{% static 'mainsite/icons/stared.svg' %}"> <span>已收藏</span>
+                            onclick="uncollec()"><img src="{% static 'mainsite/icons/stared.svg' %}"> <span>加え済み</span>
                     </button>
                     <div id="colle-ok" class="toast hide">
-                        <div class="toast-header">收藏</div>
-                        <div class="toast-body">收藏成功</div>
+                        <div class="toast-header">コレクション</div>
+                        <div class="toast-body">OK</div>
                     </div>
                     <div id="uncollec-ok" class="toast hide">
-                        <div class="toast-header">收藏</div>
-                        <div class="toast-body">取消收藏成功</div>
+                        <div class="toast-header">コレクション</div>
+                        <div class="toast-body">OK</div>
                     </div>
                     <div id="unsbsc-ok" class="toast hide">
-                        <div class="toast-header">订阅</div>
-                        <div class="toast-body">取消订阅成功</div>
+                        <div class="toast-header">フォロー</div>
+                        <div class="toast-body">OK</div>
                     </div>
                     <div id="sbsc-ok" class="toast hide">
-                        <div class="toast-header">订阅</div>
-                        <div class="toast-body">订阅成功</div>
+                        <div class="toast-header">フォロー</div>
+                        <div class="toast-body">OK</div>
                     </div>
                 {% endif %}
 
@@ -259,17 +259,17 @@
 
         </div>
         <div class="col-md-8 column">
-            <p style="font-size: 1.2em;margin-top: 1em">分类:&ensp;
+            <p style="font-size: 1.2em;margin-top: 1em">分類:&ensp;
                 {% for catalog_tag in book.get_book_catalogs %}
                     <a href="{% url 'search_site:search_page' %}?catalog={{ catalog_tag.name }}"> {{ catalog_tag.name }}</a> {% endfor %}
             </p>
 
-            <p style="font-size: 1.2em;margin-top: 1em"> 作者:&ensp;
+            <p style="font-size: 1.2em;margin-top: 1em"> 写真家:&ensp;
                 {% for author in book.author.all %}
                     <a href="{% url 'search_site:search_page' %}?author={{ author.name }}">{{ author.name }}</a>&ensp;
                 {% endfor %}</p>
 
-            <h3>简介</h3>
+            <h3>紹介</h3>
             <p>
                 {{ book.desc|linebreaks }}
             </p>
@@ -298,32 +298,29 @@
             <div class="tabbable" id="tabs-285843">
                 <ul class="nav nav-tabs" id="tab-files">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#panel-mobi" data-toggle="tab">Mobi格式</a>
+                        <a class="nav-link active" href="#panel-mobi" data-toggle="tab">Mobi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#panel-epub" data-toggle="tab">Epub格式</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#panel-zip" data-toggle="tab">Zip格式</a>
+                        <a class="nav-link" href="#panel-epub" data-toggle="tab">Epub</a>
                     </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="panel-mobi">
                         <blockquote>
                             <p class="text-info">
-                                <em>mobi</em>为适用kindle等设备的格式<br>
-                                按照<em>Kindle PaperWhite 3</em>规格进行制作
+                                <em>mobi</em>はkindleデバイスで使っているフォーマットです<br>
+                                <em>Kindle PaperWhite 3</em>のサイズで作成しています
                             </p>
-                            <a href="{% url 'bandwidth_rule' %}" target="_blank"> <p>关于流量消耗策略？</p> </a>
+
                         </blockquote>
                         {% for volume_group_name,volumes in volumes_dict.items %}
                             <div><p>{{ volume_group_name }}</p></div>
                             <table class="table table-striped table-hover table-condensed .table-sm">
                                 <thead>
                                 <tr>
-                                    <th>卷名</th>
-                                    <th>mobi文件大小</th>
-                                    <th>推送用mobi大小</th>
+                                    <th>アルバム</th>
+                                    <th>mobiファイルサイズ</th>
+                                    <th>プッシュmobiサイズ</th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -340,14 +337,14 @@
                                             <td>
                                                 <button volumeid={{ volume.id }} type="button"
                                                         class="btn btn-outline-primary  btn-sm"
-                                                        onclick="push_volume(this,false)" ;>推送
+                                                        onclick="push_volume(this,false)" ;>Kindleにプッシュ
                                                 </button>
                                             </td>
                                         {% else %}
                                             <td>
                                                 <button volumeid={{ volume.id }} type="button"
                                                         class="btn btn-outline-primary  btn-sm"
-                                                        onclick="alert('请登录！');">推送
+                                                        onclick="alert('ログインしてください！');">Kindleにプッシュ
                                                 </button>
                                             </td>
                                         {% endif %}
@@ -360,18 +357,17 @@
                     <div class="tab-pane" id="panel-epub">
                         <blockquote>
                             <p class="text-info">
-                                <em>epub</em>为通用的格式，适用<em>Kobo</em>、<em>ipad</em><em>手机</em>等设备<br>
-                                按照<em>Kobo Aura HD</em>规格进行制作
+                                <em>epub</em>は全般デバイスにが使えるフォーマットです。<em>携帯</em>、<em>Kobo</em>、<em>ipad</em>など<br>
+                                <em>iPad</em>のサイズで作成しています
                             </p>
                         </blockquote>
-                    <a href="{% url 'bandwidth_rule' %}" target="_blank"> <p>关于流量消耗策略？</p> </a>
                         {% for volume_group_name,volumes in volumes_dict.items %}
                             <div><p>{{ volume_group_name }}</p></div>
                             <table class="table table-striped table-hover table-condensed .table-sm">
                                 <thead>
                                 <tr>
-                                    <th>卷名</th>
-                                    <th>epub文件大小</th>
+                                    <th>アルバム</th>
+                                    <th>epubファイルサイズ</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -380,37 +376,6 @@
                                         <td>{{ volume.name }}</td>
                                         <td><a href='javascript:void(0);' vid="{{ volume.id }}"
                                                onclick="download_volume(this,'epub')">{{ volume.get_epub_file_size_MB }}
-                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost|floatformat:1}}MB){% endif %}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        {% endfor %}
-                    </div>
-                    <div class="tab-pane" id="panel-zip">
-                        <blockquote>
-
-                            <p class="text-info">
-                                <em>zip</em>适合任何方式阅读<br>为原始流出资源的尺寸
-
-                            </p>
-                        </blockquote>
-                        <a href="{% url 'bandwidth_rule' %}" target="_blank"> <p>关于流量消耗策略？</p> </a>
-                        {% for volume_group_name,volumes in volumes_dict.items %}
-                            <div><p class="">{{ volume_group_name }}</p></div>
-                            <table class="table .table-sm table-striped table-hover ">
-                                <thead>
-                                <tr>
-                                    <th>卷名</th>
-                                    <th>zip文件大小</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for volume in volumes %}
-                                    <tr>
-                                        <td>{{ volume.name }}</td>
-                                        <td><a href='javascript:void(0);' vid="{{ volume.id }}"
-                                               onclick="download_volume(this,'zip')">{{ volume.get_zip_file_size_MB }}
                                             MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost|floatformat:1}}MB){% endif %}</td>
                                     </tr>
                                 {% endfor %}

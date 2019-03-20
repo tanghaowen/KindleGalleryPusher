@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>重置密码 - 漫推</title>
+	<title>パスワードリセット - KindleGalleryPusher</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     {% include 'mainsite/load_bootstrap.html' %}
@@ -46,13 +46,13 @@
             xmlhttp.onload = function (event) {
                 if (xmlhttp.status == 200){
                     message_box.style.display = 'block';
-                    console.log("重置密码成功");
+                    console.log("リセット成功しました");
                     ok_box.style.display='block';
 
                 }else if (xmlhttp.status == 401){
                     message_box.style.display = 'block';
                     document.getElementById('msg').style.display = 'none';
-                    console.log("重置失败");
+                    console.log("失敗しました");
                     error_box.style.display='block';
                 }
 
@@ -61,7 +61,7 @@
             xmlhttp.open('post',"{% url 'account:forgot' %}");
             xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded')
             xmlhttp.send(postdata);
-            message_box_text.innerHTML = "正在发送邮件...";
+            message_box_text.innerHTML = "リセットメールを送っています...";
             message_box.style.display = 'block';
         }
     </script>
@@ -78,11 +78,11 @@
 					</div>
 
 					<span class="login100-form-title p-t-20 p-b-45">
-						重置密码
+						パスワードリセット
 					</span>
 
 					<div class="wrap-input100 validate-input m-b-10" data-validate = "Username is required">
-						<input class="input100" id="email" type="text" name="email" placeholder="请输入你的注册邮箱">
+						<input class="input100" id="email" type="text" name="email" placeholder="あなたのメールアドレス">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-user"></i>
@@ -91,7 +91,7 @@
 
 					<div class="container-login100-form-btn p-t-10">
 						<button class="login100-form-btn" onclick="logto()" type="button">
-							重置密码
+							パスワードリセット
 						</button>
 					</div>
 					<div id="message-box" class="text-center w-full p-t-10 p-b-10" style="display: none">
@@ -105,9 +105,9 @@
 					</div>
 					<div id="reset-ok" class="text-center w-full p-t-10 p-b-10" style="display: none">
 						<p class="txt1">
-							重置密码成功，请去邮箱查看邮件！
+							リセット終わりました、メールボックスを確認してください！
 						</p>
-                        <p class="txt1">如未收到请查看垃圾邮件箱</p>
+                        <p class="txt1">メールが迷惑ボックスに入る可能性があります</p>
 					</div>
 				</form>
 			</div>

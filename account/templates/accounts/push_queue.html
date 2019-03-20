@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ user.username }} kindle待推送队列</title>
+    <title>{{ user.username }} kindleのプシュッ隊列</title>
     {% include 'mainsite/load_bootstrap.html' %}
 </head>
 <body>
@@ -11,9 +11,9 @@
 
 <div class="row" style="height: 4em;"></div>
 {% if is_global %}
-<div class="row"> <h3>全站推送队列</h3></div>
+<div class="row"> <h3>全部のプシュッ隊列</h3></div>
 {% else %}
-<div class="row"> <h3>{{ user.username }} 的推送队列</h3></div>
+<div class="row"> <h3>{{ user.username }} のプシュッ隊列</h3></div>
 {% endif %}
 
 
@@ -21,11 +21,11 @@
 <table class="table table-hover table-sm">
   <thead>
     <tr>
-      <th scope="col">编号</th>
-      <th>书名</th>
-      <th>卷名</th>
-      <th>状态</th>
-      <th>入队时间</th>
+      <th scope="col">Number</th>
+      <th>写真集名</th>
+      <th>アルバム</th>
+      <th>状態</th>
+      <th>隊列に入る時間</th>
     </tr>
   </thead>
 
@@ -35,7 +35,7 @@
     <td>{{ forloop.counter }} </td>
     <td>{{ task.volume.book.title }}</td>
     <td>{{ task.volume.name }}</td>
-    <td>{% if task.status == 'pending'%}排队等待推送 {% elif task.status == 'doing' %}正在推送{% elif task.status == 'done' %}推送成功{% elif task.status == 'error' %}推送出错{% endif %}</td>
+    <td>{% if task.status == 'pending'%}プシュッまち {% elif task.status == 'doing' %}プシュッ中{% elif task.status == 'done' %}プシュッ成功{% elif task.status == 'error' %}推送出错{% endif %}</td>
     <td>{{ task.added_date | date:'n月d日 Y年 G:i' }}</td>
     </tr>
     {% endfor %}
@@ -46,25 +46,25 @@
 <nav aria-label="Page navigation example">
   <ul class="pagination justify-content-center">
       {% if page.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">首页</a></li>
+        <li class="page-item"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">ホームページ</a></li>
       {% else %}
-        <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">首页</a></li>
+        <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">ホームページ</a></li>
       {% endif %}
       {% if page.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}" tabindex="-1" aria-disabled="true">上一页</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}" tabindex="-1" aria-disabled="true">前ページ</a></li>
       {% else %}
-        <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">上一页</a></li>
+        <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">前ページ</a></li>
       {% endif %}
         <li class="page-item"><a class="page-link active">{{ page.number }}</a> </li>
     {% if page.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">下一页</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">次ページ</a></li>
     {% else %}
-    <li class="page-item disabled"><a class="page-link" href="#">下一页</a></li>
+    <li class="page-item disabled"><a class="page-link" href="#">次ページ</a></li>
     {% endif %}
     {% if page.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ page.paginator.num_pages  }}">尾页</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page.paginator.num_pages  }}">エンドページ</a></li>
     {% else %}
-    <li class="page-item disabled"><a class="page-link" href="#">尾页</a></li>
+    <li class="page-item disabled"><a class="page-link" href="#">エンドページ</a></li>
     {% endif %}
   </ul>
 </nav>

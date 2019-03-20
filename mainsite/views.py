@@ -456,7 +456,7 @@ def feedback(request):
             ip = request.META['HTTP_X_FORWARDED_FOR']
         else:
             ip = request.META['REMOTE_ADDR']
-        send_mail('漫推 - 有用户反馈问题了:%s' % username,
+        send_mail('KindleGalleryPusher - 有用户反馈问题了:%s' % username,
                   "用户ID:%d 用户名%s \n 对方联系方式: %s  IP:%s\n反馈问题:\n%s" % (id,username,email,ip,message),
                   'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
         if user.id is not None:

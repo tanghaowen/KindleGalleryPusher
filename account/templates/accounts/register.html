@@ -38,15 +38,15 @@
             let password = document.getElementById('password').value;
             let email = document.getElementById('email').value;
             if (password.length <6){
-                message_box_text.innerHTML = "密码长度小于6个字符！";
+                message_box_text.innerHTML = "パスワードは6文字以上！";
                 message_box.style.display = 'block';
             }else if (email.length<3){
-                message_box_text.innerHTML = "邮箱长度太短！";
+                message_box_text.innerHTML = "メールアドレスに問題があります！";
                 message_box.style.display = 'block';
             }
             else{
                 message_box.style.display='block';
-                message_box_text.innerHTML = '正在创建账户...';
+                message_box_text.innerHTML = 'いま登録しています...';
                 document.getElementById('reg-btn').disabled = true;
                 let crsfsession = $("[name='csrfmiddlewaretoken']")[0].value;
                 {% if invite_code %}
@@ -63,28 +63,28 @@
                         res = xmlhttp.responseText;
                         if (res.includes('username can\'t use')) {
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '此用户名无法使用！';
+                        message_box_text.innerHTML = 'このユーザー名は使えません！';
                         }else if (res.includes('password too short!')){
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '密码小于6个字符！';
+                        message_box_text.innerHTML = 'パスワードは6文字以上です！';
                         }else if (res.includes('same username already exits')) {
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '用户名已存在！ 请通过下方链接登陆';
+                        message_box_text.innerHTML = 'このユーザ名はすでに使われています';
                         }else if (res.includes('email already used')) {
                         message_box.style.display='block';
-                        message_box_text.innerHTML = `邮箱已经注册过！ 请通过下方链接登陆`;
+                        message_box_text.innerHTML = `このメールアドレスは既に使われています`;
                         }else if (res.includes('email can\'t use')) {
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '邮箱格式有问题！';
+                        message_box_text.innerHTML = 'メールアドレスのフォーマットに問題があります！';
                         }else if (res.includes('mail over limit')) {
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '您好，为防止恶意注册，一天内只能发送10封邮件！';
+                        message_box_text.innerHTML = '一日中メール１０通しか送れません！';
                         }else if (res.includes('don\'t use email as username')) {
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '请勿使用邮箱地址作为用户名！';
+                        message_box_text.innerHTML = 'メールアドレスをユーザ名として使わないでください！';
                         }else{
                             message_box.style.display='block';
-                            message_box_text.innerHTML = '注册成功！已经发送激活邮件。如未收到请查看垃圾邮件箱';
+                            message_box_text.innerHTML = '登録成功！メールボックスを確認してください！（メールは迷惑メールボックスに入る可能性があります）';
 {#                            {% if redirect_path != None %}#}
 {#                                setTimeout("location.href = '{{ redirect_path }}';",1000);#}
 {##}
@@ -99,7 +99,7 @@
                     else{
                         document.getElementById('reg-btn').disabled = false;
                         message_box.style.display='block';
-                        message_box_text.innerHTML = '未知服务器错误';
+                        message_box_text.innerHTML = '未知な問題';
                     }
                     document.getElementById('reg-btn').disabled = false;
             };
@@ -123,17 +123,17 @@
 					</div>
 
 					<span class="login100-form-title p-t-20 p-b-45">
-						注册
+                        登録
 					</span>
 					<div class="wrap-input100 validate-input m-b-10" data-validate = "Email is required">
-						<input class="input100" id="email" type="text" name="email" placeholder="邮箱">
+						<input class="input100" id="email" type="text" name="email" placeholder="メールアドレス">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-user"></i>
 						</span>
 					</div>
 					<div class="wrap-input100 validate-input m-b-10" data-validate = "Username is required">
-						<input class="input100" id="username" type="text" name="username" placeholder="用户名(可中文但勿使用邮箱地址作为用户名)">
+						<input class="input100" id="username" type="text" name="username" placeholder="ユーザ名（メールアドレスを入れないでください）">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-user"></i>
@@ -141,7 +141,7 @@
 					</div>
 
 					<div class="wrap-input100 validate-input m-b-10" data-validate = "Password is required">
-						<input class="input100" id="password" type="password" name="password" placeholder="密码">
+						<input class="input100" id="password" type="password" name="password" placeholder="パスワード">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-lock"></i>
@@ -151,7 +151,7 @@
 
 					<div class="container-login100-form-btn p-t-10">
 						<button id="reg-btn" class="login100-form-btn" onclick="register()" type="button">
-							注册
+							登録
 						</button>
 					</div>
 					<div id="message-box" class="text-center w-full p-t-10 p-b-10" style="display: none">
@@ -163,7 +163,7 @@
 
 					<div class="text-center w-full">
 						<a class="txt1" href="{% url 'account:login' %}">
-							登陆 - 漫推
+							ログイン - KindleGalleryPusher
 							<i class="fa fa-long-arrow-right"></i>
 						</a>
 					</div>

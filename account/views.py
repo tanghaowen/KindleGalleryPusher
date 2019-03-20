@@ -88,7 +88,7 @@ def account_activate(request):
         login(request,u)
         r = AccountRegisterIpRecord(ip=ip,action='active')
         r.save()
-        send_mail('漫推 - 新用户注册：%s' % user_name,
+        send_mail('KindleGalleryPusher - 新用户注册：%s' % user_name,
                   "新用户注册:%s" % user_name,
                   'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
 
@@ -131,7 +131,7 @@ def account_reset_password(request):
         plain_body = """您好：\n%s\n 请点击下面的链接重置密码。如果未显示超链接，请复制粘贴下面的地址到浏览器中激活账号: %s""" % (user.username,reset_url)
         print("重置密码token:",reset_url)
         print("开始发送激活邮件...")
-        send_mail('漫推密码重置 - %s' % user.username,
+        send_mail('KindleGalleryPusher密码重置 - %s' % user.username,
                   plain_body,
                   'admin@asairo.net', [email], html_message=html_body,fail_silently=False)
 
@@ -238,15 +238,15 @@ def account_register(request : HttpRequest):
         html_body = """
         <p>您好：</p>
         <p>%s</p>
-        <p>感谢您注册漫推，请点击下面的链接激活账号。</p>
+        <p>感谢您注册KindleGalleryPusher，请点击下面的链接激活账号。</p>
         <a href='%s'>点击激活</a>
         <p>如果未显示按钮，请复制粘贴下面的地址到浏览器中激活账号：</p>
         <p>%s</p>
         """ % (user_name,active_url,active_url)
-        plain_body = """您好：\n%s\n感谢您注册漫推，请点击下面的链接激活账号。如果未显示超链接，请复制粘贴下面的地址到浏览器中激活账号: %s""" % (user_name,active_url)
+        plain_body = """您好：\n%s\n感谢您注册KindleGalleryPusher，请点击下面的链接激活账号。如果未显示超链接，请复制粘贴下面的地址到浏览器中激活账号: %s""" % (user_name,active_url)
         print("激活token:",active_url)
         print("开始发送激活邮件...")
-        send_mail('漫推注册激活邮件 - %s' % user_name,
+        send_mail('KindleGalleryPusher注册激活邮件 - %s' % user_name,
                   plain_body,
                   'admin@asairo.net', [email], html_message=html_body,fail_silently=False)
 
@@ -429,8 +429,8 @@ def payok(request):
         charge_record.payed = True
         charge_record.save()
         charge_record.user.charge_bandwidth(CHARGE_MODE_VIP)
-        send_mail('漫推 - 有用户氪金拉！ %s' %order_id ,
-                  "漫推 - 有用户氪金拉！",
+        send_mail('KindleGalleryPusher - 有用户氪金拉！ %s' %order_id ,
+                  "KindleGalleryPusher - 有用户氪金拉！",
                   'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
 
 

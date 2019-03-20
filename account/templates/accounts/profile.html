@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>個人情報</title>
     {% include 'mainsite/load_bootstrap.html' %}
     <style>
         body{
@@ -130,7 +130,7 @@
 
                                 {% if edit %}
                                     <div class="file btn btn-lg btn-primary">
-                                更改头像
+                                    個人写真を変える
                                 <input type="file" name="avata"/>
                                     </div>
                                 {% endif %}
@@ -148,26 +148,20 @@
                                         {% endif %}
                                     </h5>
                                     <h6>
-                                        {% if user.vip %}
-                                            Vip
-                                        {% else %}
-                                            普通用户
-                                        {% endif %}
+
+
                                     </h6>
-                                    <p class="proile-rating">订阅数量 : <span>{{ user.subscriptes.count }}</span></p>
-                                    <p class="proile-rating">收藏数量 : <span>{{ user.collections.count }}</span></p>
+                                    <p class="proile-rating">フォロー数 : <span>{{ user.subscriptes.count }}</span></p>
+                                    <p class="proile-rating">コレクション数 : <span>{{ user.collections.count }}</span></p>
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">关于</a>
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">個人情報</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Vip</a>
+                                    <a class="nav-link" id="subcs-tab" data-toggle="tab" href="#subc" role="tab" aria-controls="profile" aria-selected="false">フォローしている写真集({{ user.subscriptes.count }})</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="subcs-tab" data-toggle="tab" href="#subc" role="tab" aria-controls="profile" aria-selected="false">订阅的书籍({{ user.subscriptes.count }})</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="collec-tab" data-toggle="tab" href="#collec" role="tab" aria-controls="profile" aria-selected="false">收藏的书籍({{ user.collections.count }})</a>
+                                    <a class="nav-link" id="collec-tab" data-toggle="tab" href="#collec" role="tab" aria-controls="profile" aria-selected="false">コレクション({{ user.collections.count }})</a>
                                 </li>
                             </ul>
                         </div>
@@ -196,7 +190,7 @@
 
                                 <div class="row">
                                             <div class="col-md-6">
-                                                <label>用户ID</label>
+                                                <label>ユーザID</label>
                                             </div>
                                             <div class="col-md-6">
                                                 <p>{{ user.id}}</p>
@@ -204,30 +198,23 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>用户名</label>
+                                                <label>ユーザ名</label>
                                             </div>
                                             <div class="col-md-6">
                                                 <p>{{ user.username }}</p>
                                             </div>
                                         </div>
-                               <div class="row">
-                                            <div class="col-md-6">
-                                                <label>邀请链接</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p><a href="{% url 'account:register' %}?code={{ user.invite_code }}">邀请链接</a> <a id="show-pop" href="#" data-toggle="popover" title="邀请链接" data-content="通过您的邀请链接注册的用户，将初始获得500M流量（无邀请的用户只获得200M流量）。并且每当对方捐助一次vip服务，您每个月的可用流量上限就永久增加200M）">邀请链接的作用？</a></p>
-                                            </div>
-                                        </div>
+
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>kindle邮箱</label>
+                                                <label>kindleメールアドレス</label>
                                             </div>
                                             <div class="col-md-6">
                                             {% if edit %}
                                                 {% if user.kindle_email %}
                                                     <input style="height: 1.5em;" name="kindle_email" type="text"class="form-control border border-primary" value="{{ user.kindle_email }}"></input>
                                                     {% else %}
-                                                     <input style="height: 1.5em;"  name="kindle_email" type="text"class="form-control border border-primary" placeholder="未设定kindle email"></input>
+                                                     <input style="height: 1.5em;"  name="kindle_email" type="text"class="form-control border border-primary" placeholder="kindleメールアドレスまだ設定していません"></input>
                                                 {% endif %}
                                             {% else %}
                                                 <p>******</p>
@@ -236,26 +223,26 @@
                                         </div>
                                         <div class="row" style="margin-top: 1em">
                                             <div class="col-md-6">
-                                                <label>新密码</label>
+                                                <label>新たなパスワード</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <input style="height: 1.5em;"  name="password" type="password"class="form-control border border-primary" placeholder="更改密码后需重登陆(密码最少6位！)"></input>
+                                                <input style="height: 1.5em;"  name="password" type="password"class="form-control border border-primary" placeholder="パスワードを変更"></input>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 1em">
                                             <div class="col-md-12">
-                                                <label>个性签名</label><br/>
+                                                <label>個人紹介</label><br/>
                                             {% if edit %}
                                                 {% if user.signature %}
                                                     <textarea name="signature" type="text"class="form-control" rows="3">{{ user.signature }}</textarea>
                                                     {% else %}
-                                                     <textarea name="signature" type="text"class="form-control" placeholder="您未设置个性签名" rows="3"></textarea>
+                                                     <textarea name="signature" type="text"class="form-control" placeholder="個人紹介まだ書いてません" rows="3"></textarea>
                                                 {% endif %}
                                             {% else %}
                                                 <p>{% if user.signature %}
                                                 {{ user.signature }}
                                                     {% else %}
-                                                    无个性签名
+                                                    個人紹介まだ書いてません
                                                 {% endif %}</p>
                                             {% endif %}
 
@@ -267,61 +254,7 @@
                     {% endif %}
                                         </div>
                             </div>
-                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Vip</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>{% if user.vip %}
-                                                    是
-                                                    {% else %}
-                                                    否
-                                                {% endif %}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Vip到期时间</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>{% if user.vip %}
-                                                    {{ user.vip_expire }}
-                                                    {% else %}
-                                                    非Vip
-                                                {% endif %}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>总流量</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                {% if edit %}
-                                                    <p>{{ user.bandwidth_remain }}MB/{{ user.get_bandwidth_total }}MB</p>
-                                                {% else %}
-                                                    <p>******</p>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>永久流量</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>{{user.bandwidth_forever}}MB</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>已使用流量</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>{{user.bandwidth_used}}MB</p>
-                                            </div>
-                                        </div>
 
-                            </div>
                             <div class="tab-pane fade" id="subc" role="tabpanel" aria-labelledby="profile-tab">
                                         <div class="row" >
                                             {% for book in subscs %}
@@ -332,7 +265,7 @@
                                             {% endfor %}
                                         {% if user.subscriptes.all > 17 %}
                                             <div class="col-md-2 col-3" style="text-align: center; height: 100px">
-                                                <div style="height: 100px;line-height: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="{% url 'account:collections' %}"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">完整列表</p></a></div>
+                                                <div style="height: 100px;line-height: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="{% url 'account:collections' %}"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">フールリスト</p></a></div>
                                             </div>
                                         </div>
                                         {% endif %}
@@ -351,7 +284,7 @@
                                             {% endfor %}
                                         {% if user.collections.all > 17 %}
                                             <div class="col-md-2 col-3" style="text-align: center; height: 100px">
-                                                <div style="height: 100px;line-height: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="{% url 'account:collections' %}"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">完整列表</p></a></div>
+                                                <div style="height: 100px;line-height: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a href="{% url 'account:collections' %}"><p style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">フールリスト</p></a></div>
                                             </div>
                                         </div>
                                         {% endif %}

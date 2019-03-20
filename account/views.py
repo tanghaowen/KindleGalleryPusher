@@ -90,7 +90,7 @@ def account_activate(request):
         r.save()
         send_mail('KindleGalleryPusher - 新用户注册：%s' % user_name,
                   "新用户注册:%s" % user_name,
-                  'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
+                  'admin@lpanda.net', ['tanghaowen100@gmail.com'],fail_silently=True)
 
         return HttpResponseRedirect('/')
 
@@ -133,7 +133,7 @@ def account_reset_password(request):
         print("开始发送激活邮件...")
         send_mail('KindleGalleryPusher密码重置 - %s' % user.username,
                   plain_body,
-                  'admin@asairo.net', [email], html_message=html_body,fail_silently=False)
+                  'admin@lpanda.net', [email], html_message=html_body,fail_silently=False)
 
         print("发送完毕")
         #login_res = login(request,new_user)
@@ -248,7 +248,7 @@ def account_register(request : HttpRequest):
         print("开始发送激活邮件...")
         send_mail('KindleGalleryPusher注册激活邮件 - %s' % user_name,
                   plain_body,
-                  'admin@asairo.net', [email], html_message=html_body,fail_silently=False)
+                  'admin@lpanda.net', [email], html_message=html_body,fail_silently=False)
 
         print("发送完毕")
         ip_record = AccountRegisterIpRecord(action='mail',ip=ip)
@@ -431,7 +431,7 @@ def payok(request):
         charge_record.user.charge_bandwidth(CHARGE_MODE_VIP)
         send_mail('KindleGalleryPusher - 有用户氪金拉！ %s' %order_id ,
                   "KindleGalleryPusher - 有用户氪金拉！",
-                  'admin@asairo.net', ['tanghaowen100@gmail.com'],fail_silently=True)
+                  'admin@lpanda.net', ['tanghaowen100@gmail.com'],fail_silently=True)
 
 
     else:

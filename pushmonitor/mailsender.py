@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
 
 
-smtp_username = 'admin@asairo.net'
+smtp_username = 'admin@lpanda.net'
 smtp_password = 'shinonomehana'
 smtp_hostname = 'smtp.asairo.net'
 

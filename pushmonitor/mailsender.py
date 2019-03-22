@@ -38,6 +38,7 @@ def send_mail_use_smtp(reciviers_adress,file_url,file_name):
     return True
 
 if __name__ == '__main__':
-    send_mail_use_smtp(['ueinohakono@kindle.com'],
-                       r"E:\Project\KindleComicPusher\media\books\川柳少女\五十嵐正邦_川柳少女_第04巻.mobi",
-                       '樱花庄.mobi')
+    # ここでテストのメールを送る
+    send_mail_use_smtp(['test@test.com'],
+                       r"file_path",
+                       'attach_filename.file')

@@ -16,11 +16,11 @@ server {
 
     # Django media
     location /media/img  {
-        alias /mnt/e/project/KindleComicPusher/media/img;  # your Django project's media files - amend as required
+        alias /mnt/e/project/KindleGalleryPusher/media/img;  # your Django project's media files - amend as required
     }
 
     location /static {
-        alias /mnt/e/project/KindleComicPusher/static; # your Django project's static files - amend as required
+        alias /mnt/e/project/KindleGalleryPusher/static; # your Django project's static files - amend as required
     }
 
     # Finally, send all non-media requests to the Django server.
@@ -30,7 +30,7 @@ server {
     }
 location /donwloadbook {
     internal;
-    alias /mnt/e/project/KindleComicPusher/media;
+    alias /mnt/e/project/KindleGalleryPusher/media;
 }
 
 }

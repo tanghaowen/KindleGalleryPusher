@@ -16,7 +16,7 @@ from mainsite.models import ImageWithThumb
 from django.core.files import File
 from django.core.validators import validate_email, ValidationError
 from pushmonitor.models import get_user_push_task_from_queue, get_global_push_tasks_from_queue, get_random_string
-
+from django.conf import settings
 
 def account_login(request: HttpRequest):
     if request.method == 'GET':
@@ -88,10 +88,6 @@ def account_activate(request):
         login(request, u)
         r = AccountRegisterIpRecord(ip=ip, action='active')
         r.save()
-        send_mail('KindleGalleryPusher - 新用户注册：%s' % user_name,
-                  "新用户注册:%s" % user_name,
-                  'admin@lpanda.net', ['tanghaowen100@gmail.com'], fail_silently=True)
-
         return HttpResponseRedirect('/')
 
     else:
@@ -133,7 +129,7 @@ def account_reset_password(request):
         print("开始发送激活邮件...")
         send_mail('KindleGalleryPusherパスワードリセット - %s' % user.username,
                   plain_body,
-                  'admin@lpanda.net', [email], html_message=html_body, fail_silently=False)
+                  settings.EMAIL_HOST_USER, [email], html_message=html_body, fail_silently=False)
 
         print("发送完毕")
         # login_res = login(request,new_user)
@@ -247,7 +243,7 @@ def account_register(request: HttpRequest):
         print("开始发送激活邮件...")
         send_mail('KindleGalleryPusherへようこそ - %s' % user_name,
                   plain_body,
-                  'admin@lpanda.net', [email], html_message=html_body, fail_silently=False)
+                  settings.EMAIL_HOST_USER, [email], html_message=html_body, fail_silently=False)
 
         print("发送完毕")
         ip_record = AccountRegisterIpRecord(action='mail', ip=ip)
@@ -433,10 +429,6 @@ def payok(request):
         charge_record.payed = True
         charge_record.save()
         charge_record.user.charge_bandwidth(CHARGE_MODE_VIP)
-        send_mail('KindleGalleryPusher - 有用户氪金拉！ %s' % order_id,
-                  "KindleGalleryPusher - 有用户氪金拉！",
-                  'admin@lpanda.net', ['tanghaowen100@gmail.com'], fail_silently=True)
-
 
     else:
         print('订单状态为0，失败')

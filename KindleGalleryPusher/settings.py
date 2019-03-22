@@ -126,8 +126,8 @@ LOGIN_URL = '/accounts/login/'
 
 AUTH_USER_MODEL = 'account.User'
 
-EMAIL_HOST = 'smtp.lpanda.net'
-EMAIL_HOST_USER = 'admin@lpanda.net'
-EMAIL_HOST_PASSWORD = 'shinonomehana'
+EMAIL_HOST = 'smtp.yourserver.net'
+EMAIL_HOST_USER = 'your email'
+EMAIL_HOST_PASSWORD = 'your_smtp_password'
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465

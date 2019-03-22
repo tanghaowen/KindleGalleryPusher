@@ -4,18 +4,20 @@ KindleGalleryPusher📷
 [demoはこちら](http://gallery.lpanda.net/)
 
 
-貴方の写真集をみんなたシェアしませんか？
+貴方の写真集をみんなとシェアしませんか？
 
-# 1. このサイトアの向いた人
+
+# 1. このサイトアプリに向いてるユーザ
 * 自分の写真集をkindleでもみたい
 * kindleを使っている友達にシェアしたい
 
 
 # 2. このサイトについて
-* アプロードした写真集を自動に*mobi* *epub* フォーマットに変換します
-* 気に入った写真集を直接に貴方のkindleデバイスに送信できます
+* アプロードされた写真集を自動に*mobi* *epub* フォーマットに変換します
+* 気に入った写真集を直接にkindleデバイスに送信できます
 
 ## 2.1. requirements
+> * python 3.7
 > * Django>2.1
 > * awesome-slugify
 > * mysqlclient
@@ -31,7 +33,7 @@ KindleGalleryPusher📷
 ## 2.2. thanks for 
 > * [KCC](https://github.com/ciromattia/kcc)
  
- ## データベースに関して
+## 2.3. データベースに関して
  
 1.  データベースは*mysql*を使います。*KindleGalleryPusher/settings.py*で、下の部分を編集してください。
     ```python
@@ -49,15 +51,29 @@ KindleGalleryPusher📷
     ```sql
     CREATE DATABASE kindleGallerysite
     ```
-
-
-### 2.2.1. mysqlに関して
+3. 次に下のように、データベースを初期化させます
+    ```bash
+    python manage.py makemigrations account
+    python manage.py makemigrations mainsite
+    python manage.py makemigrations pushmonitor
+    python manage.py migrate
+    ```   
+4. 最後に下のコマンドでサイトを実行してみます
+    ```bash
+    python manage.py runserver 0.0.0.0:8000
+    ```     
+    実行した後、*127.0.0.1:8000*から、サイトを見れます
+    
+    **警告！**
+    
+    **python manage.py runserver　はあくまでテスト、および *debug* のため、*django* に内蔵された簡単なweb serverです！本番でサービスを提供したいなら、*nginx + uwsgi*で実行してください！(簡単の説明は下の*nginx + uwsgi*部分を参考してください)** 
+### 2.3.1. mysqlに関して
 
 現在mysqlの最新バージョンは*8.0*です。*mysql 8.0*から、新しいパスワード暗号化方法が導入されました。
 
 しかし、現在の*django*はこの新しい暗号化方式を支援していませんので、もし*mysql 8.0*以上のバージョンを使うなら、暗号化方式を*Legacy Authentication Method*に変更してください
 
-### 2.2.2. sqlite に関して
+### 2.3.2. sqlite に関して
 
 もしsqliteを使いたいなら、*KindleGalleryPusher/settings.py* の*DATABASES*を下のように変更したください
 
@@ -70,7 +86,7 @@ KindleGalleryPusher📷
     }
 ```
 
-## 2.3. 送信に関して
+## 2.4. kindle送信に関して
 
 詳しいkindleの送信機能説明はアマゾンのページをご覧ください。
 
@@ -96,7 +112,7 @@ smtp_password = 'your_smtp_password'
 smtp_hostname = 'smtp.yourserver.net'
 ```
 
-## 2.4. hostnameに関して
+## 2.5. hostnameに関して
 
 *KindleGalleryPusher/settings.py*の*ALLOWED_HOSTS* 部分で、自分のdonamを入れてください
 
@@ -104,7 +120,7 @@ smtp_hostname = 'smtp.yourserver.net'
 ALLOWED_HOSTS = ['gallery.lpanda.net', 'localhost', '127.0.0.1']
 ```
 
-## 2.5. ユーザデータ容量に関して
+## 2.6. ユーザデータ容量に関して
 
 不正な大量ダウンロードでサーバを高負荷状態にさせることを防ぐため、データ容量制度を導入しました。（携帯のデータ容量と同じ感じ）
 
@@ -115,3 +131,68 @@ ALLOWED_HOSTS = ['gallery.lpanda.net', 'localhost', '127.0.0.1']
 * 毎回データ容量は *1GB* に回復します
 
 もし *1GB*　のデータ容量を調整したいなら、 *account/models.py* の *USER_BASE_BANDWIDTH*　を調整したください
+
+
+## 2.7. nginx + uwsgi でサービス提供
+1. まずは*nginx*をインストールします。*debian* 系なら
+    ```
+    apt-get install nginx
+    ```
+    でインストールできます
+2. 次に*uwsgi*をインストールします
+    ```
+    pip install uwsgi
+    ```
+3.　*uwsgi* のプロファイルを作成します。作成例は *uwsgi_linux_demon.ini* です。中の*chdir* *daemonize* *pidfile*の部分を変更してください
+    ```ini
+    [uwsgi]
+    socket = 127.0.0.1:8001
+    chdir = /root/KindleGalleryPusher/
+    wsgi-file = KindleGalleryPusher/wsgi.py
+    processes = 4
+    threads = 2
+    stats = 127.0.0.1:8002
+    daemonize = /root/KindleGalleryPusher/log_uwsgi.log
+    pidfile = /root/KindleGalleryPusher/uwsgi.pid
+    ```
+    
+4. 最後に*uwsgi uwsgi_linux_demon.ini* でウェイブサービスを実行します
+5. *nging* プロファイルの方はファイル *nginx_sample.cof*　を参考してください。各*alias*の部分を正しいパスに設定してください
+    ```nginx
+    upstream django {
+        # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
+        server 127.0.0.1:3031; # for a web port socket (we'll use this first)
+    }
+
+    # configuration of the server
+    server {
+        # the port your site will be served on
+        listen      9000;
+        # the domain name it will serve for
+        server_name 127.0.0.1; # substitute your machine's IP address or FQDN
+        charset     utf-8;
+
+        # max upload size
+        client_max_body_size 1000M;   # adjust to taste
+
+        # Django media
+        location /media/img  {
+            alias /mnt/e/project/KindleGalleryPusher/media/img;  # your Django project's media files - amend as required
+        }
+
+        location /static {
+            alias /mnt/e/project/KindleGalleryPusher/static; # your Django project's static files - amend as required
+        }
+
+        # Finally, send all non-media requests to the Django server.
+        location / {
+            uwsgi_pass  django;
+            include      /etc/nginx/uwsgi_params; # the uwsgi_params file you installed
+        }
+    location /donwloadbook {
+        internal;
+        alias /mnt/e/project/KindleGalleryPusher/media;
+    }
+
+    }
+    ```

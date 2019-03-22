@@ -143,7 +143,7 @@ class ComicPageParser:
                 self.payload.append(['S2', self.source, pagetwo, self.color, self.fill])
             if self.opt.splitter > 0:
                 self.payload.append(['R', self.source, self.image.rotate(90, Image.BICUBIC, True),
-                                    self.color, self.fill])
+                                     self.color, self.fill])
         else:
             self.payload.append(['N', self.source, self.image, self.color, self.fill])
 

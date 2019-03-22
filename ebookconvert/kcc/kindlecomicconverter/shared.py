@@ -107,14 +107,14 @@ def removeFromZIP(zipfname, *filenames):
 
 
 def sanitizeTrace(traceback):
-    return ''.join(format_tb(traceback))\
+    return ''.join(format_tb(traceback)) \
         .replace('C:/projects/ManPush/', '') \
         .replace('c:/projects/ManPush/', '') \
-        .replace('C:/python36-x64/', '')\
-        .replace('c:/python36-x64/', '')\
+        .replace('C:/python36-x64/', '') \
+        .replace('c:/python36-x64/', '') \
         .replace('C:\\projects\\ManPush\\', '') \
         .replace('c:\\projects\\ManPush\\', '') \
-        .replace('C:\\python36-x64\\', '')\
+        .replace('C:\\python36-x64\\', '') \
         .replace('c:\\python36-x64\\', '')
 
 

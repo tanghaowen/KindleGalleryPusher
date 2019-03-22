@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
         mainWindow.setObjectName("mainWindow")
@@ -27,11 +28,12 @@ class Ui_mainWindow(object):
         font.setWeight(75)
         self.progressBar.setFont(font)
         self.progressBar.setVisible(False)
-        self.progressBar.setAlignment(QtCore.Qt.AlignJustify|QtCore.Qt.AlignVCenter)
+        self.progressBar.setAlignment(QtCore.Qt.AlignJustify | QtCore.Qt.AlignVCenter)
         self.progressBar.setObjectName("progressBar")
         self.gridLayout.addWidget(self.progressBar, 1, 0, 1, 2)
         self.jobList = QtWidgets.QListWidget(self.centralWidget)
-        self.jobList.setStyleSheet("QListWidget#jobList {background:#ffffff;background-image:url(:/Other/icons/list_background.png);background-position:center center;background-repeat:no-repeat;color:rgb(0,0,0);}")
+        self.jobList.setStyleSheet(
+            "QListWidget#jobList {background:#ffffff;background-image:url(:/Other/icons/list_background.png);background-position:center center;background-repeat:no-repeat;color:rgb(0,0,0);}")
         self.jobList.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.jobList.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.jobList.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
@@ -232,42 +234,62 @@ class Ui_mainWindow(object):
     def retranslateUi(self, mainWindow):
         _translate = QtCore.QCoreApplication.translate
         mainWindow.setWindowTitle(_translate("mainWindow", "Kindle Comic Converter"))
-        self.hLabel.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Resolution of the target device.</p></body></html>"))
+        self.hLabel.setToolTip(_translate("mainWindow",
+                                          "<html><head/><body><p style=\'white-space:pre\'>Resolution of the target device.</p></body></html>"))
         self.hLabel.setText(_translate("mainWindow", "Custom height:"))
-        self.widthBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Resolution of the target device.</p></body></html>"))
-        self.wLabel.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Resolution of the target device.</p></body></html>"))
+        self.widthBox.setToolTip(_translate("mainWindow",
+                                            "<html><head/><body><p style=\'white-space:pre\'>Resolution of the target device.</p></body></html>"))
+        self.wLabel.setToolTip(_translate("mainWindow",
+                                          "<html><head/><body><p style=\'white-space:pre\'>Resolution of the target device.</p></body></html>"))
         self.wLabel.setText(_translate("mainWindow", "Custom width:"))
-        self.heightBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Resolution of the target device.</p></body></html>"))
-        self.mangaBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Enable right-to-left reading.</p></body></html>"))
+        self.heightBox.setToolTip(_translate("mainWindow",
+                                             "<html><head/><body><p style=\'white-space:pre\'>Resolution of the target device.</p></body></html>"))
+        self.mangaBox.setToolTip(_translate("mainWindow",
+                                            "<html><head/><body><p style=\'white-space:pre\'>Enable right-to-left reading.</p></body></html>"))
         self.mangaBox.setText(_translate("mainWindow", "Manga mode"))
-        self.rotateBox.setToolTip(_translate("mainWindow", "<html><head/><body><p><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - Split<br/></span>Double page spreads will be cut into two separate pages.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Indeterminate - Rotate and split<br/></span>Double page spreads will be displayed twice. First rotated and then split. </p><p><span style=\" font-weight:600; text-decoration: underline;\">Checked - Rotate<br/></span>Double page spreads will be rotated.</p></body></html>"))
+        self.rotateBox.setToolTip(_translate("mainWindow",
+                                             "<html><head/><body><p><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - Split<br/></span>Double page spreads will be cut into two separate pages.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Indeterminate - Rotate and split<br/></span>Double page spreads will be displayed twice. First rotated and then split. </p><p><span style=\" font-weight:600; text-decoration: underline;\">Checked - Rotate<br/></span>Double page spreads will be rotated.</p></body></html>"))
         self.rotateBox.setText(_translate("mainWindow", "Spread splitter"))
-        self.qualityBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - 4 panels<br/></span>Zoom each corner separately.</p><p style=\'white-space:pre\'><span style=\" font-weight:600; text-decoration: underline;\">Indeterminate - 2 panels<br/></span>Zoom only the top and bottom of the page.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Checked - 4 high-quality panels<br/></span>Zoom each corner separately. Try to increase the quality of magnification. Check wiki for more details.</p></body></html>"))
+        self.qualityBox.setToolTip(_translate("mainWindow",
+                                              "<html><head/><body><p style=\'white-space:pre\'><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - 4 panels<br/></span>Zoom each corner separately.</p><p style=\'white-space:pre\'><span style=\" font-weight:600; text-decoration: underline;\">Indeterminate - 2 panels<br/></span>Zoom only the top and bottom of the page.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Checked - 4 high-quality panels<br/></span>Zoom each corner separately. Try to increase the quality of magnification. Check wiki for more details.</p></body></html>"))
         self.qualityBox.setText(_translate("mainWindow", "Panel View 4/2/HQ"))
-        self.webtoonBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Enable special parsing mode for Korean Webtoons.</p></body></html>"))
+        self.webtoonBox.setToolTip(_translate("mainWindow",
+                                              "<html><head/><body><p style=\'white-space:pre\'>Enable special parsing mode for Korean Webtoons.</p></body></html>"))
         self.webtoonBox.setText(_translate("mainWindow", "Webtoon mode"))
-        self.upscaleBox.setToolTip(_translate("mainWindow", "<html><head/><body><p><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - Nothing<br/></span>Images smaller than device resolution will not be resized.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Indeterminate - Stretching<br/></span>Images smaller than device resolution will be resized. Aspect ratio will be not preserved.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Checked - Upscaling<br/></span>Images smaller than device resolution will be resized. Aspect ratio will be preserved.</p></body></html>"))
+        self.upscaleBox.setToolTip(_translate("mainWindow",
+                                              "<html><head/><body><p><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - Nothing<br/></span>Images smaller than device resolution will not be resized.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Indeterminate - Stretching<br/></span>Images smaller than device resolution will be resized. Aspect ratio will be not preserved.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Checked - Upscaling<br/></span>Images smaller than device resolution will be resized. Aspect ratio will be preserved.</p></body></html>"))
         self.upscaleBox.setText(_translate("mainWindow", "Stretch/Upscale"))
-        self.gammaBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Disable automatic gamma correction.</p></body></html>"))
+        self.gammaBox.setToolTip(_translate("mainWindow",
+                                            "<html><head/><body><p style=\'white-space:pre\'>Disable automatic gamma correction.</p></body></html>"))
         self.gammaBox.setText(_translate("mainWindow", "Custom gamma"))
-        self.borderBox.setToolTip(_translate("mainWindow", "<html><head/><body><p><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - Autodetection<br/></span>The color of margins fill will be detected automatically.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Indeterminate - White<br/></span>Margins will be filled with white color.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Checked - Black<br/></span>Margins will be filled with black color.</p></body></html>"))
+        self.borderBox.setToolTip(_translate("mainWindow",
+                                             "<html><head/><body><p><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - Autodetection<br/></span>The color of margins fill will be detected automatically.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Indeterminate - White<br/></span>Margins will be filled with white color.</p><p><span style=\" font-weight:600; text-decoration: underline;\">Checked - Black<br/></span>Margins will be filled with black color.</p></body></html>"))
         self.borderBox.setText(_translate("mainWindow", "W/B margins"))
-        self.outputSplit.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - Automatic mode<br/></span>The output will be split automatically.</p><p style=\'white-space:pre\'><span style=\" font-weight:600; text-decoration: underline;\">Checked - Volume mode<br/></span>Every subdirectory will be considered as a separate volume.</p></body></html>"))
+        self.outputSplit.setToolTip(_translate("mainWindow",
+                                               "<html><head/><body><p style=\'white-space:pre\'><span style=\" font-weight:600; text-decoration: underline;\">Unchecked - Automatic mode<br/></span>The output will be split automatically.</p><p style=\'white-space:pre\'><span style=\" font-weight:600; text-decoration: underline;\">Checked - Volume mode<br/></span>Every subdirectory will be considered as a separate volume.</p></body></html>"))
         self.outputSplit.setText(_translate("mainWindow", "Output split"))
-        self.colorBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Disable conversion to grayscale.</p></body></html>"))
+        self.colorBox.setToolTip(_translate("mainWindow",
+                                            "<html><head/><body><p style=\'white-space:pre\'>Disable conversion to grayscale.</p></body></html>"))
         self.colorBox.setText(_translate("mainWindow", "Color mode"))
         self.gammaLabel.setText(_translate("mainWindow", "Gamma: Auto"))
         self.editorButton.setText(_translate("mainWindow", "Editor"))
-        self.editorButton.setToolTip(_translate("mainWindow", "<html><head/><body><p  style=\'white-space:pre\'>Shift+Click to edit directory.</p></body></html>"))
+        self.editorButton.setToolTip(_translate("mainWindow",
+                                                "<html><head/><body><p  style=\'white-space:pre\'>Shift+Click to edit directory.</p></body></html>"))
         self.wikiButton.setText(_translate("mainWindow", "Wiki"))
-        self.directoryButton.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Add directory containing JPG, PNG or GIF files to queue.<br/><span style=\" font-weight:600;\">CBR, CBZ and CB7 files inside will not be processed!</span></p></body></html>"))
+        self.directoryButton.setToolTip(_translate("mainWindow",
+                                                   "<html><head/><body><p style=\'white-space:pre\'>Add directory containing JPG, PNG or GIF files to queue.<br/><span style=\" font-weight:600;\">CBR, CBZ and CB7 files inside will not be processed!</span></p></body></html>"))
         self.directoryButton.setText(_translate("mainWindow", "Add directory"))
-        self.fileButton.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Add CBR, CBZ, CB7 or PDF file to queue.</p></body></html>"))
+        self.fileButton.setToolTip(_translate("mainWindow",
+                                              "<html><head/><body><p style=\'white-space:pre\'>Add CBR, CBZ, CB7 or PDF file to queue.</p></body></html>"))
         self.fileButton.setText(_translate("mainWindow", "Add file"))
-        self.deviceBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Target device.</p></body></html>"))
-        self.formatBox.setToolTip(_translate("mainWindow", "<html><head/><body><p style=\'white-space:pre\'>Output format.</p></body></html>"))
-        self.convertButton.setToolTip(_translate("mainWindow", "<html><head/><body><p  style=\'white-space:pre\'>Shift+Click to select the output directory.</p></body></html>"))
+        self.deviceBox.setToolTip(_translate("mainWindow",
+                                             "<html><head/><body><p style=\'white-space:pre\'>Target device.</p></body></html>"))
+        self.formatBox.setToolTip(_translate("mainWindow",
+                                             "<html><head/><body><p style=\'white-space:pre\'>Output format.</p></body></html>"))
+        self.convertButton.setToolTip(_translate("mainWindow",
+                                                 "<html><head/><body><p  style=\'white-space:pre\'>Shift+Click to select the output directory.</p></body></html>"))
         self.convertButton.setText(_translate("mainWindow", "Convert"))
         self.clearButton.setText(_translate("mainWindow", "Clear list"))
+
 
 from . import KCC_rc

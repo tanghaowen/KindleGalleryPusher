@@ -7,7 +7,6 @@ from mainsite.models import *
 from django.utils.timezone import now, timedelta
 from django.core.validators import validate_email
 
-
 # ユーザアカウントに関する変数
 DOWNLOAD_LINK_AVAILABLE_HOURS = 1
 ACCOUNT_ACTIVATE_TOKEN_AVAILABLE_HOURS = 1
@@ -284,6 +283,7 @@ class BandwidthCostRecord(models.Model):
         verbose_name = 'ユーザデータ量消費履歴'
         verbose_name_plural = 'ユーザデータ量消費履歴'
 
+
 # ユーザ登録する時、アカウントを有効にするメールを送る履歴です
 class MailVertifySendRecord(models.Model):
     send_date = models.DateTimeField(default=now)
@@ -300,8 +300,8 @@ class MailVertifySendRecord(models.Model):
     who_inviter = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, verbose_name='邀请者')
 
     class Meta:
-        verbose_name_plural = '邮件验证发送列表'
-        verbose_name = '邮件验证发送列表'
+        verbose_name_plural = 'ユーザ登録リスト'
+        verbose_name = 'ユーザ登録リスト'
 
 
 class PasswordResetMailSendRecord(models.Model):
@@ -312,21 +312,21 @@ class PasswordResetMailSendRecord(models.Model):
     used = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name_plural = '密码重置邮件发送列表'
-        verbose_name = '密码重置邮件发送列表'
+        verbose_name_plural = 'パスワードリセットリスト'
+        verbose_name = 'パスワードリセットリスト'
 
 
 class DownloadRecord(models.Model):
-    user = models.ForeignKey(User, verbose_name='用户', on_delete=models.DO_NOTHING)
-    volume = models.ForeignKey(Volume, verbose_name="卷名", on_delete=models.DO_NOTHING)
-    volume_type = models.CharField(null=False, verbose_name='下载哪个格式', max_length=100)
-    download_date = models.DateTimeField(default=now, verbose_name='下载时间')
-    info = models.CharField(max_length=100, verbose_name='信息')
-    vip = models.BooleanField(null=False, verbose_name='创建时用户是否为vip')
+    user = models.ForeignKey(User, verbose_name='ユーザ', on_delete=models.DO_NOTHING)
+    volume = models.ForeignKey(Volume, verbose_name="アルバム", on_delete=models.DO_NOTHING)
+    volume_type = models.CharField(null=False, verbose_name='ダウンロードしたフォーマット', max_length=100)
+    download_date = models.DateTimeField(default=now, verbose_name='ダウンロード時間')
+    info = models.CharField(max_length=100, verbose_name='info')
+    vip = models.BooleanField(null=False, verbose_name='is vip?')
 
     class Meta:
-        verbose_name_plural = '用户下载记录'
-        verbose_name = '用户下载记录'
+        verbose_name_plural = 'ユーザダウンロード履歴'
+        verbose_name = 'ユーザダウンロード履歴'
 
 
 class ChargeRecord(models.Model):
@@ -350,13 +350,13 @@ class ChargeRecord(models.Model):
 
 
 class AccountRegisterIpRecord(models.Model):
-    ip = models.CharField(max_length=20, verbose_name='ip地址')
+    ip = models.CharField(max_length=20, verbose_name='ip adress')
     reg_date = models.DateTimeField(default=now, verbose_name='请求时间')
     action = models.CharField(max_length=20, verbose_name='请求类型')
 
     class Meta:
-        verbose_name = '注册ip记录'
-        verbose_name_plural = '注册ip记录'
+        verbose_name = 'ユーザ登録のip'
+        verbose_name_plural = 'ユーザ登録のip'
 
 
 class UserFeedback(models.Model):
@@ -367,5 +367,5 @@ class UserFeedback(models.Model):
     ip = models.CharField(max_length=100)
 
     class Meta:
-        verbose_name = '用户问题反馈'
-        verbose_name_plural = '用户问题反馈'
+        verbose_name = 'Feedbakc履歴'
+        verbose_name_plural = 'Feedbakc履歴'

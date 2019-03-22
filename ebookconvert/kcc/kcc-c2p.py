@@ -19,6 +19,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 
 import sys
+
 if sys.version_info[0] != 3:
     print('ERROR: This is Python 3 script!')
     exit(1)

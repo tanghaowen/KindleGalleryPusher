@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_editorDialog(object):
     def setupUi(self, editorDialog):
         editorDialog.setObjectName("editorDialog")
@@ -80,7 +81,8 @@ class Ui_editorDialog(object):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.statusLabel = QtWidgets.QLabel(self.optionWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
+                                           QtWidgets.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.statusLabel.sizePolicy().hasHeightForWidth())
@@ -117,8 +119,10 @@ class Ui_editorDialog(object):
         self.label_5.setText(_translate("editorDialog", "Penciller:"))
         self.label_6.setText(_translate("editorDialog", "Inker:"))
         self.label_7.setText(_translate("editorDialog", "Colorist:"))
-        self.label_8.setText(_translate("editorDialog", "<html><head/><body><p><a href=\"https://github.com/ciromattia/kcc/wiki/Manga-Cover-Database-support\"><span style=\" text-decoration: underline; color:#0000ff;\">MUid:</span></a></p></body></html>"))
+        self.label_8.setText(_translate("editorDialog",
+                                        "<html><head/><body><p><a href=\"https://github.com/ciromattia/kcc/wiki/Manga-Cover-Database-support\"><span style=\" text-decoration: underline; color:#0000ff;\">MUid:</span></a></p></body></html>"))
         self.okButton.setText(_translate("editorDialog", "Save"))
         self.cancelButton.setText(_translate("editorDialog", "Cancel"))
+
 
 from . import KCC_rc

@@ -178,7 +178,7 @@
                         location.href = download_url;
                     } else if (xmlhttp.responseText.includes('bandwidth not enough')) {
                         alert("您剩余流量已经不够！")
-                    }else if (xmlhttp.responseText.includes('only vip')) {
+                    } else if (xmlhttp.responseText.includes('only vip')) {
                         alert("您好，因为体积较大Zip格式仅供Vip用户下载！")
                     }
 
@@ -189,14 +189,12 @@
             };
 
 
+            data = `volume_id=${volume_id}&type=${type}&csrfmiddlewaretoken=${csrf}`;
+            xmlhttp.open('post', '{% url 'volume_download' %}');
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xmlhttp.send(data);
 
-
-                data = `volume_id=${volume_id}&type=${type}&csrfmiddlewaretoken=${csrf}`;
-                xmlhttp.open('post', '{% url 'volume_download' %}');
-                xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xmlhttp.send(data);
-
-            }
+        }
 
     </script>
 </head>
@@ -228,7 +226,8 @@
                             src="{% static 'mainsite/icons/unsubscribe.svg' %}"> <span>この写真集をフォローする</span></button>
                     <button id="bt-sbsc" class="btn btn-light"
                             {% if not book in user.subscriptes.all %}style="display: none" {% endif %}
-                            onclick="unsbsc()"><img src="{% static 'mainsite/icons/subscribe.svg' %}"> <span>フォロー済み</span>
+                            onclick="unsbsc()"><img src="{% static 'mainsite/icons/subscribe.svg' %}">
+                        <span>フォロー済み</span>
                     </button>
                     <button id="bt-uncollec" class="btn btn-light"
                             {% if book in user.collections.all %}style="display: none" {% endif %} onclick="collec()">
@@ -330,7 +329,8 @@
                                         <td>{{ volume.name }}</td>
                                         <td><a href='javascript:void(0);' vid="{{ volume.id }}"
                                                onclick="download_volume(this,'mobi')">{{ volume.get_mobi_file_size_MB }}
-                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost|floatformat:1}}MB){% endif %}</td>
+                                            MB</a>{% if user.vip %}(流量仅消耗
+                                            {{ volume.get_volume_bandwidth_cost|floatformat:1 }}MB){% endif %}</td>
                                         <td>{{ volume.get_mobi_push_file_size_MB }}MB
                                         </td>
                                         {% if user.id %}
@@ -376,7 +376,8 @@
                                         <td>{{ volume.name }}</td>
                                         <td><a href='javascript:void(0);' vid="{{ volume.id }}"
                                                onclick="download_volume(this,'epub')">{{ volume.get_epub_file_size_MB }}
-                                            MB</a>{% if user.vip %}(流量仅消耗{{ volume.get_volume_bandwidth_cost|floatformat:1}}MB){% endif %}</td>
+                                            MB</a>{% if user.vip %}(流量仅消耗
+                                            {{ volume.get_volume_bandwidth_cost|floatformat:1 }}MB){% endif %}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

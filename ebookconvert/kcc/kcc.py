@@ -19,16 +19,18 @@
 # PERFORMANCE OF THIS SOFTWARE.
 
 import sys
+
 if sys.version_info[0] != 3:
     print('ERROR: This is Python 3 script!')
     exit(1)
 
 # OS specific workarounds
 import os
+
 if sys.platform.startswith('darwin'):
     if getattr(sys, 'frozen', False):
         os.environ['PATH'] = os.path.dirname(os.path.abspath(sys.executable)) + \
-            '/../Resources:/usr/local/bin:/usr/bin:/bin'
+                             '/../Resources:/usr/local/bin:/usr/bin:/bin'
         os.system('defaults write com.kindlecomicconverter.KindleComicConverter ApplePersistenceIgnoreState YES')
         os.system('defaults write com.kindlecomicconverter.KindleComicConverter NSInitialToolTipDelay -int 1000')
     else:
@@ -52,4 +54,3 @@ from kindlecomicconverter.startup import start
 if __name__ == "__main__":
     freeze_support()
     start()
-

@@ -9,21 +9,24 @@
 <div class="container">
     {% include 'mainsite/book_info_header.html' %}
     <div style="height: 4em;"></div>
-	<div class="row clearfix">
-		<div class="col-md-12 column">
-			<form role="form" id="feedback-form" method="post" action="{% url 'feedback' %}">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <form role="form" id="feedback-form" method="post" action="{% url 'feedback' %}">
 
-				<div class="form-group">
-					 <label for="exampleInputEmail1">貴方のメールアドレス</label><input type="text" class="form-control" name="email" />
-				</div>
-				<div class="form-group">
-					 <label for="exampleInputEmail1">問題</label><textarea  rows="10" class="form-control" name="message" id="message" form="feedback-form" placeholder="問題" /></textarea>
-				</div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">貴方のメールアドレス</label><input type="text" class="form-control"
+                                                                             name="email"/>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">問題</label><textarea rows="10" class="form-control" name="message"
+                                                                        id="message" form="feedback-form"
+                                                                        placeholder="問題"/></textarea>
+                </div>
                 <button type="submit" class="btn btn-primary">Feedback送り</button>
 
-			</form>
-		</div>
-	</div>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

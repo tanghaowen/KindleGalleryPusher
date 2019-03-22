@@ -10,7 +10,7 @@
     {% for file in files %}
         <div>{{ file.0 }}<input name="{{ file.1 }}" value="{{ file.1 }}"></div>
     {% endfor %}
-    <input name="path" id="path" type="text" value="{{ path }}" >
+    <input name="path" id="path" type="text" value="{{ path }}">
     <input name="action" value="set" hidden>
     <input type="submit">
 </form>

@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <title>KindleGalleryPusher - 写真集</title>
     {% include 'mainsite/load_bootstrap.html' %}
-  <style>
-  /* Make the image fully responsive */
-  .carousel-inner img {
-      width: 100%;
-      height: 100%;
-  }
-  </style>
+    <style>
+        /* Make the image fully responsive */
+        .carousel-inner img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
     <style>
         .myp {
             overflow: hidden;
@@ -19,81 +19,88 @@
             white-space: nowrap;
             margin-bottom: 2px;
         }
-        book-title{
+
+        book-title {
 
         }
     </style>
-<script>
-    $(function () {
-  $('[data-toggle="popover"]').popover()
-})
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
 
-</script>
-<style>
-    .head-div{
-        border-bottom: 1px solid #dddddd;
-        margin-bottom: 10px
-    }
-</style>
+    </script>
+    <style>
+        .head-div {
+            border-bottom: 1px solid #dddddd;
+            margin-bottom: 10px
+        }
+    </style>
 </head>
 <body>
-    {% include 'mainsite/book_info_header.html' %}
-    <div style="height: 5em;"></div>
-    <div class="container">
-        <div class="row">
+{% include 'mainsite/book_info_header.html' %}
+<div style="height: 5em;"></div>
+<div class="container">
+    <div class="row">
         <div class="col-12">
 
-        <div class="row"> <div class="col-12">
-            <div class="head-div"><h4><span>{{title}}</span></h4></div>
-            </div></div>
-        <div class="row" style="padding: 7px; margin-bottom: 2em">
-            {% for book in page %}
-                <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2 col-4 book-info" style="width: 100px; margin-bottom: 1em">
-                    <a href="{% url 'main_site:book' book_id=book.id %}"  data-toggle="popover" data-placement="right" data-container="{{ book.desc }}" data-title="{{ book.title }}">
-                    <img src="{{ book.cover_used.thumb_image.url }}" width="100" class="rounded img-responsive"></a>
-                    <div style="width: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a style="margin-bottom: 2px" href="/book/{{ book.id }}"> <p class="myp"> {{ book.title }}</p> </a></div>
-                    <div style="width: 100px;text-align: center"><p class="myp">
-                    {{ book.get_newest_volume.name }}
-                    </p></div>
-
+            <div class="row">
+                <div class="col-12">
+                    <div class="head-div"><h4><span>{{ title }}</span></h4></div>
                 </div>
+            </div>
+            <div class="row" style="padding: 7px; margin-bottom: 2em">
+                {% for book in page %}
+                    <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2 col-4 book-info"
+                         style="width: 100px; margin-bottom: 1em">
+                        <a href="{% url 'main_site:book' book_id=book.id %}" data-toggle="popover"
+                           data-placement="right" data-container="{{ book.desc }}" data-title="{{ book.title }}">
+                            <img src="{{ book.cover_used.thumb_image.url }}" width="100" class="rounded img-responsive"></a>
+                        <div style="width: 100px;text-align: center;margin: 4px;font-size: 0.7em;"><a
+                                style="margin-bottom: 2px" href="/book/{{ book.id }}"><p
+                                class="myp"> {{ book.title }}</p></a></div>
+                        <div style="width: 100px;text-align: center"><p class="myp">
+                            {{ book.get_newest_volume.name }}
+                        </p></div>
 
-            {% endfor %}
+                    </div>
+
+                {% endfor %}
+            </div>
+
         </div>
-
-    </div>    </div>
-        <nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center">
-      {% if page.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">首页</a></li>
-      {% else %}
-        <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">首页</a></li>
-      {% endif %}
-      {% if page.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}" tabindex="-1" aria-disabled="true">上一页</a></li>
-      {% else %}
-        <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">上一页</a></li>
-      {% endif %}
-        <li class="page-item"><a class="page-link active">{{ page.number }}</a> </li>
-    {% if page.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">下一页</a></li>
-    {% else %}
-    <li class="page-item disabled"><a class="page-link" href="#">下一页</a></li>
-    {% endif %}
-    {% if page.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ page.paginator.num_pages  }}">尾页</a></li>
-    {% else %}
-    <li class="page-item disabled"><a class="page-link" href="#">尾页</a></li>
-    {% endif %}
-  </ul>
-</nav>
-
-
-
-
     </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if page.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">首页</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1"
+                                                  aria-disabled="true">首页</a></li>
+            {% endif %}
+            {% if page.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}" tabindex="-1"
+                                         aria-disabled="true">上一页</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">上一页</a>
+                </li>
+            {% endif %}
+            <li class="page-item"><a class="page-link active">{{ page.number }}</a></li>
+            {% if page.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">下一页</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#">下一页</a></li>
+            {% endif %}
+            {% if page.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page.paginator.num_pages }}">尾页</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#">尾页</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 
 
+</div>
 
 
 </body>

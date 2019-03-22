@@ -1,1 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 190 150"><defs><style>.cls-1{fill:url(#GradientFill_1);}.cls-2{fill:#0083ce;}.cls-2,.cls-3,.cls-4,.cls-5,.cls-6{fill-rule:evenodd;}.cls-3{fill:#85c12f;}.cls-4{fill:#e60012;}.cls-5{fill:#f7b000;}.cls-6{fill:#0070ad;}</style><radialGradient id="GradientFill_1" cx="322.05" cy="396.5" r="273.48" gradientTransform="translate(-18.57 -92.24) scale(0.35 0.42)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff"/><stop offset="0.31" stop-color="#fff"/><stop offset="1" stop-color="#f7f8f8"/></radialGradient></defs><title>book-seeklogo.com [转换]</title><rect class="cls-1" width="190" height="150"/><path class="cls-2" d="M297.2,345.74l-.19-5.3a7.8,7.8,0,0,0-5.62-7.28c-24.09-7.29-36.74-11.66-40.86-23.42-1.07,4.79-2.15,13.22,3.66,21.95Z" transform="translate(-211 -294.5)"/><path class="cls-3" d="M315.79,345.75l.2-5.58a7.78,7.78,0,0,1,5.25-7.16l68.81-24.48-4.47,15.21Z" transform="translate(-211 -294.5)"/><path class="cls-4" d="M249,405.13c21.11,7.49,43.88,7.69,53.6,28.63l-3.06-74.11a7.78,7.78,0,0,0-5.52-7.21l-78-24.61,21.83,65.86A17.71,17.71,0,0,0,249,405.13Z" transform="translate(-211 -294.5)"/><path class="cls-5" d="M364,405.13c-21.11,7.49-43.88,7.69-53.6,28.63l3.06-74.11a7.78,7.78,0,0,1,5.52-7.21l78-24.61L375.2,393.69A17.71,17.71,0,0,1,364,405.13Z" transform="translate(-211 -294.5)"/><path class="cls-6" d="M275.56,324c-4.41-7.28-6.51-14.44-3.55-21.33-13.72-6.52-23.61.16-16.08,9.33C260.43,317.48,266.32,321.44,275.56,324Z" transform="translate(-211 -294.5)"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 190 150">
+    <defs>
+        <style>
+            .cls-1{fill:url(#GradientFill_1);}.cls-2{fill:#0083ce;}.cls-2,.cls-3,.cls-4,.cls-5,.cls-6{fill-rule:evenodd;}.cls-3{fill:#85c12f;}.cls-4{fill:#e60012;}.cls-5{fill:#f7b000;}.cls-6{fill:#0070ad;}
+        </style>
+        <radialGradient id="GradientFill_1" cx="322.05" cy="396.5" r="273.48"
+                        gradientTransform="translate(-18.57 -92.24) scale(0.35 0.42)" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#fff"/>
+            <stop offset="0.31" stop-color="#fff"/>
+            <stop offset="1" stop-color="#f7f8f8"/>
+        </radialGradient>
+    </defs>
+    <title>book-seeklogo.com [转换]</title>
+    <rect class="cls-1" width="190" height="150"/>
+    <path class="cls-2"
+          d="M297.2,345.74l-.19-5.3a7.8,7.8,0,0,0-5.62-7.28c-24.09-7.29-36.74-11.66-40.86-23.42-1.07,4.79-2.15,13.22,3.66,21.95Z"
+          transform="translate(-211 -294.5)"/>
+    <path class="cls-3" d="M315.79,345.75l.2-5.58a7.78,7.78,0,0,1,5.25-7.16l68.81-24.48-4.47,15.21Z"
+          transform="translate(-211 -294.5)"/>
+    <path class="cls-4"
+          d="M249,405.13c21.11,7.49,43.88,7.69,53.6,28.63l-3.06-74.11a7.78,7.78,0,0,0-5.52-7.21l-78-24.61,21.83,65.86A17.71,17.71,0,0,0,249,405.13Z"
+          transform="translate(-211 -294.5)"/>
+    <path class="cls-5"
+          d="M364,405.13c-21.11,7.49-43.88,7.69-53.6,28.63l3.06-74.11a7.78,7.78,0,0,1,5.52-7.21l78-24.61L375.2,393.69A17.71,17.71,0,0,1,364,405.13Z"
+          transform="translate(-211 -294.5)"/>
+    <path class="cls-6"
+          d="M275.56,324c-4.41-7.28-6.51-14.44-3.55-21.33-13.72-6.52-23.61.16-16.08,9.33C260.43,317.48,266.32,321.44,275.56,324Z"
+          transform="translate(-211 -294.5)"/>
+</svg>

@@ -48,7 +48,7 @@
         <form class="form-inline" style="max-width: 400px; margin-right: 2em" role="search"
               action="{% url 'search_site:search_page' %}" method="get">
             <input type="text" style="width: 200px;" name="keyword" class="form-control mr-sm-2" placeholder="写真集名"/>
-            <button type="submit"  class="btn btn-outline-primary my-2 my-sm-0">検索</button>
+            <button type="submit" class="btn btn-outline-primary my-2 my-sm-0">検索</button>
         </form>
 
         {% if user.id is None %}
@@ -110,7 +110,6 @@
                             <a class="dropdown-item" href="{% url 'account:push_queue' %}">プッシュ隊列</a>
                             <a class="dropdown-item" href="{% url 'account:bandwidth_records' %}">データ量消費履歴</a>
                             <a class="dropdown-item" href="{% url 'account:self_profile' %}">個人情報</a>
-
 
 
                             <form id="logout" method="post" action="{% url 'account:logout' %}">

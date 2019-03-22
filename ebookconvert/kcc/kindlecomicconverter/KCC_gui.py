@@ -709,8 +709,8 @@ class KCCGUI(KCC_ui.Ui_mainWindow):
             QtWidgets.QMessageBox.critical(MW, 'KCC - Error', message, QtWidgets.QMessageBox.Ok)
         elif kind == 'question':
             GUI.versionCheck.setAnswer(QtWidgets.QMessageBox.question(MW, 'KCC - Question', message,
-                                                                          QtWidgets.QMessageBox.Yes,
-                                                                          QtWidgets.QMessageBox.No))
+                                                                      QtWidgets.QMessageBox.Yes,
+                                                                      QtWidgets.QMessageBox.No))
 
     def updateProgressbar(self, command):
         if command == 'tick':

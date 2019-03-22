@@ -2,26 +2,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>パスワードリセット - KindleGalleryPusher</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>パスワードリセット - KindleGalleryPusher</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     {% include 'mainsite/load_bootstrap.html' %}
-<!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="{% static 'account/images/icons/favicon.ico' %}"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'account/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'account/fonts/Linearicons-Free-v1.0.0/icon-font.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'account/vendor/animate/animate.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'account/vendor/css-hamburgers/hamburgers.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'account/vendor/select2/select2.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'account/css/util.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'account/css/main.css' %}">
-<!--===============================================================================================-->
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="{% static 'account/images/icons/favicon.ico' %}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'account/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'account/fonts/Linearicons-Free-v1.0.0/icon-font.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'account/vendor/animate/animate.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'account/vendor/css-hamburgers/hamburgers.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'account/vendor/select2/select2.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'account/css/util.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'account/css/main.css' %}">
+    <!--===============================================================================================-->
     <script>
 
         onloginerror = function () {
@@ -33,10 +35,10 @@
             let ok_box = document.getElementById('reset-ok');
             message_box = document.getElementById("message-box");
             message_box_text = document.getElementById("message-box-txt");
-            message_box.style.display='none';
+            message_box.style.display = 'none';
             message_box_text.innerHTML = '';
-            error_box.style.display='none';
-            ok_box.style.display='none';
+            error_box.style.display = 'none';
+            ok_box.style.display = 'none';
 
             let email = document.getElementById('email').value;
             let crsfsession = $("[name='csrfmiddlewaretoken']")[0].value;
@@ -44,22 +46,22 @@
 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onload = function (event) {
-                if (xmlhttp.status == 200){
+                if (xmlhttp.status == 200) {
                     message_box.style.display = 'block';
                     console.log("リセット成功しました");
-                    ok_box.style.display='block';
+                    ok_box.style.display = 'block';
 
-                }else if (xmlhttp.status == 401){
+                } else if (xmlhttp.status == 401) {
                     message_box.style.display = 'block';
                     document.getElementById('msg').style.display = 'none';
                     console.log("失敗しました");
-                    error_box.style.display='block';
+                    error_box.style.display = 'block';
                 }
 
-        };
+            };
             xmlhttp.error = onloginerror;
-            xmlhttp.open('post',"{% url 'account:forgot' %}");
-            xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded')
+            xmlhttp.open('post', "{% url 'account:forgot' %}");
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
             xmlhttp.send(postdata);
             message_box_text.innerHTML = "リセットメールを送っています...";
             message_box.style.display = 'block';
@@ -68,62 +70,59 @@
 </head>
 <body>
 
-	<div class="limiter">
-		<div class="container-login100" style="background-image: url('{% static 'account/images/img-01.jpg' %}');">
-			<div class="wrap-login100 p-t-190 p-b-30">
-				<form id="login-form" class="login100-form validate-form" method="post" action="{% url 'account:login' %}">
-                    {% csrf_token %}
-					<div class="login100-form-avatar">
-						<img src="{% static 'account/images/akkarin.png' %}" alt="AVATAR">
-					</div>
+<div class="limiter">
+    <div class="container-login100" style="background-image: url('{% static 'account/images/img-01.jpg' %}');">
+        <div class="wrap-login100 p-t-190 p-b-30">
+            <form id="login-form" class="login100-form validate-form" method="post" action="{% url 'account:login' %}">
+                {% csrf_token %}
+                <div class="login100-form-avatar">
+                    <img src="{% static 'account/images/akkarin.png' %}" alt="AVATAR">
+                </div>
 
-					<span class="login100-form-title p-t-20 p-b-45">
+                <span class="login100-form-title p-t-20 p-b-45">
 						パスワードリセット
 					</span>
 
-					<div class="wrap-input100 validate-input m-b-10" data-validate = "Username is required">
-						<input class="input100" id="email" type="text" name="email" placeholder="あなたのメールアドレス">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
+                <div class="wrap-input100 validate-input m-b-10" data-validate="Username is required">
+                    <input class="input100" id="email" type="text" name="email" placeholder="あなたのメールアドレス">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
 							<i class="fa fa-user"></i>
 						</span>
-					</div>
+                </div>
 
-					<div class="container-login100-form-btn p-t-10">
-						<button class="login100-form-btn" onclick="logto()" type="button">
-							パスワードリセット
-						</button>
-					</div>
-					<div id="message-box" class="text-center w-full p-t-10 p-b-10" style="display: none">
-						<p id="message-box-txt" class="txt1 text-warning">
+                <div class="container-login100-form-btn p-t-10">
+                    <button class="login100-form-btn" onclick="logto()" type="button">
+                        パスワードリセット
+                    </button>
+                </div>
+                <div id="message-box" class="text-center w-full p-t-10 p-b-10" style="display: none">
+                    <p id="message-box-txt" class="txt1 text-warning">
 
-						</p>
-					</div>
-					<div id="reset-error" class="text-center w-full p-t-10 p-b-10" style="display: none">
-						<p id = 'error-box' class="txt1 text-warning">
-						</p>
-					</div>
-					<div id="reset-ok" class="text-center w-full p-t-10 p-b-10" style="display: none">
-						<p class="txt1">
-							リセット終わりました、メールボックスを確認してください！
-						</p>
-                        <p class="txt1">メールが迷惑ボックスに入る可能性があります</p>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
-
-
+                    </p>
+                </div>
+                <div id="reset-error" class="text-center w-full p-t-10 p-b-10" style="display: none">
+                    <p id='error-box' class="txt1 text-warning">
+                    </p>
+                </div>
+                <div id="reset-ok" class="text-center w-full p-t-10 p-b-10" style="display: none">
+                    <p class="txt1">
+                        リセット終わりました、メールボックスを確認してください！
+                    </p>
+                    <p class="txt1">メールが迷惑ボックスに入る可能性があります</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 <!--===============================================================================================-->
-	<script src="{% static 'account/vendor/bootstrap/js/popper.js' %}"></script>
+<script src="{% static 'account/vendor/bootstrap/js/popper.js' %}"></script>
 <!--===============================================================================================-->
-	<script src="{% static 'account/vendor/select2/select2.min.js' %}"></script>
+<script src="{% static 'account/vendor/select2/select2.min.js' %}"></script>
 <!--===============================================================================================-->
-	<script src="{% static 'account/js/main.js' %}"></script>
+<script src="{% static 'account/js/main.js' %}"></script>
 
 </body>
 </html>

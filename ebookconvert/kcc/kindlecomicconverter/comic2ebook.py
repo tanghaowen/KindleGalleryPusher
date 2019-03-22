@@ -39,6 +39,7 @@ from PIL import Image
 from subprocess import STDOUT, PIPE
 from psutil import Popen, virtual_memory, disk_usage
 from html import escape
+
 try:
     from PyQt5 import QtCore
 except ImportError:
@@ -56,7 +57,8 @@ from . import __version__
 author_string_from_django = ''
 book_title_from_django = ''
 
-def main(author,book_title, argv=None):
+
+def main(author, book_title, argv=None):
     global author_string_from_django
     global book_title_from_django
     author_string_from_django = author
@@ -128,7 +130,7 @@ def buildHTML(path, imgfile, imgfilepath):
                   "<link href=\"", "../" * (backref - 1), "style.css\" type=\"text/css\" rel=\"stylesheet\"/>\n",
                   "<meta name=\"viewport\" "
                   "content=\"width=" + str(imgsize[0]) + ", height=" + str(imgsize[1]) + "\"/>\n"
-                  "</head>\n",
+                                                                                         "</head>\n",
                   "<body style=\"" + additionalStyle + "\">\n",
                   "<div style=\"text-align:center;top:" + getTopMargin(deviceres, imgsizeframe) + "%;\">\n",
                   "<img width=\"" + str(imgsizeframe[0]) + "\" height=\"" + str(imgsizeframe[1]) + "\" ",
@@ -529,7 +531,7 @@ def imgDirectoryProcessing(path):
         GUI.progressBarTick.emit(str(pagenumber))
     if len(work) > 0:
         for i in work:
-            workerPool.apply_async(func=imgFileProcessing, args=(i, ), callback=imgFileProcessingTick)
+            workerPool.apply_async(func=imgFileProcessing, args=(i,), callback=imgFileProcessingTick)
         workerPool.close()
         workerPool.join()
         if GUI and not GUI.conversionAlive:
@@ -767,7 +769,7 @@ def sanitizeTree(filetree):
         for name in files:
             splitname = os.path.splitext(name)
             slugified = slugify(splitname[0], False)
-            while os.path.exists(os.path.join(root, slugified + splitname[1])) and splitname[0].upper()\
+            while os.path.exists(os.path.join(root, slugified + splitname[1])) and splitname[0].upper() \
                     != slugified.upper():
                 slugified += "A"
             newKey = os.path.join(root, slugified + splitname[1])
@@ -795,7 +797,7 @@ def sanitizeTreeKobo(filetree):
             splitname = os.path.splitext(name)
             slugified = str(pageNumber).zfill(5)
             pageNumber += 1
-            while os.path.exists(os.path.join(root, slugified + splitname[1])) and splitname[0].upper()\
+            while os.path.exists(os.path.join(root, slugified + splitname[1])) and splitname[0].upper() \
                     != slugified.upper():
                 slugified += "A"
             newKey = os.path.join(root, slugified + splitname[1])
@@ -904,8 +906,9 @@ def detectCorruption(tmppath, orgpath):
     if alreadyProcessed:
         print("WARNING: Source files are probably created by ManPush. The second conversion will decrease quality.")
         if GUI:
-            GUI.addMessage.emit('Source files are probably created by ManPush. The second conversion will decrease quality.'
-                                , 'warning', False)
+            GUI.addMessage.emit(
+                'Source files are probably created by ManPush. The second conversion will decrease quality.'
+                , 'warning', False)
             GUI.addMessage.emit('', '', False)
     if imageSmaller > imageNumber * 0.25 and not options.upscale and not options.stretch:
         print("WARNING: More than 25% of images are smaller than target device resolution. "
@@ -1184,7 +1187,7 @@ def makeBook(source, qtgui=None):
             makeZIP(tome + '_comic', tome, True)
 
         dirname = os.path.dirname(filepath[-1])
-        if not os.path.exists(dirname) and  dirname != "":
+        if not os.path.exists(dirname) and dirname != "":
             os.mkdir(dirname)
         move(tome + '_comic.zip', filepath[-1])
         rmtree(tome, True)
@@ -1284,12 +1287,13 @@ def makeMOBI(work, qtgui=None):
         threadNumber = None
     makeMOBIWorkerPool = Pool(threadNumber, maxtasksperchild=10)
     for i in work:
-        makeMOBIWorkerPool.apply_async(func=makeMOBIWorker, args=(i, ), callback=makeMOBIWorkerTick)
+        makeMOBIWorkerPool.apply_async(func=makeMOBIWorker, args=(i,), callback=makeMOBIWorkerTick)
     makeMOBIWorkerPool.close()
     makeMOBIWorkerPool.join()
     return makeMOBIWorkerOutput
 
-def getBookInfoFromFileName(filename:str):
+
+def getBookInfoFromFileName(filename: str):
     pattern = re.compile(r'\[(.+)\] (.*)')
     res = pattern.findall(filename)
     if len(res) > 0 and len(res[0]) == 2:

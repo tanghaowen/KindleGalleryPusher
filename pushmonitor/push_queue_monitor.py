@@ -1,5 +1,5 @@
 import logging
-import threading,time,os
+import threading, time, os
 from .mailsender import send_mail_use_smtp
 
 # Error log
@@ -33,18 +33,18 @@ def push_function(tasks):
     file_name = "[%s] %s %s.mobi" % (author_string, book_title, volume_name)
 
     print("开始推送，tasks长度:%d" % len(tasks))
-    for task_chunk in chunks(tasks,15):
+    for task_chunk in chunks(tasks, 15):
         recivers = [task.user.kindle_email for task in task_chunk]
         print("开始分每15为一个chunk发送tasks...")
         print("开始推送 task_ids: ")
         print([task.id for task in task_chunk])
-        print("%s %s" % (task_chunk[0].volume.book.title,task_chunk[0].volume.name))
+        print("%s %s" % (task_chunk[0].volume.book.title, task_chunk[0].volume.name))
         print("文件路径:%s" % file_path)
-        print("附件名:%s"%file_name)
+        print("附件名:%s" % file_name)
         print("此批次总共推送给%d人" % len(task_chunk))
         print(recivers)
         try:
-            res = send_mail_use_smtp(recivers,file_path,file_name)
+            res = send_mail_use_smtp(recivers, file_path, file_name)
             if res:
                 print("推送成功")
                 for task in task_chunk:
@@ -59,13 +59,12 @@ def push_function(tasks):
             logger.error('*************************************************************')
             logger.error(e, exc_info=True)
             logger.error('推送失败')
-            logger.error('%d %s -  %s' % (tasks[0].id,tasks[0].volume.book.title, tasks[0].volume.name))
+            logger.error('%d %s -  %s' % (tasks[0].id, tasks[0].volume.book.title, tasks[0].volume.name))
             logger.error("接收邮箱:")
             logger.error(recivers)
             for task in task_chunk:
                 task.status = "done"
                 task.save()
-
 
 
 def start_monitor_thread():
@@ -80,7 +79,6 @@ def start_monitor_thread():
 class PushMonitorThread(threading.Thread):
     def __init__(self):
         super().__init__()
-
 
     def init(self):
         from pushmonitor.models import PushQueue
@@ -107,7 +105,7 @@ class PushMonitorThread(threading.Thread):
     def pop_push_task(self):
         for task in self.error_terminated_tasks:
             if task.status == 'doing':
-                print("上次有未完成的推送任务，将其设定为pending",task.id)
+                print("上次有未完成的推送任务，将其设定为pending", task.id)
                 task.status = 'pending'
                 task.save()
 
@@ -119,15 +117,13 @@ class PushMonitorThread(threading.Thread):
             print("推送队列有任务...")
             task = tasks[0]
             volume_id = task.volume.id
-            print("待推送的任务task id: %d  volume id: %d " %(task.id, volume_id))
-            query_res = self.PushModels.PushQueue.objects.filter(volume__id = volume_id,status = 'pending')
+            print("待推送的任务task id: %d  volume id: %d " % (task.id, volume_id))
+            query_res = self.PushModels.PushQueue.objects.filter(volume__id=volume_id, status='pending')
             print("队列中包含同一volume的任务数量为%d" % (len(query_res)))
             for q in query_res:
                 q.status = 'doing'
                 q.save()
             return query_res
-
-
 
 
 if __name__ == '__main__':

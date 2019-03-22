@@ -24,6 +24,7 @@ import shutil
 class DualMetaFixException(Exception):
     pass
 
+
 # palm database offset constants
 number_of_pdb_records = 76
 first_pdb_record = 78
@@ -88,7 +89,7 @@ def add_exth(rec0, exth_num, exth_bytes):
     ebase, elen, enum, rlen = get_exth_params(rec0)
     newrecsize = 8 + len(exth_bytes)
     newrec0 = rec0[0:ebase + 4] + struct.pack('>L', elen + newrecsize) + struct.pack('>L', enum + 1) + \
-        struct.pack('>L', exth_num) + struct.pack('>L', newrecsize) + exth_bytes + rec0[ebase + 12:]
+              struct.pack('>L', exth_num) + struct.pack('>L', newrecsize) + exth_bytes + rec0[ebase + 12:]
     newrec0 = writeint(newrec0, title_offset, getint(newrec0, title_offset) + newrecsize)
     # keep constant record length by removing newrecsize null bytes from end
     sectail = newrec0[-newrecsize:]
@@ -124,7 +125,7 @@ def del_exth(rec0, exth_num):
             newrec0 = writeint(newrec0, title_offset, getint(newrec0, title_offset) - exth_size)
             newrec0 = newrec0[:ebase_idx] + newrec0[ebase_idx + exth_size:]
             newrec0 = newrec0[0:ebase + 4] + struct.pack('>L', elen - exth_size) + \
-                struct.pack('>L', enum - 1) + newrec0[ebase + 12:]
+                      struct.pack('>L', enum - 1) + newrec0[ebase + 12:]
             newrec0 += b'\0' * exth_size
             if rlen != len(newrec0):
                 raise DualMetaFixException('del_exth: incorrect section size change')

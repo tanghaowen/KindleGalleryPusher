@@ -1,5 +1,5 @@
 import sys
-import threading,time,os
+import threading, time, os
 from django.conf import settings
 import logging
 from django.core.files import File
@@ -28,7 +28,7 @@ class MonitorThread(threading.Thread):
         super().__init__()
 
     def init(self):
-        self.mainsite_models = __import__('mainsite.models',globals(), locals(),['EbookConvertQueue'])
+        self.mainsite_models = __import__('mainsite.models', globals(), locals(), ['EbookConvertQueue'])
         # 启动线程时检查下当前是否存在状态为doing的任
         # 有的话意味着这是上次意外退出只进行了一半的任务
         self.error_terminated_tasks = self.mainsite_models.EbookConvertQueue.objects.filter(status='doing')
@@ -38,8 +38,7 @@ class MonitorThread(threading.Thread):
             task.status = 'pending'
             task.save()
 
-
-        logging.basicConfig(level = logging.ERROR,format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(level=logging.INFO)
@@ -71,11 +70,12 @@ class MonitorThread(threading.Thread):
                 print(task)
                 try:
                     res = self.start_convert(task)
-                    if res :
+                    if res:
                         task.status = "done"
-                        task_over = self.mainsite_models.EbookConvertOver(volume = task.volume, epub_ok = task.epub_ok,
-                                                              mobi_ok = task.mobi_ok, mobi_push_ok = task.mobi_push_ok,
-                                                              status = task.status)
+                        task_over = self.mainsite_models.EbookConvertOver(volume=task.volume, epub_ok=task.epub_ok,
+                                                                          mobi_ok=task.mobi_ok,
+                                                                          mobi_push_ok=task.mobi_push_ok,
+                                                                          status=task.status)
                         # 因为tasker保存时如说全都完成会更新书籍为显示，所以需要调用
                         task.save()
                         task.delete()
@@ -88,13 +88,12 @@ class MonitorThread(threading.Thread):
                 except Exception as e:
                     self.logger.error("*********************************************************")
                     self.logger.error('volume转换失败')
-                    self.logger.error('%d %s -  %s' % (task.id,task.volume.book.title,task.volume.name))
-                    self.logger.error(e,exc_info = True)
+                    self.logger.error('%d %s -  %s' % (task.id, task.volume.book.title, task.volume.name))
+                    self.logger.error(e, exc_info=True)
 
                     task.status = 'error'
                     task.save()
                     continue
-
 
             time.sleep(100)
 
@@ -103,8 +102,8 @@ class MonitorThread(threading.Thread):
         # 对象依旧会留在self.error_terminated_tasks里
 
         tasks = self.mainsite_models.EbookConvertQueue.objects.filter(status='pending')
-        if tasks.count()>0:
-            print("格式转换队列中有任务,数量",len(tasks))
+        if tasks.count() > 0:
+            print("格式转换队列中有任务,数量", len(tasks))
             task = tasks[0]
             task.status = 'doing'
             task.save()
@@ -114,22 +113,22 @@ class MonitorThread(threading.Thread):
             return None
 
     def start_convert(self, task):
-        print("开始转换",task)
+        print("开始转换", task)
         # 转换逻辑
         zip_name = task.volume.zip_file.name
-        zip_real_path = os.path.join(settings.MEDIA_ROOT,zip_name)
-        zip_dir =os.path.dirname(zip_name)
+        zip_real_path = os.path.join(settings.MEDIA_ROOT, zip_name)
+        zip_dir = os.path.dirname(zip_name)
         cache_path = tempfile.mkdtemp()
         print(zip_real_path)
         if not task.epub_ok:
             print("开始转换为epub")
             arg = ['-p', 'KoAHD', '-m', '-f', 'epub', '-r', '2', '--forcecolor']
             start_time = time.time()
-            new_ebook_path = self.use_kcc_to_convert(task, arg,cache_path=cache_path)
+            new_ebook_path = self.use_kcc_to_convert(task, arg, cache_path=cache_path)
             spent_time = time.time() - start_time
             print("**************zip转换为epub耗时%.2f秒(%.2f分)"
-                  % (spent_time,spent_time/60.0))
-            if new_ebook_path :
+                  % (spent_time, spent_time / 60.0))
+            if new_ebook_path:
                 task.epub_ok = True
                 task.save()
                 print(new_ebook_path)
@@ -144,11 +143,11 @@ class MonitorThread(threading.Thread):
             print("先转换为临时epub...")
             arg = ['-p', 'KV', '-m', '-f', 'epub', '-r', '2', '--forcecolor']
             start_time = time.time()
-            tmp_epub_path = self.use_kcc_to_convert(task,arg,save_quick=False,cache_path=cache_path)
+            tmp_epub_path = self.use_kcc_to_convert(task, arg, save_quick=False, cache_path=cache_path)
             spent_time = time.time() - start_time
             print("**************zip转换为临时epub耗时%.2f秒(%.2f分)"
-                  % (spent_time,spent_time/60.0))
-            if tmp_epub_path :
+                  % (spent_time, spent_time / 60.0))
+            if tmp_epub_path:
                 print("从临时epub转为mobi")
                 print(tmp_epub_path)
                 if 'win32' in sys.platform:
@@ -161,7 +160,7 @@ class MonitorThread(threading.Thread):
                 spent_time = time.time() - start_time
                 print("**************kindlegen从临时epub转为mobi格式耗时%.2f秒(%.2f分)"
                       % (spent_time, spent_time / 60.0))
-                new_mobi_path = tmp_epub_path.replace(".epub",".mobi")
+                new_mobi_path = tmp_epub_path.replace(".epub", ".mobi")
                 if os.path.exists(new_mobi_path):
                     print("mobi转换成功")
                     print(new_mobi_path)
@@ -179,7 +178,7 @@ class MonitorThread(threading.Thread):
                 # task.save()
                 # print(new_ebook_path)
                 # os.remove(new_ebook_path)
-            #print(new_ebook_path)
+            # print(new_ebook_path)
         else:
             print("mobi转换已完成，跳过")
         if not task.mobi_push_ok:
@@ -220,7 +219,7 @@ class MonitorThread(threading.Thread):
                         print("**************kindlegen把瘦身过的epub转为mobi耗时%.2f秒(%.2f分)"
                               % (spent_time, spent_time / 60.0))
                         new_push_mobi_path = slimmed_epub_path.replace(".epub", ".mobi")
-                        print("生成的推送用mobi路径",new_push_mobi_path)
+                        print("生成的推送用mobi路径", new_push_mobi_path)
                         new_push_mobi_filename = os.path.basename(new_push_mobi_path)
                         new_push_mobi_name = os.path.join(zip_dir, new_push_mobi_filename)
                         task.volume.mobi_push_file.save(new_push_mobi_name, File(open(new_push_mobi_path, 'rb')))
@@ -235,63 +234,63 @@ class MonitorThread(threading.Thread):
                 return False
         else:
             print("mobi push转换已完成，跳过")
-        print("清空临时目录",cache_path)
+        print("清空临时目录", cache_path)
         shutil.rmtree(cache_path)
         task.save()
         print("转换成功")
         return True
         # 如果出错的话，status = "error"
 
-    def use_kcc_to_convert(self,task,kcc_arg,save_quick=True,cache_path=None):
+    def use_kcc_to_convert(self, task, kcc_arg, save_quick=True, cache_path=None):
         zip_name = task.volume.zip_file.name
         zip_dir = os.path.dirname(zip_name)
-        zip_real_path = os.path.join(settings.MEDIA_ROOT,zip_name)
+        zip_real_path = os.path.join(settings.MEDIA_ROOT, zip_name)
         if cache_path is None:
             temp_path = tempfile.mkdtemp()
         else:
             temp_path = cache_path
 
-        kcc_arg = kcc_arg + ['-o', temp_path,zip_real_path]
+        kcc_arg = kcc_arg + ['-o', temp_path, zip_real_path]
         file_basename = os.path.basename(zip_real_path)
         message = "开始转换文件：%s" % (file_basename)
         author_string = task.volume.book.get_authors_string()
-        book_title = "%s %s" %(task.volume.book.title, task.volume.name)
-        new_ebook_paths = comic2ebook.main(author_string,book_title,kcc_arg)
+        book_title = "%s %s" % (task.volume.book.title, task.volume.name)
+        new_ebook_paths = comic2ebook.main(author_string, book_title, kcc_arg)
         if len(new_ebook_paths) > 0:
             new_ebook_path = new_ebook_paths[0]
             if save_quick:
                 new_ebook_filename = os.path.basename(new_ebook_path)
-                new_ebook_name = os.path.join(zip_dir,new_ebook_filename)
-                task.volume.epub_file.save(new_ebook_name,File(open(new_ebook_path,'rb')))
+                new_ebook_name = os.path.join(zip_dir, new_ebook_filename)
+                task.volume.epub_file.save(new_ebook_name, File(open(new_ebook_path, 'rb')))
                 task.volume.save()
             return new_ebook_path
         return False
 
-    def slimming_epub(self,ori_epub_path):
+    def slimming_epub(self, ori_epub_path):
         temp_dir_path = tempfile.mkdtemp()
-        print("临时文件夹:",temp_dir_path)
+        print("临时文件夹:", temp_dir_path)
         z = zipfile.ZipFile(ori_epub_path, "r")
         z.extractall(os.path.join(temp_dir_path, "epub"))
         z.close()
 
         image_dir_path = os.path.join(temp_dir_path, "epub", "OEBPS", "Images")
         images = []
-        for root,dirs,files in os.walk(image_dir_path):
+        for root, dirs, files in os.walk(image_dir_path):
             for file in files:
-                full_file_path = os.path.join(root,file)
+                full_file_path = os.path.join(root, file)
                 file_base_name = os.path.basename(full_file_path)
                 f_size = os.path.getsize(full_file_path)
                 images.append([file_base_name, full_file_path, f_size])
         images_count = len(images)
         average_size_per_image = MAX_PUSH_MOBI_SIZE * 1024.0 * 1024.0 / images_count
-        print("epub中共有图片%d张，平均缩减到每张%.2fKB" % (images_count, average_size_per_image/1024.0))
+        print("epub中共有图片%d张，平均缩减到每张%.2fKB" % (images_count, average_size_per_image / 1024.0))
         self.image_slimming(images, image_dir_path, average_size_per_image)
         new_push_epub_file_path = self.pack_to_epub(temp_dir_path, ori_epub_path)
-        print("清空临时文件夹",temp_dir_path)
+        print("清空临时文件夹", temp_dir_path)
         shutil.rmtree(temp_dir_path)
         return new_push_epub_file_path
 
-    def image_slimming(self,image_infos,image_path,average_size_per_image):
+    def image_slimming(self, image_infos, image_path, average_size_per_image):
         ok_image_total_size = 0
         ok_image_count = 0
         total_image_count = len(image_infos)
@@ -300,16 +299,18 @@ class MonitorThread(threading.Thread):
             if image_size <= average_size_per_image:
                 ok_image_count += 1
                 ok_image_total_size += image_size
-        new_average_size_per_heavy_image = (MAX_PUSH_MOBI_SIZE*1024.0*1024.0-ok_image_total_size) / (total_image_count-ok_image_count)
+        new_average_size_per_heavy_image = (MAX_PUSH_MOBI_SIZE * 1024.0 * 1024.0 - ok_image_total_size) / (
+                    total_image_count - ok_image_count)
 
         for img_info in image_infos:
             image_name, full_path, image_size = img_info
-            print("图片: %s, %.2f/%.2f/%.2f" % (image_name,image_size/1024.0,average_size_per_image/1024.0,new_average_size_per_heavy_image/1024.0))
+            print("图片: %s, %.2f/%.2f/%.2f" % (image_name, image_size / 1024.0, average_size_per_image / 1024.0,
+                                              new_average_size_per_heavy_image / 1024.0))
             if image_size > average_size_per_image:
                 print("开始瘦身此图片")
-                self.save_image_to_speciftc_jpeg_size(full_path,new_average_size_per_heavy_image)
+                self.save_image_to_speciftc_jpeg_size(full_path, new_average_size_per_heavy_image)
 
-    def save_image_to_speciftc_jpeg_size(self,image_path, jpeg_size_limit):
+    def save_image_to_speciftc_jpeg_size(self, image_path, jpeg_size_limit):
         image = cv2.imread(image_path)
         quanty = 50
         half = 25
@@ -335,19 +336,21 @@ class MonitorThread(threading.Thread):
                 half = int(half / 2)
         del image
 
-    def pack_to_epub(self,temp_dir_path,ori_epub_file_path):
+    def pack_to_epub(self, temp_dir_path, ori_epub_file_path):
         print("开始重新打包为zip...")
-        new_epub_path = os.path.join(temp_dir_path,"newepub","new")
-        shutil.make_archive(new_epub_path,"zip",
-                            os.path.join(temp_dir_path,"epub"))
+        new_epub_path = os.path.join(temp_dir_path, "newepub", "new")
+        shutil.make_archive(new_epub_path, "zip",
+                            os.path.join(temp_dir_path, "epub"))
         print("打包完成")
-        if os.path.exists(new_epub_path+".zip"):
+        if os.path.exists(new_epub_path + ".zip"):
             print(new_epub_path)
-            new_epub_file_path = ori_epub_file_path.replace(".epub","_push.epub")
-            print("打包完成的推送epub文件路径",new_epub_file_path)
-            shutil.move(new_epub_path+".zip",new_epub_file_path)
+            new_epub_file_path = ori_epub_file_path.replace(".epub", "_push.epub")
+            print("打包完成的推送epub文件路径", new_epub_file_path)
+            shutil.move(new_epub_path + ".zip", new_epub_file_path)
             return new_epub_file_path
         else:
             print("未找到打包完成的zip文件，生成失败")
+
+
 if __name__ == '__main__':
     monitor_thread = start_monitor_thread()

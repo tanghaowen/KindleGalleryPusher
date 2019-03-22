@@ -11,4 +11,3 @@ class EbookconvertConfig(AppConfig):
         if not EbookconvertConfig.run_already:
             EbookconvertConfig.run_already = True
             self.monitor_thread = start_monitor_thread()
-

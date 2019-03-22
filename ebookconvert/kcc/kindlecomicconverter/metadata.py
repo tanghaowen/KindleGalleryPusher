@@ -100,7 +100,7 @@ class MetadataParser:
             self.data[field + 's'] = list(set(self.data[field + 's']))
             self.data[field + 's'].sort()
         if len(self.rawdata.getElementsByTagName('ScanInformation')) != 0:
-            coverId = compile('(MCD\\()(\\d+)(\\))')\
+            coverId = compile('(MCD\\()(\\d+)(\\))') \
                 .search(self.rawdata.getElementsByTagName('ScanInformation')[0].firstChild.nodeValue)
             if coverId:
                 self.data['MUid'] = coverId.group(2)

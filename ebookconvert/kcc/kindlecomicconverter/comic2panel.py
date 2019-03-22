@@ -25,6 +25,7 @@ from optparse import OptionParser, OptionGroup
 from multiprocessing import Pool
 from PIL import Image, ImageChops, ImageOps, ImageDraw
 from .shared import getImageFileName, walkLevel, walkSort, sanitizeTrace
+
 try:
     from PyQt5 import QtCore
 except ImportError:
@@ -235,7 +236,7 @@ def main(argv=None, qtgui=None):
                     GUI.progressBarTick.emit('Combining images')
                     GUI.progressBarTick.emit(str(directoryNumer))
                 for i in mergeWork:
-                    mergeWorkerPool.apply_async(func=mergeDirectory, args=(i, ), callback=mergeDirectoryTick)
+                    mergeWorkerPool.apply_async(func=mergeDirectory, args=(i,), callback=mergeDirectoryTick)
                 mergeWorkerPool.close()
                 mergeWorkerPool.join()
                 if GUI and not GUI.conversionAlive:
@@ -259,7 +260,7 @@ def main(argv=None, qtgui=None):
                 GUI.progressBarTick.emit('tick')
             if len(work) > 0:
                 for i in work:
-                    splitWorkerPool.apply_async(func=splitImage, args=(i, ), callback=splitImageTick)
+                    splitWorkerPool.apply_async(func=splitImage, args=(i,), callback=splitImageTick)
                 splitWorkerPool.close()
                 splitWorkerPool.join()
                 if GUI and not GUI.conversionAlive:

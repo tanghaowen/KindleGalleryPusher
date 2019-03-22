@@ -25,6 +25,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 csrf_protect_m = method_decorator(csrf_protect)
 sensitive_post_parameters_m = method_decorator(sensitive_post_parameters())
 
+
 class SubscInline(admin.TabularInline):
     model = User.subscriptes.through
 
@@ -34,22 +35,23 @@ class CollInline(admin.TabularInline):
 
 
 class UserAdminMod(admin.ModelAdmin):
-    filter_vertical = ['subscriptes','collections']
-
+    filter_vertical = ['subscriptes', 'collections']
 
 
 class UserAdmin(admin.ModelAdmin):
-    filter_vertical = ['subscriptes','collections']
+    filter_vertical = ['subscriptes', 'collections']
     add_form_template = 'admin/auth/user/add_form.html'
     change_user_password_template = None
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email','kindle_email','signature')}),
-        (_('Vip info'), {'fields': ('vip', 'vip_expire', 'user_total_bandwidth', 'bandwidth_tmp', 'bandwidth_forever','bandwidth_vip', 'bandwidth_used','bandwidth_remain','bandwidth_percent')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'kindle_email', 'signature')}),
+        (_('Vip info'), {'fields': (
+        'vip', 'vip_expire', 'user_total_bandwidth', 'bandwidth_tmp', 'bandwidth_forever', 'bandwidth_vip',
+        'bandwidth_used', 'bandwidth_remain', 'bandwidth_percent')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
 
-        (_('Important dates'), {'fields': ('last_login', 'date_joined','subscriptes','collections')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined', 'subscriptes', 'collections')}),
     )
     readonly_fields = ['user_total_bandwidth']
     add_fieldsets = (
@@ -67,7 +69,7 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ('username',)
     filter_horizontal = ('groups', 'user_permissions',)
 
-    def user_total_bandwidth(self,instance):
+    def user_total_bandwidth(self, instance):
         return instance.get_bandwidth_total()
 
     def get_fieldsets(self, request, obj=None):
@@ -87,12 +89,12 @@ class UserAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         return [
-            path(
-                '<id>/password/',
-                self.admin_site.admin_view(self.user_change_password),
-                name='auth_user_password_change',
-            ),
-        ] + super().get_urls()
+                   path(
+                       '<id>/password/',
+                       self.admin_site.admin_view(self.user_change_password),
+                       name='auth_user_password_change',
+                   ),
+               ] + super().get_urls()
 
     def lookup_allowed(self, lookup, value):
         # Don't allow lookups involving passwords.
@@ -212,37 +214,39 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class AccountRegisterIpRecordAdmini(admin.ModelAdmin):
-    list_display = ['ip','reg_date','action']
+    list_display = ['ip', 'reg_date', 'action']
 
 
 class ChargeRecordAdmin(admin.ModelAdmin):
-    list_display = ['user','price','order_id','payed','created_time','payed_time']
+    list_display = ['user', 'price', 'order_id', 'payed', 'created_time', 'payed_time']
+
 
 class DownloadRecordAdmin(admin.ModelAdmin):
-    list_display = ['user', 'volume','get_book_name','volume_type','vip','info','download_date']
+    list_display = ['user', 'volume', 'get_book_name', 'volume_type', 'vip', 'info', 'download_date']
 
-    def get_book_name(self,obj):
+    def get_book_name(self, obj):
         return obj.volume.book
 
 
 class UserFeedbackAdmin(admin.ModelAdmin):
-    list_display = ['user', 'ip', 'email','message','date']
+    list_display = ['user', 'ip', 'email', 'message', 'date']
 
 
 class BandwidthCostRecordAdmin(admin.ModelAdmin):
-    list_display = ['user', 'volume', 'volume_type', 'bandwidth_cost','user_bandwidth_before','user_bandwidth_after','cost_date']
+    list_display = ['user', 'volume', 'volume_type', 'bandwidth_cost', 'user_bandwidth_before', 'user_bandwidth_after',
+                    'cost_date']
 
 
 class MailVertifySendRecordAdmin(admin.ModelAdmin):
-    list_display = ['type','token','user_name','email','who_inviter','relative_uid','send_date']
+    list_display = ['type', 'token', 'user_name', 'email', 'who_inviter', 'relative_uid', 'send_date']
 
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Comment)
 admin.site.register(Score)
-admin.site.register(AccountRegisterIpRecord,AccountRegisterIpRecordAdmini)
-admin.site.register(ChargeRecord,ChargeRecordAdmin)
-admin.site.register(DownloadRecord,DownloadRecordAdmin)
-admin.site.register(UserFeedback,UserFeedbackAdmin)
-admin.site.register(BandwidthCostRecord,BandwidthCostRecordAdmin)
-admin.site.register(MailVertifySendRecord,MailVertifySendRecordAdmin)
+admin.site.register(AccountRegisterIpRecord, AccountRegisterIpRecordAdmini)
+admin.site.register(ChargeRecord, ChargeRecordAdmin)
+admin.site.register(DownloadRecord, DownloadRecordAdmin)
+admin.site.register(UserFeedback, UserFeedbackAdmin)
+admin.site.register(BandwidthCostRecord, BandwidthCostRecordAdmin)
+admin.site.register(MailVertifySendRecord, MailVertifySendRecordAdmin)

@@ -3,17 +3,33 @@ KindleGalleryPusher📷
 
 [demoはこちら](http://gallery.lpanda.net/)
 
-
 貴方の写真集をみんなとシェアしませんか？
 
+- [KindleGalleryPusher📷](#kindlegallerypusher)
+- [1. このサイトアプリのユーザは？](#1-このサイトアプリのユーザは)
+- [2. このサイトアプリについて](#2-このサイトアプリについて)
+  - [2.1. requirements](#21-requirements)
+  - [2.2. thanks for](#22-thanks-for)
+  - [2.3. データベースに関して](#23-データベースに関して)
+    - [2.3.1. mysqlに関して](#231-mysqlに関して)
+    - [2.3.2. sqlite に関して](#232-sqlite-に関して)
+  - [2.4. kindle送信に関して](#24-kindle送信に関して)
+  - [2.5. hostnameに関して](#25-hostnameに関して)
+  - [2.6. ユーザデータ容量に関して](#26-ユーザデータ容量に関して)
+  - [2.7. nginx + uwsgi でサービス提供](#27-nginx--uwsgi-でサービス提供)
+- [3. サイト管理](#3-サイト管理)
+- [4. 今後の予定](#4-今後の予定)
 
-# 1. このサイトアプリに向いてるユーザ
-* 自分の写真集をkindleでもみたい
-* kindleを使っている友達にシェアしたい
 
 
-# 2. このサイトについて
-* アプロードされた写真集を自動に*mobi* *epub* フォーマットに変換します
+
+# 1. このサイトアプリのユーザは？
+* 自分の写真集をkindleでもみたい人
+* kindleを使っている友達にシェアしたい人
+
+
+# 2. このサイトアプリについて
+* アプロードされた写真集を自動に*mobi* *epub* フォーマットに変換できます
 * 気に入った写真集を直接にkindleデバイスに送信できます
 
 ## 2.1. requirements
@@ -35,7 +51,7 @@ KindleGalleryPusher📷
  
 ## 2.3. データベースに関して
  
-1.  データベースは*mysql*を使います。*KindleGalleryPusher/settings.py*で、下の部分を編集してください。
+1.  データベースは*mysql*を使います。*KindleGalleryPusher/settings.py* のこの部分を編集してください
     ```python
     DATABASES = {
         'default': {
@@ -47,7 +63,7 @@ KindleGalleryPusher📷
         }
     }
     ```
-2. 次にmysqlでデータベースを作ります
+2. 次に *mysql shell* でデータベースを作ります
     ```sql
     CREATE DATABASE kindleGallerysite
     ```
@@ -60,13 +76,13 @@ KindleGalleryPusher📷
     ```   
 4. 最後に下のコマンドでサイトを実行してみます
     ```bash
-    python manage.py runserver 0.0.0.0:8000
+    python manage.py runserver 127.0.0.1:8000
     ```     
     実行した後、*127.0.0.1:8000*から、サイトを見れます
     
     **警告！**
     
-    **python manage.py runserver　はあくまでテスト、および *debug* のため、*django* に内蔵された簡単なweb serverです！本番でサービスを提供したいなら、*nginx + uwsgi*で実行してください！(簡単の説明は下の*nginx + uwsgi*部分を参考してください)** 
+    **python manage.py runserver　はあくまでテスト、および *debug* のため、*django* に内蔵された簡単なweb serverです！本番でサービスを提供したいなら、*nginx + uwsgi* でサービスを提供してください！(簡単の説明は下の *nginx + uwsgi* 部分を参考してください)** 
 ### 2.3.1. mysqlに関して
 
 現在mysqlの最新バージョンは*8.0*です。*mysql 8.0*から、新しいパスワード暗号化方法が導入されました。
@@ -114,7 +130,7 @@ smtp_hostname = 'smtp.yourserver.net'
 
 ## 2.5. hostnameに関して
 
-*KindleGalleryPusher/settings.py*の*ALLOWED_HOSTS* 部分で、自分のdonamを入れてください
+*KindleGalleryPusher/settings.py*の*ALLOWED_HOSTS* 部分で、自分のdomainを入れてください
 
 ```python
 ALLOWED_HOSTS = ['gallery.lpanda.net', 'localhost', '127.0.0.1']
@@ -128,7 +144,7 @@ ALLOWED_HOSTS = ['gallery.lpanda.net', 'localhost', '127.0.0.1']
 * 毎回ファイルをダウンロードする時、データ容量が削られます
 * データ容量が0になったら、ダウンロードすることが不可能になります
 * また、ユーザの全部のダウンロード履歴も記録されます
-* 毎回データ容量は *1GB* に回復します
+* 毎月、データ容量は *1GB* に回復します
 
 もし *1GB*　のデータ容量を調整したいなら、 *account/models.py* の *USER_BASE_BANDWIDTH*　を調整したください
 
@@ -143,21 +159,22 @@ ALLOWED_HOSTS = ['gallery.lpanda.net', 'localhost', '127.0.0.1']
     ```
     pip install uwsgi
     ```
-3.　*uwsgi* のプロファイルを作成します。作成例は *uwsgi_linux_demon.ini* です。中の*chdir* *daemonize* *pidfile*の部分を変更してください
-    ```ini
-    [uwsgi]
-    socket = 127.0.0.1:8001
-    chdir = /root/KindleGalleryPusher/
-    wsgi-file = KindleGalleryPusher/wsgi.py
-    processes = 4
-    threads = 2
-    stats = 127.0.0.1:8002
-    daemonize = /root/KindleGalleryPusher/log_uwsgi.log
-    pidfile = /root/KindleGalleryPusher/uwsgi.pid
-    ```
+3.　次に*uwsgi* のプロファイルを作成します。作成例はファイル *uwsgi_linux_demon.ini* にあります。
+
+```ini
+[uwsgi]
+socket = 127.0.0.1:8001
+chdir = /root/KindleGalleryPusher/
+wsgi-file = KindleGalleryPusher/wsgi.py
+processes = 4
+threads = 2
+stats = 127.0.0.1:8002
+daemonize = /root/KindleGalleryPusher/log_uwsgi.log
+pidfile = /root/KindleGalleryPusher/uwsgi.pid
+```
     
-4. 最後に*uwsgi uwsgi_linux_demon.ini* でウェイブサービスを実行します
-5. *nging* プロファイルの方はファイル *nginx_sample.cof*　を参考してください。各*alias*の部分を正しいパスに設定してください
+4. 最後にコマンド *uwsgi uwsgi_linux_demon.ini* でウェイブサービスを実行します
+5. *nging* プロファイルの方はファイル *nginx_sample.cof*　を参考してください。各*alias*の部分を正しいパスに修正してください。また、*server_name* も自分のdomainに設定してください。
     ```nginx
     upstream django {
         # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
@@ -196,3 +213,24 @@ ALLOWED_HOSTS = ['gallery.lpanda.net', 'localhost', '127.0.0.1']
 
     }
     ```
+
+
+# 3. サイト管理
+1. まずはサイトの管理アカウントを作成します
+    ```bash
+    python manage.py createsuperuser
+    ```
+2. 管理アカウントを作成した後、サイトのホームページから、アカウントをログインします
+3. 下のようにサイト管理のリンクがでます
+   
+   ![img1](img/img1.png)
+4. 管理ページから、サイトを管理することができます
+   ![img2](img/img2.png)
+
+
+
+# 4. 今後の予定
+
+現在一番大きいな問題はフォマード変換キューと送信キューは mysql で作られています。
+普通なら、キューは *redis* でキューを作るのが一番よいと考えられます。
+これからはキューを *redis* で作ります。

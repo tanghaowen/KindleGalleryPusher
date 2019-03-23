@@ -37,7 +37,7 @@ class BookAdmin(admin.ModelAdmin):
     list_display = ["id", "title", "update_time"]
     list_display_links = ['id', 'title']
     fieldsets = [
-        ["基本情報", {'fields': ['id', 'title', 'title_chinese', 'update_time', 'end', 'show', 'go_to_book_info_page'], }],
+        ["基本情報", {'fields': ['id', 'title', 'title_chinese', 'update_time', 'end', 'show'], }],
         ["作者", {"fields": ['author']}],
         ["Tag", {"fields": ['tags']}],
         ["Cover", {"fields": ["relative_covers_tags", "cover_id"]}],
